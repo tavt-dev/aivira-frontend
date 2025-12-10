@@ -11,6 +11,7 @@ export const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const login = useAuthStore(state => state.login);
@@ -18,20 +19,22 @@ export const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     
     try {
       const user = await MockService.register(name, email);
       login(user);
       navigate('/');
     } catch (err) {
-      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex bg-white">
+    <div className="min-h-screen flex bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       {/* Right Side - Image/Banner (Swapped for Register to look varied) */}
       <div className="hidden lg:block w-1/2 bg-slate-900 relative overflow-hidden order-2">
         <div className="absolute inset-0 bg-gradient-to-bl from-indigo-900/90 via-slate-900/90 to-primary-900/90 z-10" />
@@ -73,7 +76,7 @@ export const Register = () => {
             <div className="h-8 w-8 bg-primary-600 rounded-lg flex items-center justify-center group-hover:bg-primary-700 transition-colors">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-900">Aivira</span>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">Aivira</span>
           </Link>
 
           <motion.div
@@ -81,19 +84,24 @@ export const Register = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">Tạo tài khoản mới</h1>
-            <p className="text-slate-500 mb-8">Miễn phí và chỉ mất 1 phút để hoàn tất.</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">Tạo tài khoản mới</h1>
+            <p className="text-slate-500 dark:text-slate-400 mb-8">Miễn phí và chỉ mất 1 phút để hoàn tất.</p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-700 block">Họ và tên</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block">Họ và tên</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:text-white"
                     placeholder="Nguyễn Văn A"
                     required
                   />
@@ -101,14 +109,14 @@ export const Register = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-700 block">Email</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:text-white"
                     placeholder="name@example.com"
                     required
                   />
@@ -116,14 +124,14 @@ export const Register = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-700 block">Mật khẩu</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block">Mật khẩu</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:text-white"
                     placeholder="Tối thiểu 8 ký tự"
                     required
                     minLength={8}
@@ -140,7 +148,7 @@ export const Register = () => {
 
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="terms" className="rounded border-slate-300 text-primary-600 focus:ring-primary-500" required />
-                <label htmlFor="terms" className="text-sm text-slate-600">
+                <label htmlFor="terms" className="text-sm text-slate-600 dark:text-slate-400">
                   Tôi đồng ý với <Link to="#" className="text-primary-600 hover:underline">Điều khoản</Link> và <Link to="#" className="text-primary-600 hover:underline">Chính sách bảo mật</Link>
                 </label>
               </div>
@@ -151,9 +159,9 @@ export const Register = () => {
               </Button>
             </form>
 
-            <p className="mt-8 text-center text-sm text-slate-600">
+            <p className="mt-8 text-center text-sm text-slate-600 dark:text-slate-400">
               Đã có tài khoản?{' '}
-              <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-700 hover:underline">
+              <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hover:underline">
                 Đăng nhập
               </Link>
             </p>

@@ -1,9 +1,14 @@
 import React from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className = '', children, ...props }) => (
-  <div className={`rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-50 shadow-sm ${className}`} {...props}>
+export const Card: React.FC<HTMLMotionProps<"div">> = ({ className = '', children, ...props }) => (
+  <motion.div 
+    whileHover={{ y: -5, transition: { duration: 0.2 } }}
+    className={`rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-50 shadow-sm hover:shadow-md transition-shadow ${className}`} 
+    {...props}
+  >
     {children}
-  </div>
+  </motion.div>
 );
 
 export const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className = '', children, ...props }) => (

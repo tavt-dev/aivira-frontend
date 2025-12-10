@@ -53,7 +53,14 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({ isOpen, onClose }) =
       };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
-      console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi xử lý yêu cầu. Vui lòng thử lại.';
+      const errorMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: `Xin lỗi, tôi gặp sự cố: ${errorMessage}`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }

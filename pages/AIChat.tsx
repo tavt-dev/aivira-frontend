@@ -46,7 +46,14 @@ export const AIChat = () => {
       };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
-      console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi xử lý yêu cầu. Vui lòng thử lại.';
+      const errorMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: `Xin lỗi, tôi gặp sự cố: ${errorMessage}`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }
@@ -55,13 +62,13 @@ export const AIChat = () => {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 h-[calc(100vh-64px)] flex flex-col">
       <div className="mb-4 text-center">
-        <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
+        <h1 className="text-2xl font-bold flex items-center justify-center gap-2 dark:text-white">
           <Sparkles className="text-primary-600" /> Trợ lý mua sắm
         </h1>
-        <p className="text-slate-500 text-sm">Hỗ trợ bởi AI Gemini giả lập</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">Hỗ trợ bởi AI Gemini giả lập</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4 mb-4">
+      <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-4 mb-4">
         {messages.map((msg) => (
           <motion.div
             key={msg.id}
@@ -70,14 +77,14 @@ export const AIChat = () => {
             className={`flex items-start gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
           >
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-              msg.role === 'model' ? 'bg-gradient-to-br from-primary-500 to-indigo-600' : 'bg-slate-200'
+              msg.role === 'model' ? 'bg-gradient-to-br from-primary-500 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'
             }`}>
-              {msg.role === 'model' ? <Bot className="w-5 h-5 text-white" /> : <UserIcon className="w-5 h-5 text-slate-600" />}
+              {msg.role === 'model' ? <Bot className="w-5 h-5 text-white" /> : <UserIcon className="w-5 h-5 text-slate-600 dark:text-slate-300" />}
             </div>
             <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
               msg.role === 'user' 
                 ? 'bg-primary-600 text-white rounded-tr-none' 
-                : 'bg-slate-100 text-slate-800 rounded-tl-none'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
             }`}>
               <p className="text-sm leading-relaxed">{msg.text}</p>
             </div>
@@ -88,7 +95,7 @@ export const AIChat = () => {
              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center">
                <Bot className="w-5 h-5 text-white" />
              </div>
-             <div className="bg-slate-50 rounded-2xl px-4 py-3">
+             <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl px-4 py-3">
                <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
              </div>
           </div>
@@ -98,7 +105,7 @@ export const AIChat = () => {
 
       <form onSubmit={handleSend} className="relative">
         <div className="absolute left-3 top-3 flex gap-2">
-           <button type="button" className="p-1 hover:bg-slate-100 rounded text-slate-400">
+           <button type="button" className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-400">
              <ImageIcon className="w-5 h-5" />
            </button>
         </div>
@@ -107,7 +114,7 @@ export const AIChat = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Hỏi về sản phẩm, xu hướng hoặc hỗ trợ..."
-          className="w-full pl-12 pr-14 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent shadow-sm"
+          className="w-full pl-12 pr-14 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent shadow-sm"
           disabled={loading}
         />
         <Button 

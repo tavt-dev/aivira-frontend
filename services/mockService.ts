@@ -15,6 +15,16 @@ export const MockService = {
     return MOCK_PRODUCTS.find(p => p.id === id);
   },
 
+  searchProducts: async (query: string): Promise<Product[]> => {
+    await delay(300); // Fast search
+    const lowerQuery = query.toLowerCase();
+    return MOCK_PRODUCTS.filter(p => 
+      p.name.toLowerCase().includes(lowerQuery) || 
+      p.category.toLowerCase().includes(lowerQuery) ||
+      p.description.toLowerCase().includes(lowerQuery)
+    );
+  },
+
   createProduct: async (product: Omit<Product, 'id'>): Promise<Product> => {
     await delay(800);
     const newProduct = { ...product, id: Date.now().toString() };
@@ -26,8 +36,10 @@ export const MockService = {
     await delay(800);
     const index = MOCK_PRODUCTS.findIndex(p => p.id === id);
     if (index === -1) throw new Error("Product not found");
-    MOCK_PRODUCTS[index] = { ...MOCK_PRODUCTS[index], ...updates };
-    return MOCK_PRODUCTS[index];
+    const product = MOCK_PRODUCTS[index];
+    if (!product) throw new Error("Product not found");
+    MOCK_PRODUCTS[index] = { ...product, ...updates };
+    return MOCK_PRODUCTS[index]!;
   },
 
   deleteProduct: async (id: string): Promise<void> => {
@@ -80,7 +92,7 @@ export const MockService = {
   },
 
   // Mock AI
-  generateAIResponse: async (prompt: string): Promise<string> => {
+  generateAIResponse: async (_prompt: string): Promise<string> => {
     await delay(1500); 
     const responses = [
       "Tôi chắc chắn có thể giúp bạn! Dựa trên sở thích của bạn về đồ điện tử, tôi khuyên bạn nên xem qua Tai nghe Neural.",
@@ -88,10 +100,10 @@ export const MockService = {
       "So sánh cả hai, Đồng hồ Quantum có khả năng theo dõi sức khỏe tốt hơn, trong khi mẫu tiêu chuẩn tập trung nhiều hơn vào thông báo.",
       "Tôi đã phân tích các đánh giá và 95% người dùng khen ngợi sự thoải mái của sản phẩm này, đặc biệt là khi sử dụng lâu dài."
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    return responses[Math.floor(Math.random() * responses.length)] ?? responses[0]!;
   },
 
-  generateProductInsight: async (productId: string): Promise<string> => {
+  generateProductInsight: async (_productId: string): Promise<string> => {
     await delay(1000);
     return "Phân tích AI: Sản phẩm này đã tăng 20% lượng quan tâm trong tuần này. Người dùng thường xuyên nhắc đến 'độ bền' và 'thiết kế đẹp' là những điểm tích cực chính. Chỉ số cảm xúc đạt 92% tích cực.";
   },

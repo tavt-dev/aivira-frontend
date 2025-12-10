@@ -22,7 +22,14 @@ export const Dashboard = () => {
     MockService.getDashboardStats().then(setStats);
   }, []);
 
-  const StatCard = ({ title, value, icon: Icon, color }: any) => (
+  interface StatCardProps {
+    title: string;
+    value: string | number | undefined;
+    icon: React.ComponentType<{ className?: string }>;
+    color: string;
+  }
+
+  const StatCard = ({ title, value, icon: Icon, color }: StatCardProps) => (
     <Card>
       <CardContent className="p-6 flex items-center space-x-4">
         <div className={`p-3 rounded-full ${color}`}>
@@ -42,10 +49,30 @@ export const Dashboard = () => {
       
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Tổng doanh thu" value={`$${stats?.totalSales.toLocaleString()}`} icon={DollarSign} color="bg-green-500" />
-        <StatCard title="Đơn hàng mới" value={stats?.activeOrders} icon={ShoppingBag} color="bg-blue-500" />
-        <StatCard title="Tổng người dùng" value={stats?.totalUsers} icon={Users} color="bg-indigo-500" />
-        <StatCard title="Sắp hết hàng" value={stats?.inventoryWarnings} icon={AlertTriangle} color="bg-orange-500" />
+        <StatCard 
+          title="Tổng doanh thu" 
+          value={stats ? `$${stats.totalSales.toLocaleString()}` : '...'} 
+          icon={DollarSign} 
+          color="bg-green-500" 
+        />
+        <StatCard 
+          title="Đơn hàng mới" 
+          value={stats?.activeOrders ?? '...'} 
+          icon={ShoppingBag} 
+          color="bg-blue-500" 
+        />
+        <StatCard 
+          title="Tổng người dùng" 
+          value={stats?.totalUsers ?? '...'} 
+          icon={Users} 
+          color="bg-indigo-500" 
+        />
+        <StatCard 
+          title="Sắp hết hàng" 
+          value={stats?.inventoryWarnings ?? '...'} 
+          icon={AlertTriangle} 
+          color="bg-orange-500" 
+        />
       </div>
 
       {/* Charts */}
@@ -60,7 +87,7 @@ export const Dashboard = () => {
                 <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                  <YAxis axisLine={false} tickLine={false} prefix="$" />
+                  <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
                   <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                   <Bar dataKey="sales" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
                 </BarChart>

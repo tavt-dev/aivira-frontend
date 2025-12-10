@@ -98,7 +98,7 @@ export const MOCK_ORDERS: Order[] = [
     id: 'ord-1001',
     userId: 'u2',
     items: [
-      { ...MOCK_PRODUCTS[0], quantity: 1 }
+      { ...MOCK_PRODUCTS[0]!, quantity: 1 }
     ],
     total: 299.99,
     status: 'delivered',
@@ -108,7 +108,7 @@ export const MOCK_ORDERS: Order[] = [
     id: 'ord-1002',
     userId: 'u2',
     items: [
-      { ...MOCK_PRODUCTS[1], quantity: 2 }
+      { ...MOCK_PRODUCTS[1]!, quantity: 2 }
     ],
     total: 399.00,
     status: 'processing',
