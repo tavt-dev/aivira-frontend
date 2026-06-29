@@ -18,7 +18,7 @@ describe("OrdersPage payment actions", () => {
       ...order,
       orderStatus: "PENDING_PAYMENT",
       paymentMethod: "VNPAY",
-      paymentStatus: "PENDING",
+      paymentStatus: "PENDING"
     };
     const getPaymentGroup = vi.fn();
 
@@ -27,11 +27,13 @@ describe("OrdersPage payment actions", () => {
       http.get(`${API}/orders/:id`, () => HttpResponse.json(apiResponse(pendingOrder))),
       http.get(`${API}/payments/groups/:code`, ({ params }) => {
         getPaymentGroup(params.code);
-        return HttpResponse.json(apiResponse({
-          ...paymentGroup,
-          paymentUrl: null,
-          qrCodeUrl: "https://pay.example.test/qr.png",
-        }));
+        return HttpResponse.json(
+          apiResponse({
+            ...paymentGroup,
+            paymentUrl: null,
+            qrCodeUrl: "https://pay.example.test/qr.png"
+          })
+        );
       })
     );
 
@@ -56,7 +58,7 @@ describe("OrdersPage payment actions", () => {
       ...order,
       orderStatus: "PAYMENT_FAILED",
       paymentMethod: "MOMO",
-      paymentStatus: "FAILED",
+      paymentStatus: "FAILED"
     };
     const retryPayment = vi.fn();
 
