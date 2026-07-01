@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/react";
+import React from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import GoogleOAuthResultPage from "./GoogleOAuthResultPage.jsx";
@@ -32,16 +33,27 @@ describe("GoogleOAuthResultPage", () => {
 
     await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent("/admin/forbidden"));
   });
+
+  it("does not exchange the same one-time ticket twice under React StrictMode", async () => {
+    renderGoogleRoutes("/auth/google/success?ticket=strict-ticket&next=/checkout", { strict: true });
+
+    await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent("/checkout"));
+    expect(getAuthSnapshot().accessToken).toBe("google-access-token");
+  });
 });
 
-function renderGoogleRoutes(route) {
-  return renderWithProviders(
+function renderGoogleRoutes(route, { strict = false } = {}) {
+  const routes = (
     <Routes>
       <Route path="/auth/google/success" element={<GoogleOAuthResultPage />} />
       <Route path="/auth/google/failure" element={<GoogleOAuthResultPage failure />} />
       <Route path="/checkout" element={<LocationMarker />} />
       <Route path="/admin/forbidden" element={<LocationMarker />} />
-    </Routes>,
+    </Routes>
+  );
+
+  return renderWithProviders(
+    strict ? <React.StrictMode>{routes}</React.StrictMode> : routes,
     { route }
   );
 }

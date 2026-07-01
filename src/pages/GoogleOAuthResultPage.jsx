@@ -6,6 +6,9 @@ import { getProfile } from "../api/userApi.js";
 import { hasAdminAccess } from "../utils/authz.js";
 import { saveAuth, saveCurrentUser } from "../utils/storage.js";
 
+const googleTicketExchangePromises = new Map();
+const googleTicketExchangeResults = new Map();
+
 export default function GoogleOAuthResultPage({ failure = false }) {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
@@ -33,7 +36,7 @@ export default function GoogleOAuthResultPage({ failure = false }) {
       }
 
       try {
-        const auth = await exchangeGoogleTicket(ticket);
+        const auth = await exchangeGoogleTicketOnce(ticket);
         const accessToken = auth?.accessToken || auth?.token || auth?.jwt || auth?.access_token;
         saveAuth(auth);
 
@@ -84,6 +87,31 @@ export default function GoogleOAuthResultPage({ failure = false }) {
       </section>
     </div>
   );
+}
+
+function exchangeGoogleTicketOnce(ticket) {
+  if (googleTicketExchangeResults.has(ticket)) {
+    return Promise.resolve(googleTicketExchangeResults.get(ticket));
+  }
+
+  if (!googleTicketExchangePromises.has(ticket)) {
+    googleTicketExchangePromises.set(
+      ticket,
+      exchangeGoogleTicket(ticket)
+        .then((auth) => {
+          googleTicketExchangeResults.set(ticket, auth);
+          return auth;
+        })
+        .catch((error) => {
+          googleTicketExchangeResults.delete(ticket);
+          throw error;
+        })
+        .finally(() => {
+          googleTicketExchangePromises.delete(ticket);
+        })
+    );
+  }
+  return googleTicketExchangePromises.get(ticket);
 }
 
 function sanitizeNextPath(value) {
