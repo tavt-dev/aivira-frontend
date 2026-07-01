@@ -52,10 +52,7 @@ function renderGoogleRoutes(route, { strict = false } = {}) {
     </Routes>
   );
 
-  return renderWithProviders(
-    strict ? <React.StrictMode>{routes}</React.StrictMode> : routes,
-    { route }
-  );
+  return renderWithProviders(strict ? <React.StrictMode>{routes}</React.StrictMode> : routes, { route });
 }
 
 function LocationMarker() {

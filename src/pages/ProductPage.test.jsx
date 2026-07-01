@@ -33,22 +33,26 @@ describe("ProductPage", () => {
     const user = userEvent.setup();
     const backCoverUrl = "https://example.test/clean-architecture-back.jpg";
     server.use(
-      http.get(`${API}/products/:slug`, ({ params }) => HttpResponse.json(apiResponse({
-        ...book,
-        slug: params.slug,
-        media: [
-          ...book.media.map((item) => ({ ...item, mediaType: "image" })),
-          {
-            id: 502,
-            mediaUrl: backCoverUrl,
-            mediaType: "image",
-            altText: "Back cover",
-            primary: false,
-            active: true,
-            sortOrder: 1
-          }
-        ]
-      })))
+      http.get(`${API}/products/:slug`, ({ params }) =>
+        HttpResponse.json(
+          apiResponse({
+            ...book,
+            slug: params.slug,
+            media: [
+              ...book.media.map((item) => ({ ...item, mediaType: "image" })),
+              {
+                id: 502,
+                mediaUrl: backCoverUrl,
+                mediaType: "image",
+                altText: "Back cover",
+                primary: false,
+                active: true,
+                sortOrder: 1
+              }
+            ]
+          })
+        )
+      )
     );
 
     renderWithProviders(
@@ -61,20 +65,30 @@ describe("ProductPage", () => {
     const backCover = await screen.findByRole("img", { name: "Back cover" });
     await user.click(backCover.closest("button"));
 
-    expect(screen.getByRole("button", { name: /Open image gallery/i }).querySelector("img"))
-      .toHaveAttribute("src", backCoverUrl);
+    expect(screen.getByRole("button", { name: /Open image gallery/i }).querySelector("img")).toHaveAttribute(
+      "src",
+      backCoverUrl
+    );
   });
 
   it("opens review images in a lightbox and closes with Escape", async () => {
     const user = userEvent.setup();
     const reviewImageUrl = "https://example.test/reviews/reader-photo.jpg";
     server.use(
-      http.get(`${API}/products/:slug/reviews`, () => HttpResponse.json(apiResponse(pageResponse([{
-        ...review,
-        approved: true,
-        visible: true,
-        images: [{ id: 901, imageUrl:reviewImageUrl, imagePublicId:"reviews/reader-photo", sortOrder:0 }]
-      }]))))
+      http.get(`${API}/products/:slug/reviews`, () =>
+        HttpResponse.json(
+          apiResponse(
+            pageResponse([
+              {
+                ...review,
+                approved: true,
+                visible: true,
+                images: [{ id: 901, imageUrl: reviewImageUrl, imagePublicId: "reviews/reader-photo", sortOrder: 0 }]
+              }
+            ])
+          )
+        )
+      )
     );
 
     renderWithProviders(
@@ -84,12 +98,16 @@ describe("ProductPage", () => {
       { route: "/product/clean-architecture" }
     );
 
-    await user.click(await screen.findByRole("button", { name: i18n.t("product.openReviewImage", { index:1 }) }));
-    const dialog = screen.getByRole("dialog", { name: i18n.t("product.reviewImageAlt", { index:1 }) });
+    await user.click(await screen.findByRole("button", { name: i18n.t("product.openReviewImage", { index: 1 }) }));
+    const dialog = screen.getByRole("dialog", { name: i18n.t("product.reviewImageAlt", { index: 1 }) });
     expect(dialog.querySelector("img")).toHaveAttribute("src", reviewImageUrl);
 
     await user.keyboard("{Escape}");
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: i18n.t("product.reviewImageAlt", { index:1 }) })).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: i18n.t("product.reviewImageAlt", { index: 1 }) })
+      ).not.toBeInTheDocument()
+    );
   });
 
   it("adds the selected variation and opens checkout with its cart item", async () => {

@@ -26,7 +26,9 @@ describe("ReviewForm", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /Submit review|Gửi đánh giá/ }));
 
-    expect(screen.getByText(/Write a short review before submitting.|Vui lòng nhập nhận xét trước khi gửi./)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Write a short review before submitting.|Vui lòng nhập nhận xét trước khi gửi./)
+    ).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
@@ -66,7 +68,10 @@ describe("ReviewForm", () => {
     const user = userEvent.setup({ applyAccept: false });
     renderWithProviders(<ReviewForm onSubmit={vi.fn()} />);
 
-    await user.upload(screen.getByLabelText(/Choose images|Chọn ảnh/), new File(["text"], "note.txt", { type: "text/plain" }));
+    await user.upload(
+      screen.getByLabelText(/Choose images|Chọn ảnh/),
+      new File(["text"], "note.txt", { type: "text/plain" })
+    );
     expect(screen.getByText(/Only JPEG, PNG, GIF, or WebP|Chỉ hỗ trợ ảnh JPEG/)).toBeInTheDocument();
 
     await user.upload(

@@ -128,7 +128,9 @@ describe("OrdersPage payment actions", () => {
           ...params,
           contentType: request.headers.get("content-type")
         });
-        return HttpResponse.json(apiResponse({ ...review, orderId: Number(params.orderId), orderItemId: Number(params.orderItemId) }));
+        return HttpResponse.json(
+          apiResponse({ ...review, orderId: Number(params.orderId), orderItemId: Number(params.orderItemId) })
+        );
       })
     );
 
@@ -145,9 +147,11 @@ describe("OrdersPage payment actions", () => {
     await user.click(screen.getByRole("button", { name: i18n.t("product.submitReview") }));
 
     await waitFor(() => expect(createReview).toHaveBeenCalled());
-    expect(createReview).toHaveBeenCalledWith(expect.objectContaining({
-      contentType: expect.stringContaining("multipart/form-data")
-    }));
+    expect(createReview).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contentType: expect.stringContaining("multipart/form-data")
+      })
+    );
     expect(await screen.findByRole("button", { name: i18n.t("orders.reviewSubmittedShort") })).toBeDisabled();
     expect(screen.queryByRole("button", { name: i18n.t("orders.writeReview") })).not.toBeInTheDocument();
   });
