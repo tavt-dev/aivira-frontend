@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   AlertCircle, BadgeCheck, Camera, CheckCircle2,
@@ -32,6 +32,11 @@ const TABS = [
   { id:"sessions",  icon:Monitor,    label:"account.sessions" },
   { id:"danger",    icon:ShieldOff,  label:"account.deactivate" },
 ];
+
+function tabFromHash(hash) {
+  const id = hash?.replace(/^#/, "");
+  return TABS.some((item) => item.id === id) ? id : "";
+}
 
 /* ── Token system ───────────────────────────── */
 function tokens(isDark) {
@@ -100,11 +105,12 @@ function useTheme() {
 ══════════════════════════════════════════════ */
 export default function AccountPage({ onAuth }) {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const navigate = useNavigate();
   const isDark = useTheme();
   const tk = tokens(isDark);
 
-  const [tab, setTab]                             = useState("profile");
+  const [tab, setTab]                             = useState(() => tabFromHash(location.hash) || "profile");
   const [profile, setProfile]                     = useState(getCurrentUser());
   const [profileForm, setProfileForm]             = useState({ firstName:"", lastName:"", gender:"" });
   const [passwordForm, setPasswordForm]           = useState(emptyPassword);
@@ -144,6 +150,11 @@ export default function AccountPage({ onAuth }) {
     if (!getAccessToken()) return;
     refreshProfile(); refreshAddresses(); refreshSessions();
   }, [refreshAddresses, refreshProfile, refreshSessions]);
+
+  useEffect(() => {
+    const nextTab = tabFromHash(location.hash);
+    if (nextTab) setTab(nextTab);
+  }, [location.hash]);
 
   function toast(ok, msg) { setMsgOk(ok); setMessage(msg); }
 
@@ -569,7 +580,7 @@ export default function AccountPage({ onAuth }) {
 
                 {/* SECURITY TAB */}
                 {tab==="security" && (
-                  <Section title={t("account.password")} icon={Key} tk={tk} isDark={isDark}>
+                  <Section id="security" title={t("account.password")} icon={Key} tk={tk} isDark={isDark}>
                     <form className="grid gap-4" onSubmit={savePassword}>
                       {[
                         ["currentPassword",t("account.currentPassword")],
@@ -758,9 +769,10 @@ function AccountHeroBar({ profile, initials, tk, t, onAvatarClick, busy }) {
 }
 
 /* ── Section wrapper ────────────────────────── */
-function Section({ title, icon:Icon, children, tk, danger, action }) {
+function Section({ id, title, icon:Icon, children, tk, danger, action }) {
   return (
     <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:0.4,ease:[0.22,1,0.36,1]}}
+      id={id}
       className="overflow-hidden rounded-[22px]"
       style={{
         background:tk.surface1,

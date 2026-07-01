@@ -309,7 +309,7 @@ export default function Navbar({ solid, user, onAuth }) {
                     </div>
                     <UserMenuLink to="/account" icon={UserCircle} label={t("common.account")} onClick={closePanels} />
                     <UserMenuLink to="/account" icon={Settings} label={t("common.settings")} onClick={closePanels} />
-                    <UserMenuLink to="/account#password" icon={KeyRound} label={t("common.changePassword")} onClick={closePanels} />
+                    <UserMenuLink to="/account#security" icon={KeyRound} label={t("common.changePassword")} onClick={closePanels} />
                     <button
                       type="button"
                       onClick={switchTheme}
@@ -410,7 +410,7 @@ export default function Navbar({ solid, user, onAuth }) {
                 </div>
                 <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.account")}</NavLink>
                 <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.settings")}</NavLink>
-                <NavLink to="/account#password" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.changePassword")}</NavLink>
+                <NavLink to="/account#security" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.changePassword")}</NavLink>
                 <button
                   type="button"
                   onClick={switchTheme}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pageMeta, pageRows } from "./mappers.js";
+import { normalizeBook, pageMeta, pageRows } from "./mappers.js";
 
 describe("pagination mappers", () => {
   it("extracts rows from supported backend page shapes", () => {
@@ -47,5 +47,10 @@ describe("pagination mappers", () => {
       hasNext: false,
       hasPrevious: false
     });
+  });
+
+  it("uses real product rating values without a fake default", () => {
+    expect(normalizeBook({ averageRating: 4.25 }).rating).toBe(4.25);
+    expect(normalizeBook({}).rating).toBe(0);
   });
 });

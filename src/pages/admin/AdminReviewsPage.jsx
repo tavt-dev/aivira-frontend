@@ -63,10 +63,17 @@ export default function AdminReviewsPage() {
       const rows = pageRows(page).map(normalizeReview);
       setReviews(rows);
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
-      if (selected) {
-        const updatedSelected = rows.find((review) => review.id === selected.id);
-        if (updatedSelected) syncSelected(updatedSelected);
-      }
+      setSelected((current) => {
+        if (!current) return current;
+        const updatedSelected = rows.find((review) => review.id === current.id);
+        if (!updatedSelected) return current;
+        setReplyDraft(updatedSelected.adminReply || "");
+        setModerationDraft({
+          approved: Boolean(updatedSelected.approved),
+          visible: updatedSelected.visible !== false,
+        });
+        return updatedSelected;
+      });
     } catch (error) {
       setReviews([]);
       setPageMeta(createEmptyMeta(nextFilters));
@@ -74,7 +81,7 @@ export default function AdminReviewsPage() {
     } finally {
       setLoading(false);
     }
-  }, [appliedFilters, selected, t]);
+  }, [appliedFilters, t]);
 
   useEffect(() => {
     setFilters(appliedFilters);
@@ -105,6 +112,12 @@ export default function AdminReviewsPage() {
 
   function openDetail(review) {
     syncSelected(review);
+  }
+
+  function closeDetail() {
+    setSelected(null);
+    setModerationOpen(false);
+    setReplyOpen(false);
   }
 
   function syncSelected(review) {
@@ -293,7 +306,7 @@ export default function AdminReviewsPage() {
           busy={busy}
           language={i18n.language}
           onClearReply={clearReply}
-          onClose={() => setSelected(null)}
+          onClose={closeDetail}
           onImagePreview={setImagePreview}
           onOpenModeration={() => setModerationOpen(true)}
           onOpenReply={() => setReplyOpen(true)}
@@ -348,8 +361,12 @@ function ReviewDetailDrawer({
   const deleted = Boolean(review.deletedAt);
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-sm">
-      <aside className="h-full w-full max-w-5xl overflow-y-auto bg-white shadow-2xl dark:bg-slate-900">
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-sm"
+      role="presentation"
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}
+    >
+      <div className="h-full w-full max-w-5xl overflow-y-auto bg-white shadow-2xl dark:bg-slate-900" role="dialog" aria-modal="true">
         <div className="p-5 md:p-8">
         <div className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 md:flex-row md:items-start md:justify-between">
           <div>
@@ -424,7 +441,7 @@ function ReviewDetailDrawer({
           </InfoCard>
         </div>
         </div>
-      </aside>
+      </div>
     </div>
   );
 }

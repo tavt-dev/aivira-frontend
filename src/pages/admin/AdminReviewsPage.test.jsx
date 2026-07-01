@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 import AdminReviewsPage from "./AdminReviewsPage.jsx";
+import i18n from "../../i18n.js";
 import { renderWithProviders } from "../../test/render.jsx";
 import { apiResponse, review } from "../../test/mockData.js";
 import { server } from "../../test/server.js";
@@ -30,5 +31,23 @@ describe("AdminReviewsPage", () => {
     expect(await screen.findByText(/Clear writing and excellent book quality/i)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /Duyệt|approve/i }));
     expect(capturedBody).toEqual({ approved: true, visible: true });
+  });
+
+  it("closes the review detail drawer", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <Routes>
+        <Route path="/admin/reviews" element={<AdminReviewsPage />} />
+      </Routes>,
+      { route: "/admin/reviews" }
+    );
+
+    expect(await screen.findByText(/Clear writing and excellent book quality/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: i18n.t("common.detail") }));
+
+    expect(await screen.findByText(i18n.t("admin.reviewDetail"))).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: i18n.t("common.close") }));
+
+    expect(screen.queryByText(i18n.t("admin.reviewDetail"))).not.toBeInTheDocument();
   });
 });

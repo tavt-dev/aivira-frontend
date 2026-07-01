@@ -17,7 +17,7 @@ import { createOrderItemReview } from "../api/reviewApi.js";
 import ReviewForm from "../components/reviews/ReviewForm.jsx";
 import { formatDateTime, formatVND } from "../utils/formatters.js";
 import { normalizeOrder, normalizePaymentGroup, pageMeta as readPageMeta, pageRows } from "../utils/mappers.js";
-import { getAccessToken } from "../utils/storage.js";
+import { getAccessToken, getCurrentUser } from "../utils/storage.js";
 import { getTheme } from "../utils/theme.js";
 
 /* ── Constants ─────────────────────────────── */
@@ -30,6 +30,7 @@ const CANCELABLE_STATUSES  = new Set(["PENDING_CONFIRMATION","PENDING_PAYMENT"])
 const CONTINUE_PAYMENT_STATUSES = new Set(["PENDING"]);
 const RETRY_PAYMENT_STATUSES = new Set(["FAILED","CANCELLED","EXPIRED"]);
 const ONLINE_METHODS       = new Set(["VNPAY","MOMO"]);
+const REVIEWED_ITEMS_CACHE_PREFIX = "aivira_reviewed_order_items";
 
 const PARTICLES = [
   { left:"8%",  top:"18%", size:2, dur:"4.2s", delay:"0s",   op:0.45 },
@@ -117,6 +118,33 @@ function useTheme() {
   return isDark;
 }
 
+function reviewCacheKey() {
+  const user = getCurrentUser();
+  const owner = user?.id || user?.username || user?.email || "guest";
+  return `${REVIEWED_ITEMS_CACHE_PREFIX}:${owner}`;
+}
+
+function reviewItemKey(orderId, itemId) {
+  return `${orderId}:${itemId}`;
+}
+
+function readReviewedItemKeys() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(reviewCacheKey()) || "[]");
+    return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeReviewedItemKeys(keys) {
+  localStorage.setItem(reviewCacheKey(), JSON.stringify([...new Set(keys.map(String))]));
+}
+
+function itemWasReviewed(orderId, item, reviewedItemKeys) {
+  return Boolean(item?.reviewed || item?.reviewId || reviewedItemKeys.includes(reviewItemKey(orderId, item?.id)));
+}
+
 /* ══════════════════════════════════════════════
    MAIN PAGE
 ══════════════════════════════════════════════ */
@@ -135,13 +163,17 @@ export default function OrdersPage({ onAuth }) {
   const [cancelReason, setCancelReason]   = useState("");
   const [reviewTarget, setReviewTarget]   = useState(null);
   const [reviewBusy, setReviewBusy]       = useState(false);
-  const [reviewedItems, setReviewedItems] = useState([]);
+  const [reviewedItemKeys, setReviewedItemKeys] = useState(readReviewedItemKeys);
   const [paymentAction, setPaymentAction] = useState(null);
   const [message, setMessage]     = useState("");
   const [msgSuccess, setMsgSuccess] = useState(false);
 
   const filters  = useMemo(() => readFilters(searchParams), [searchParams]);
   const loggedIn = Boolean(getAccessToken());
+
+  useEffect(() => {
+    setReviewedItemKeys(readReviewedItemKeys());
+  }, [loggedIn]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -224,11 +256,42 @@ export default function OrdersPage({ onAuth }) {
     if (!reviewTarget) return;
     setReviewBusy(true); setMessage("");
     try {
-      await createOrderItemReview(reviewTarget.orderId, reviewTarget.item.id, body);
-      setReviewedItems(cur => [...new Set([...cur, reviewTarget.item.id])]);
+      const review = await createOrderItemReview(reviewTarget.orderId, reviewTarget.item.id, body);
+      markItemReviewed(reviewTarget.orderId, reviewTarget.item.id, review?.id);
       setReviewTarget(null); setMsgSuccess(true); setMessage(t("orders.reviewSubmitted"));
-    } catch (err) { setMsgSuccess(false); setMessage(err.message || t("orders.reviewFailed")); }
+    } catch (err) {
+      if (err.errorCode === "REVIEW_ALREADY_EXISTS" || err.status === 409) {
+        markItemReviewed(reviewTarget.orderId, reviewTarget.item.id);
+        setReviewTarget(null); setMsgSuccess(true); setMessage(t("orders.reviewSubmitted"));
+        return;
+      }
+      setMsgSuccess(false); setMessage(err.message || t("orders.reviewFailed"));
+    }
     finally { setReviewBusy(false); }
+  }
+
+  function markItemReviewed(orderId, itemId, reviewId) {
+    const itemKey = reviewItemKey(orderId, itemId);
+    const applyReview = order => {
+      if (!order || String(order.id) !== String(orderId)) return order;
+      return {
+        ...order,
+        items: (order.items || []).map(item => (
+          String(item.id) === String(itemId)
+            ? { ...item, reviewed:true, reviewId: reviewId ?? item.reviewId }
+            : item
+        ))
+      };
+    };
+
+    setOrders(cur => cur.map(applyReview));
+    setSelected(cur => applyReview(cur));
+    setReviewedItemKeys(cur => {
+      if (cur.includes(itemKey)) return cur;
+      const next = [...cur, itemKey];
+      writeReviewedItemKeys(next);
+      return next;
+    });
   }
 
   return (
@@ -434,7 +497,7 @@ export default function OrdersPage({ onAuth }) {
                       onContinuePayment={() => continuePayment(selected)}
                       onRetry={() => retry(selected)}
                       onReview={item => setReviewTarget({ orderId:selected.id, item })}
-                      paymentAction={paymentAction} reviewedItems={reviewedItems} t={t}/>
+                      paymentAction={paymentAction} reviewedItemKeys={reviewedItemKeys} t={t}/>
                   ) : null}
                 </div>
               </motion.aside>
@@ -709,7 +772,7 @@ function MetaItem({ icon:Icon, label, value, tk, highlight }) {
 }
 
 /* ── Order detail content (inside drawer) ─── */
-function OrderDetailContent({ order, language, tk, isDark, onCancel, onContinuePayment, onRetry, onReview, paymentAction, reviewedItems, t }) {
+function OrderDetailContent({ order, language, tk, isDark, onCancel, onContinuePayment, onRetry, onReview, paymentAction, reviewedItemKeys, t }) {
   return (
     <div className="grid gap-6">
       {/* Status strip */}
@@ -748,7 +811,7 @@ function OrderDetailContent({ order, language, tk, isDark, onCancel, onContinueP
         </p>
         <div className="grid gap-3">
           {(order.items||[]).map((item,i) => {
-            const reviewed = reviewedItems.includes(item.id);
+            const reviewed = itemWasReviewed(order.id, item, reviewedItemKeys);
             return (
               <motion.div key={item.id||item.productId||item.productName}
                 initial={{opacity:0,y:12}} animate={{opacity:1,y:0}}

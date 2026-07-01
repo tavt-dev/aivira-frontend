@@ -8,9 +8,14 @@ export function getProductReviews(slug, params = {}, options = {}) {
 }
 
 export function createOrderItemReview(orderId, orderItemId, body) {
+  const { files = [], ...review } = body;
+  const formData = new FormData();
+  formData.append("review", new Blob([JSON.stringify({ ...review, images: [] })], { type: "application/json" }));
+  files.forEach((file) => formData.append("images", file));
+
   return request(`/orders/${encodeURIComponent(orderId)}/items/${encodeURIComponent(orderItemId)}/review`, {
     method: "POST",
-    body
+    body: formData
   });
 }
 

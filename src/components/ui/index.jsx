@@ -454,16 +454,19 @@ export function Notice({ children, className = "", variant = "warning" }) {
 function useOverlay({ onClose, open }) {
   const dialogRef = useRef(null);
   const returnFocusRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return undefined;
     returnFocusRef.current = document.activeElement;
     const dialog = dialogRef.current;
-    const focusable = dialog?.querySelector("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+    const focusable = dialog?.querySelector("[autofocus], input:not([type='hidden']), select, textarea")
+      || dialog?.querySelector("button, [href], [tabindex]:not([tabindex='-1'])");
     focusable?.focus?.();
 
     const onKeyDown = (event) => {
-      if (event.key === "Escape") onClose?.();
+      if (event.key === "Escape") onCloseRef.current?.();
       if (event.key !== "Tab" || !dialog) return;
       const items = Array.from(dialog.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"))
         .filter((item) => !item.disabled && item.offsetParent !== null);
@@ -481,7 +484,7 @@ function useOverlay({ onClose, open }) {
       document.removeEventListener("keydown", onKeyDown);
       returnFocusRef.current?.focus?.();
     };
-  }, [onClose, open]);
+  }, [open]);
 
   return dialogRef;
 }

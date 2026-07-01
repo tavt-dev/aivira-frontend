@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -320,36 +320,12 @@ export default function ProductPage({ onAuth }) {
       </div>
 
       {/* ── Lightbox — portal thoát khỏi overflow-hidden, đè lên navbar ── */}
-      {createPortal(
-        <AnimatePresence>
-          {lightboxOpen && (
-            <motion.div
-              initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-              transition={{duration:0.25}}
-              className="fixed inset-0 flex items-center justify-center p-4"
-              style={{ zIndex:9999, background:"rgba(0,0,0,0.92)", backdropFilter:"blur(14px)" }}
-              onClick={() => setLightboxOpen(false)}>
-              <motion.img
-                initial={{scale:0.88,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.88,opacity:0}}
-                transition={{duration:0.32,ease:[0.22,1,0.36,1]}}
-                src={selectedImage} alt={book.title}
-                className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain"
-                style={{ boxShadow:"0 40px 120px rgba(0,0,0,0.85)" }}
-                onClick={e => e.stopPropagation()}/>
-              <motion.button
-                initial={{opacity:0,scale:0.8}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:0.8}}
-                transition={{duration:0.2,delay:0.1}}
-                whileHover={{scale:1.12}} whileTap={{scale:0.92}}
-                className="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full transition-all"
-                style={{ background:"rgba(255,255,255,0.14)", border:"1px solid rgba(255,255,255,0.25)", backdropFilter:"blur(8px)" }}
-                onClick={() => setLightboxOpen(false)}>
-                <X size={20} color="#fff"/>
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+      <ImageLightbox
+        alt={book.title}
+        closeLabel={t("product.closeImagePreview")}
+        imageUrl={lightboxOpen ? selectedImage : ""}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }
@@ -1040,6 +1016,7 @@ function ReviewSection({ slug, tk, isDark }) {
 function ReviewCard({ review, tk, isDark }) {
   const { t, i18n } = useTranslation();
   const [hov, setHov] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   const locale = String(i18n.language || "vi").startsWith("en") ? "en-US" : "vi-VN";
 
   // Gradient avatar color from username
@@ -1092,14 +1069,28 @@ function ReviewCard({ review, tk, isDark }) {
 
       {review.images?.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
-          {review.images.map(img => (
-            <img key={img.id || img.imageUrl} src={img.imageUrl}
-              alt={review.comment || review.username}
-              className="h-20 w-20 rounded-xl object-cover transition-transform hover:scale-105"
-              style={{ border:`1px solid ${tk.border}` }}/>
+          {review.images.map((img, index) => (
+            <button
+              key={img.id || img.imageUrl}
+              type="button"
+              className="h-20 w-20 overflow-hidden rounded-xl transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              style={{ border:`1px solid ${tk.border}` }}
+              aria-label={t("product.openReviewImage", { index:index + 1 })}
+              onClick={() => setPreviewImage(img)}>
+              <img src={img.imageUrl}
+                alt={t("product.reviewImageAlt", { index:index + 1 })}
+                className="h-full w-full object-cover"/>
+            </button>
           ))}
         </div>
       )}
+
+      <ImageLightbox
+        alt={previewImage ? t("product.reviewImageAlt", { index:(review.images || []).indexOf(previewImage) + 1 }) : ""}
+        closeLabel={t("product.closeImagePreview")}
+        imageUrl={previewImage?.imageUrl || ""}
+        onClose={() => setPreviewImage(null)}
+      />
 
       {review.adminReply && (
         <div className="mt-4 rounded-xl px-4 py-3 text-sm"
@@ -1111,6 +1102,61 @@ function ReviewCard({ review, tk, isDark }) {
         </div>
       )}
     </article>
+  );
+}
+
+function ImageLightbox({ alt, closeLabel, imageUrl, onClose }) {
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    if (!imageUrl) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onCloseRef.current?.();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [imageUrl]);
+
+  return createPortal(
+    <AnimatePresence>
+      {imageUrl && (
+        <motion.div
+          initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+          transition={{duration:0.25}}
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ zIndex:9999, background:"rgba(0,0,0,0.92)", backdropFilter:"blur(14px)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={alt}
+          onClick={() => onCloseRef.current?.()}>
+          <motion.img
+            initial={{scale:0.88,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.88,opacity:0}}
+            transition={{duration:0.32,ease:[0.22,1,0.36,1]}}
+            src={imageUrl} alt={alt}
+            className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain"
+            style={{ boxShadow:"0 40px 120px rgba(0,0,0,0.85)" }}
+            onClick={event => event.stopPropagation()}/>
+          <motion.button
+            type="button"
+            aria-label={closeLabel}
+            initial={{opacity:0,scale:0.8}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:0.8}}
+            transition={{duration:0.2,delay:0.1}}
+            whileHover={{scale:1.12}} whileTap={{scale:0.92}}
+            className="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full transition-all"
+            style={{ background:"rgba(255,255,255,0.14)", border:"1px solid rgba(255,255,255,0.25)", backdropFilter:"blur(8px)" }}
+            onClick={() => onCloseRef.current?.()}>
+            <X size={20} color="#fff"/>
+          </motion.button>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 }
 
@@ -1153,7 +1199,7 @@ function buildGallery(book) {
   if (!book) return [];
   const rows = [
     book.thumbnailUrl ? { url:book.thumbnailUrl, alt:book.title } : null,
-    ...(book.media||[]).filter(m => m.active!==false && (!m.mediaType||m.mediaType==="IMAGE"))
+    ...(book.media||[]).filter(m => m.active!==false && (!m.mediaType||String(m.mediaType).toUpperCase()==="IMAGE"))
       .sort((a,b) => Number(a.sortOrder||0)-Number(b.sortOrder||0))
       .map(m => ({ url:m.mediaUrl, alt:m.altText||book.title })),
     ...(book.variations||[]).filter(v => v.imageUrl).map(v => ({ url:v.imageUrl, alt:v.size||book.title })),

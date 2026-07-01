@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowUp } from "lucide-react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -121,6 +121,7 @@ export default function App() {
           <PageLoader onDone={() => setPageLoaderDone(true)} />
         )}
         {!isAdminRoute && <MotionChrome />}
+        <RouteScrollManager />
         <Routes>
           <Route path="/auth/google/success" element={<GoogleOAuthResultPage />} />
           <Route path="/auth/google/failure" element={<GoogleOAuthResultPage failure />} />
@@ -178,6 +179,31 @@ export default function App() {
       </ConfirmDialogProvider>
     </ToastProvider>
   );
+}
+
+function RouteScrollManager() {
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const timeout = window.setTimeout(() => {
+      if (location.hash) {
+        const id = decodeURIComponent(location.hash.slice(1));
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ block: "start", behavior: "auto" });
+          return;
+        }
+      }
+
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, [location.pathname, location.search, location.hash]);
+
+  return null;
 }
 
 function sanitizeNextPath(value) {

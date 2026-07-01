@@ -112,7 +112,7 @@ export function normalizeBook(row, fallback = {}) {
     desc: row?.description || fallback.desc || "",
     sold: Number(row?.soldCount ?? fallback.sold ?? 0),
     stockQuantity: Number(row?.stockQuantity ?? fallback.stockQuantity ?? 0),
-    rating: Number(row?.averageRating ?? fallback.rating ?? 4.7),
+    rating: Number(row?.averageRating ?? fallback.rating ?? 0),
     active: row?.active ?? fallback.active,
     featured: row?.featured ?? fallback.featured,
     status: row?.status || fallback.status,
@@ -191,6 +191,7 @@ export function normalizeOrder(row) {
 export function normalizeOrderItem(row) {
   const quantity = Number(row?.quantity || 1);
   const finalPrice = Number(row?.finalPrice ?? row?.price ?? row?.totalPrice ?? 0);
+  const reviewId = row?.reviewId ?? row?.userReviewId ?? row?.myReviewId ?? row?.review?.id ?? null;
 
   return {
     ...row,
@@ -207,7 +208,9 @@ export function normalizeOrderItem(row) {
     discountAmount: Number(row?.discountAmount || 0),
     finalPrice,
     quantity,
-    lineTotal: finalPrice * quantity
+    lineTotal: finalPrice * quantity,
+    reviewId,
+    reviewed: Boolean(row?.reviewed ?? row?.hasReview ?? row?.reviewSubmitted ?? reviewId)
   };
 }
 

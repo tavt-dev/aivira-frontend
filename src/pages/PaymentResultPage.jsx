@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -13,12 +13,39 @@ export default function PaymentResultPage() {
   const [params] = useSearchParams();
   const code =
     params.get("paymentGroupCode") || params.get("vnp_TxnRef") || params.get("orderId") || "";
-  const [result, setResult] = useState(null);
+  const queryMethod = params.get("method") || "";
+  const queryStatus = params.get("status") || "";
+  const errorCode = params.get("errorCode") || "";
+  const queryResult = useMemo(
+    () =>
+      code || queryMethod || queryStatus
+        ? normalizePaymentGroup({
+            paymentGroupCode: code,
+            paymentCode: code,
+            method: queryMethod,
+            status: queryStatus
+          })
+        : null,
+    [code, queryMethod, queryStatus]
+  );
+  const [result, setResult] = useState(queryResult);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    setResult(queryResult);
+    setMessage(
+      errorCode
+        ? t("payment.providerReturnFailed", {
+            errorCode,
+            defaultValue: `Payment was not completed or the callback was rejected (${errorCode}).`
+          })
+        : ""
+    );
+
     if (!code || !getAccessToken()) {
-      setMessage(code ? t("payment.loginLookup") : "");
+      if (!errorCode) {
+        setMessage(code ? t("payment.loginLookup") : "");
+      }
       return;
     }
 
@@ -27,7 +54,7 @@ export default function PaymentResultPage() {
       .catch(() =>
         setMessage(t("payment.lookupUnavailable"))
       );
-  }, [code, t]);
+  }, [code, errorCode, queryResult, t]);
 
   async function retry() {
     setMessage("");
@@ -43,7 +70,9 @@ export default function PaymentResultPage() {
     }
   }
 
-  const paymentUrl = result?.paymentUrl || result?.deeplink || result?.qrCodeUrl;
+  const effectiveStatus = result?.status || queryStatus;
+  const paymentUrl = effectiveStatus === "SUCCESS" ? "" : result?.paymentUrl || result?.deeplink || result?.qrCodeUrl;
+  const canRetry = code && getAccessToken() && effectiveStatus !== "SUCCESS";
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 pb-20 pt-28 md:px-8">
@@ -51,7 +80,7 @@ export default function PaymentResultPage() {
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
         <div className="grid gap-4 text-slate-600">
           <MetaRow label={t("common.reference")} value={code || t("payment.noCode")} />
-          <MetaRow label={t("common.status")} value={result?.status || t("payment.pending")} />
+          <MetaRow label={t("common.status")} value={effectiveStatus || t("payment.pending")} />
           <MetaRow label={t("common.method")} value={result?.method || "-"} />
           <MetaRow label={t("common.amount")} value={formatVND(result?.totalAmount || 0)} />
         </div>
@@ -64,7 +93,7 @@ export default function PaymentResultPage() {
               {t("payment.continue")}
             </a>
           )}
-          {code && getAccessToken() && (
+          {canRetry && (
             <Button variant="secondary" type="button" onClick={retry}>
               {t("payment.retry")}
             </Button>
