@@ -46,7 +46,7 @@ export default function HomePage() {
   }, [orbitBooks.length]);
 
   return (
-    <div className="tw-home w-full overflow-hidden" style={{ background: "var(--cream-50)" }}>
+    <div className="tw-home w-full overflow-hidden bg-[#faf8f5] dark:bg-[#040d1e]">
       <section className="relative flex min-h-screen items-center overflow-hidden bg-slate-950 px-4 pb-16 pt-28 text-white md:px-8">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-1/4 top-1/4 h-[800px] w-[800px] rounded-full bg-blue-600/20 blur-[120px] mix-blend-screen" />
@@ -178,13 +178,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── New Arrivals — warm cream bg, high contrast with dark above ── */}
-      <section className="relative overflow-hidden bg-[#f8f6f1] px-4 py-24 md:px-8">
+      {/* ── New Arrivals — warm cream bg / deep navy in dark ── */}
+      <section className="relative overflow-hidden bg-[#f8f6f1] dark:bg-[#060f20] px-4 py-24 md:px-8">
         {/* Subtle top wave separator */}
-        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
-        {/* Corner decorations */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 bottom-0 h-48 w-48 rounded-full bg-amber-400/8 blur-3xl" />
+        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-blue-400/30 dark:via-blue-500/20 to-transparent" />
+        {/* Corner decorations light */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/5 dark:bg-blue-600/10 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 bottom-0 h-48 w-48 rounded-full bg-amber-400/8 dark:bg-indigo-700/10 blur-3xl" />
+        {/* Dark mode extra ambient */}
+        <div className="pointer-events-none absolute right-1/3 top-1/4 hidden dark:block h-96 w-96 rounded-full bg-blue-900/20 blur-[100px] dark-ambient-glow" />
         <div className="pointer-events-none absolute inset-0 new-arrivals-paper-texture" />
         <NewArrivalsEditorial books={newArrivals} loading={loading} emptyMessage={t("home.noNewArrivals")} />
       </section>
@@ -482,17 +484,18 @@ function Ticker() {
 
   return (
     <div
-      className="relative flex overflow-hidden whitespace-nowrap border-y border-blue-900/50 bg-[#0a1128] py-4"
+      className="relative flex overflow-hidden whitespace-nowrap border-y border-blue-900/50 dark:border-blue-500/20 bg-[#0a1128] py-4"
     >
       <motion.div
         animate={{ x: ["0%", "-50%"] }}
         transition={{ ease: "linear", duration: 35, repeat: Infinity }}
-        className="flex items-center text-sm font-semibold uppercase tracking-[0.25em] text-blue-200/80"
+        className="flex items-center text-sm font-semibold uppercase tracking-[0.25em] text-blue-200/80 dark:text-blue-300"
+        style={{ textShadow: "0 0 20px rgba(147,197,253,0.35)" }}
       >
         {Array.from({ length: 8 }).map((_, index) => (
           <span key={index} className="flex items-center gap-12 px-12">
             <span>{text}</span>
-            <span className="h-1 w-1 rotate-45 bg-blue-400/50" />
+            <span className="h-1 w-1 rotate-45 bg-blue-400/50 dark:bg-blue-400/70" />
           </span>
         ))}
       </motion.div>
@@ -741,29 +744,32 @@ function CategoryShowcase({ categories, loading }) {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-24 md:px-8">
-      <SectionHead chip={t("home.explore")} title={t("home.categoryHighlights")} link="/category/all" />
-      {loading ? (
-        <CategorySkeleton />
-      ) : cats.length ? (
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {cats.map((category, index) => (
-            <CategoryCard
-              key={category.id || category.slug}
-              category={category}
-              index={index}
-              getGridClass={getGridClass}
-              getAspect={getAspect}
-              t={t}
-            />
-          ))}
-        </div>
-      ) : (
-        <HomeEmptyState title={t("home.noCategoryHighlights")} />
-      )}
+    <section className="relative bg-[#faf8f5] dark:bg-[#081228] px-4 py-24 md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHead chip={t("home.explore")} title={t("home.categoryHighlights")} link="/category/all" />
+        {loading ? (
+          <CategorySkeleton />
+        ) : cats.length ? (
+          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {cats.map((category, index) => (
+              <CategoryCard
+                key={category.id || category.slug}
+                category={category}
+                index={index}
+                getGridClass={getGridClass}
+                getAspect={getAspect}
+                t={t}
+              />
+            ))}
+          </div>
+        ) : (
+          <HomeEmptyState title={t("home.noCategoryHighlights")} />
+        )}
+      </div>
     </section>
   );
 }
+
 
 function QuoteSection() {
   const { t } = useTranslation();
@@ -853,17 +859,17 @@ function NewArrivalsEditorial({ books, loading, emptyMessage }) {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-3xl"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/75 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm backdrop-blur">
-            <Sparkles size={13} className="text-amber-500" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/75 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm backdrop-blur dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300 dark:shadow-none">
+            <Sparkles size={13} className="text-amber-500 dark:text-amber-400" />
             {t("home.collection")}
           </div>
           <h2
-            className="text-4xl font-bold leading-tight text-slate-950 md:text-6xl"
+            className="text-4xl font-bold leading-tight text-slate-950 dark:text-white md:text-6xl"
             style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
           >
             {t("home.newArrivals")}
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-500 md:text-lg">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-slate-400 md:text-lg">
             {t("home.newArrivalsSubtitle")}
           </p>
         </motion.div>
@@ -876,7 +882,7 @@ function NewArrivalsEditorial({ books, loading, emptyMessage }) {
         >
           <Link
             to="/category/all?sort=newest"
-            className="group inline-flex items-center gap-3 rounded-full border border-slate-200 bg-slate-950 px-6 py-3 text-xs font-black uppercase tracking-[0.16em] text-white shadow-[0_16px_40px_rgba(15,23,42,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-[0_20px_46px_rgba(37,99,235,0.26)]"
+            className="group inline-flex items-center gap-3 rounded-full border border-slate-200 bg-slate-950 px-6 py-3 text-xs font-black uppercase tracking-[0.16em] text-white shadow-[0_16px_40px_rgba(15,23,42,0.18)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-[0_20px_46px_rgba(37,99,235,0.26)] dark:border-blue-500/25 dark:bg-blue-600/15 dark:text-blue-300 dark:shadow-none dark:hover:bg-blue-600 dark:hover:text-white dark:hover:shadow-[0_16px_40px_rgba(37,99,235,0.3)]"
           >
             {t("home.viewNewBooks")}
             <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -898,11 +904,11 @@ function NewArrivalsEditorial({ books, loading, emptyMessage }) {
               transition={{ duration: 0.55, delay: 0.1 }}
               className="mb-4 flex items-center justify-between gap-4 border-b border-slate-200/80 pb-4"
             >
-              <div className="inline-flex items-center gap-2 text-[0.68rem] font-black uppercase tracking-[0.2em] text-slate-500">
-                <BookOpen size={14} className="text-blue-600" />
+              <div className="inline-flex items-center gap-2 text-[0.68rem] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <BookOpen size={14} className="text-blue-600 dark:text-blue-400" />
                 {t("home.releaseShelf")}
               </div>
-              <span className="hidden text-xs font-semibold text-slate-400 sm:inline">
+              <span className="hidden text-xs font-semibold text-slate-400 dark:text-slate-500 sm:inline">
                 {items.length} {t("home.allBooks").toLowerCase()}
               </span>
             </motion.div>
@@ -957,11 +963,11 @@ function NewArrivalSpotlight({ book }) {
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "0px 0px -80px 0px" }}
       transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1] }}
-      className="relative self-start overflow-hidden rounded-[28px] border border-white/80 bg-white/[0.78] p-5 shadow-[0_28px_90px_rgba(15,23,42,0.13)] backdrop-blur-xl md:p-7"
+      className="relative self-start overflow-hidden rounded-[28px] border border-white/80 bg-white/[0.78] p-5 shadow-[0_28px_90px_rgba(15,23,42,0.13)] backdrop-blur-xl md:p-7 dark:border-white/[0.07] dark:bg-white/[0.04] dark:shadow-[0_28px_90px_rgba(0,0,0,0.6)]"
     >
-      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 left-8 h-52 w-52 rounded-full bg-amber-400/[0.14] blur-3xl" />
-      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-amber-300/70 to-transparent" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 dark:bg-blue-600/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-8 h-52 w-52 rounded-full bg-amber-400/[0.14] dark:bg-indigo-700/15 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-amber-300/70 dark:via-blue-500/30 to-transparent" />
 
       <div className="relative grid items-center gap-8 md:grid-cols-[minmax(210px,0.62fr)_minmax(0,1.38fr)]">
         <Link
@@ -1028,12 +1034,12 @@ function NewArrivalSpotlight({ book }) {
             transition={{ duration: 0.52, delay: 0.15 }}
             className="mb-4 flex flex-wrap items-center gap-2"
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-[0.66rem] font-black uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-[0.66rem] font-black uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)] dark:shadow-[0_6px_20px_rgba(37,99,235,0.3)]">
               <Clock3 size={12} />
               {t("home.newArrivalSpotlight")}
             </span>
             {book.publicationYear && (
-              <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[0.66rem] font-black uppercase tracking-[0.14em] text-amber-700">
+              <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[0.66rem] font-black uppercase tracking-[0.14em] text-amber-700 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-400">
                 {book.publicationYear}
               </span>
             )}
@@ -1041,16 +1047,16 @@ function NewArrivalSpotlight({ book }) {
 
           <Link to={`/product/${book.slug}`} className="group/title block">
             <h3
-              className="line-clamp-3 text-3xl font-bold leading-[1.05] text-slate-950 transition-colors duration-300 group-hover/title:text-blue-700 md:text-4xl"
+              className="line-clamp-3 text-3xl font-bold leading-[1.05] text-slate-950 dark:text-white transition-colors duration-300 group-hover/title:text-blue-700 dark:group-hover/title:text-blue-300 md:text-4xl"
               style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
             >
               {book.title}
             </h3>
           </Link>
-          <p className="mt-3 line-clamp-1 text-sm font-bold uppercase tracking-[0.16em] text-slate-400">
+          <p className="mt-3 line-clamp-1 text-sm font-bold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
             {book.author}
           </p>
-          <p className="mt-5 line-clamp-3 text-sm leading-6 text-slate-500">
+          <p className="mt-5 line-clamp-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
             {book.desc || t("home.newArrivalsSubtitle")}
           </p>
 
@@ -1063,21 +1069,21 @@ function NewArrivalSpotlight({ book }) {
             />
           </div>
 
-          <div className="mt-8 flex flex-wrap items-end justify-between gap-5 border-t border-slate-200 pt-6">
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-5 border-t border-slate-200 dark:border-white/[0.08] pt-6">
             <div>
               {discountPct > 0 && (
-                <div className="mb-1 text-sm font-semibold text-slate-400 line-through">
+                <div className="mb-1 text-sm font-semibold text-slate-400 dark:text-slate-500 line-through">
                   {formatVND(book.priceOld)}
                 </div>
               )}
-              <div className="text-3xl font-black text-slate-950" style={{ letterSpacing: "-0.02em" }}>
+              <div className="text-3xl font-black text-slate-950 dark:text-white" style={{ letterSpacing: "-0.02em" }}>
                 {formatVND(book.price)}
               </div>
             </div>
 
             <Link
               to={`/product/${book.slug}`}
-              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-slate-950 to-blue-800 px-6 py-3 text-xs font-black uppercase tracking-[0.14em] text-white shadow-[0_16px_34px_rgba(15,23,42,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_44px_rgba(37,99,235,0.28)]"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-slate-950 to-blue-800 px-6 py-3 text-xs font-black uppercase tracking-[0.14em] text-white shadow-[0_16px_34px_rgba(15,23,42,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_44px_rgba(37,99,235,0.28)] dark:from-blue-700 dark:to-blue-600 dark:shadow-[0_8px_24px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_16px_40px_rgba(37,99,235,0.5)]"
             >
               {t("common.viewDetails")}
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -1106,7 +1112,7 @@ function NewArrivalShelfCard({ book, index }) {
     >
       <Link
         to={`/product/${book.slug}`}
-        className="group relative flex h-full min-h-[214px] overflow-hidden rounded-2xl border border-white/80 bg-white/[0.82] p-3 shadow-[0_12px_44px_rgba(15,23,42,0.08)] backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_24px_58px_rgba(37,99,235,0.13)]"
+        className="group relative flex h-full min-h-[214px] overflow-hidden rounded-2xl border border-white/80 bg-white/[0.82] p-3 shadow-[0_12px_44px_rgba(15,23,42,0.08)] backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_24px_58px_rgba(37,99,235,0.13)] dark:border-white/[0.07] dark:bg-white/[0.03] dark:shadow-[0_12px_44px_rgba(0,0,0,0.5)] dark:hover:border-blue-500/25 dark:hover:shadow-[0_24px_58px_rgba(37,99,235,0.12)]"
       >
         <div className="relative h-[188px] w-[126px] flex-shrink-0 overflow-hidden rounded-l-md rounded-r-2xl bg-slate-100 shadow-[10px_14px_28px_rgba(15,23,42,0.18)]">
           <img
@@ -1126,41 +1132,41 @@ function NewArrivalShelfCard({ book, index }) {
 
         <div className="flex min-w-0 flex-1 flex-col px-4 py-2">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.14em] text-blue-700">
+            <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.14em] text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
               {t("home.justArrived")}
             </span>
             {book.publicationYear && (
-              <span className="text-[0.68rem] font-bold text-slate-400">{book.publicationYear}</span>
+              <span className="text-[0.68rem] font-bold text-slate-400 dark:text-slate-500">{book.publicationYear}</span>
             )}
           </div>
 
           <h3
-            className="line-clamp-2 text-lg font-bold leading-snug text-slate-950 transition-colors duration-300 group-hover:text-blue-700"
+            className="line-clamp-2 text-lg font-bold leading-snug text-slate-950 dark:text-slate-100 transition-colors duration-300 group-hover:text-blue-700 dark:group-hover:text-blue-300"
             style={{ fontFamily: "var(--f-body)" }}
           >
             {book.title}
           </h3>
-          <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-400">{book.author}</p>
-          <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-500">
+          <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-400 dark:text-slate-500">{book.author}</p>
+          <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-500 dark:text-slate-500">
             {book.catLabel || book.categoryName || t("common.books")}
           </p>
 
           <div className="mt-auto flex items-end justify-between gap-3 pt-4">
             <div className="min-w-0">
               {discountPct > 0 && (
-                <div className="mb-0.5 text-[0.72rem] font-semibold text-slate-400 line-through">
+                <div className="mb-0.5 text-[0.72rem] font-semibold text-slate-400 dark:text-slate-500 line-through">
                   {formatVND(book.priceOld)}
                 </div>
               )}
-              <div className="text-lg font-black text-slate-950">{formatVND(book.price)}</div>
-              <div className={`mt-1 text-[0.68rem] font-bold ${stockQuantity > 0 ? "text-emerald-600" : "text-rose-500"}`}>
+              <div className="text-lg font-black text-slate-950 dark:text-white">{formatVND(book.price)}</div>
+              <div className={`mt-1 text-[0.68rem] font-bold ${stockQuantity > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}>
                 {stockQuantity > 0 ? t("home.inStock", { count: stockQuantity }) : t("home.outOfStock")}
               </div>
             </div>
             <motion.span
               animate={{ x: isHovered ? 0 : -4, opacity: isHovered ? 1 : 0.55 }}
               transition={{ duration: 0.25 }}
-              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-slate-950 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] transition-colors duration-300 group-hover:bg-blue-700"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-slate-950 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] transition-colors duration-300 group-hover:bg-blue-700 dark:bg-blue-600/20 dark:ring-1 dark:ring-blue-500/25 dark:group-hover:bg-blue-600"
             >
               <ArrowRight size={15} />
             </motion.span>
@@ -1175,9 +1181,9 @@ function NewArrivalShelfCard({ book, index }) {
 
 function NewArrivalMetaPill({ icon, label, tone = "blue" }) {
   const toneClass = {
-    blue: "border-blue-100 bg-blue-50 text-blue-700",
-    green: "border-emerald-100 bg-emerald-50 text-emerald-700",
-    red: "border-rose-100 bg-rose-50 text-rose-600",
+    blue:  "border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300",
+    green: "border-emerald-100 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400",
+    red:   "border-rose-100 bg-rose-50 text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400",
   }[tone];
 
   return (
@@ -1191,7 +1197,7 @@ function NewArrivalMetaPill({ icon, label, tone = "blue" }) {
 function NewArrivalsSkeleton() {
   return (
     <div className="mt-12 grid gap-7 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)]">
-      <div className="rounded-[28px] border border-white/80 bg-white/70 p-6 shadow-sm">
+      <div className="rounded-[28px] border border-white/80 bg-white/70 p-6 shadow-sm dark:border-white/[0.06] dark:bg-white/[0.03]">
         <div className="grid items-center gap-8 md:grid-cols-[minmax(210px,0.62fr)_minmax(0,1.38fr)]">
           <div className="new-arrivals-skeleton aspect-[2/3] w-full max-w-[240px] rounded-l-lg rounded-r-[28px]" />
           <div className="flex flex-col justify-center">
@@ -1208,7 +1214,7 @@ function NewArrivalsSkeleton() {
         <div className="new-arrivals-skeleton mb-4 h-6 w-44 rounded-full" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="flex min-h-[214px] rounded-2xl border border-white/80 bg-white/70 p-3">
+            <div key={index} className="flex min-h-[214px] rounded-2xl border border-white/80 bg-white/70 p-3 dark:border-white/[0.05] dark:bg-white/[0.02]">
               <div className="new-arrivals-skeleton h-[188px] w-[126px] flex-shrink-0 rounded-l-md rounded-r-2xl" />
               <div className="flex flex-1 flex-col px-4 py-2">
                 <div className="new-arrivals-skeleton h-6 w-24 rounded-full" />
@@ -1249,6 +1255,10 @@ function CategorySkeleton() {
           background-size: 1200px 100%;
           animation: cat-shimmer 1.8s ease-in-out infinite;
         }
+        html.dark .cat-skel {
+          background: linear-gradient(105deg, rgba(15,30,58,0.95) 30%, rgba(30,55,90,0.7) 50%, rgba(15,30,58,0.95) 70%);
+          background-size: 1200px 100%;
+        }
       `}</style>
       <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="cat-skel aspect-[16/10] rounded-2xl lg:col-span-2" />
@@ -1264,8 +1274,8 @@ function CategorySkeleton() {
 
 function HomeEmptyState({ title }) {
   return (
-    <div className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white px-8 py-16 text-center">
-      <h3 className="font-serif text-2xl font-bold text-slate-900">{title}</h3>
+    <div className="mt-12 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-white/[0.03] px-8 py-16 text-center">
+      <h3 className="font-serif text-2xl font-bold text-slate-900 dark:text-slate-200">{title}</h3>
     </div>
   );
 }
@@ -1282,15 +1292,15 @@ function BestsellingRanking({ books, loading, t }) {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-white px-4 py-28 text-slate-900 md:px-8">
+    <section className="relative overflow-hidden bg-white dark:bg-[#040d1e] px-4 py-28 text-slate-900 dark:text-slate-100 md:px-8">
       {/* Light blue accents intertwining */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-1/4 top-0 h-[800px] w-[800px] rounded-full bg-blue-50/80 blur-[120px]" />
-        <div className="absolute -right-1/4 bottom-0 h-[600px] w-[600px] rounded-full bg-indigo-50/60 blur-[100px]" />
+        <div className="absolute -left-1/4 top-0 h-[800px] w-[800px] rounded-full bg-blue-50/80 dark:bg-blue-900/12 blur-[120px]" />
+        <div className="absolute -right-1/4 bottom-0 h-[600px] w-[600px] rounded-full bg-indigo-50/60 dark:bg-indigo-900/10 blur-[100px]" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
       </div>
       {/* Top separator line */}
-      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/[0.06] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl">
         <SectionHead
@@ -1302,14 +1312,14 @@ function BestsellingRanking({ books, loading, t }) {
         {loading ? (
           <div className="mt-10 space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-6 rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                <div className="h-12 w-12 animate-pulse rounded-full bg-slate-200" />
-                <div className="h-20 w-14 animate-pulse rounded-lg bg-slate-200" />
+              <div key={i} className="flex items-center gap-6 rounded-2xl border border-slate-100 dark:border-white/[0.05] bg-slate-50 dark:bg-white/[0.03] p-5">
+                <div className="h-12 w-12 animate-pulse rounded-full bg-slate-200 dark:bg-white/[0.08]" />
+                <div className="h-20 w-14 animate-pulse rounded-lg bg-slate-200 dark:bg-white/[0.08]" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-1/2 animate-pulse rounded bg-slate-200" />
-                  <div className="h-3 w-1/4 animate-pulse rounded bg-slate-200" />
+                  <div className="h-4 w-1/2 animate-pulse rounded bg-slate-200 dark:bg-white/[0.08]" />
+                  <div className="h-3 w-1/4 animate-pulse rounded bg-slate-200 dark:bg-white/[0.06]" />
                 </div>
-                <div className="h-6 w-20 animate-pulse rounded bg-slate-200" />
+                <div className="h-6 w-20 animate-pulse rounded bg-slate-200 dark:bg-white/[0.08]" />
               </div>
             ))}
           </div>
@@ -1333,7 +1343,7 @@ function BestsellingRanking({ books, loading, t }) {
                 >
                   <Link
                     to={`/product/${book.slug}`}
-                    className="group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-400 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] md:p-5"
+                    className="group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-4 shadow-sm transition-all duration-400 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-500/20 hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] dark:hover:shadow-[0_12px_40px_rgba(37,99,235,0.10)] md:p-5"
                   >
                     {/* Hover glow sweep */}
                     <div
@@ -1345,8 +1355,8 @@ function BestsellingRanking({ books, loading, t }) {
                     <div
                       className="relative flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl text-2xl font-black transition-all duration-300 group-hover:scale-110 group-hover:shadow-md"
                       style={{
-                        background: `linear-gradient(135deg, ${meta.color}15, white)`,
-                        border: `1.5px solid ${meta.color}30`,
+                        background: `linear-gradient(135deg, ${meta.color}18, transparent)`,
+                        border: `1.5px solid ${meta.color}35`,
                         color: meta.color,
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
                       }}
@@ -1372,16 +1382,16 @@ function BestsellingRanking({ books, loading, t }) {
 
                     {/* Info */}
                     <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-blue-600">
+                      <span className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-blue-600 dark:text-blue-400">
                         {book.catLabel || "Best Seller"}
                       </span>
                       <h3
-                        className="line-clamp-2 text-lg font-bold leading-snug text-slate-900 transition-colors group-hover:text-blue-700 md:text-xl"
+                        className="line-clamp-2 text-lg font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-xl"
                         style={{ fontFamily: "var(--f-body)" }}
                       >
                         {book.title}
                       </h3>
-                      <p className="mt-1 line-clamp-1 text-sm text-slate-500">{book.author}</p>
+                      <p className="mt-1 line-clamp-1 text-sm text-slate-500 dark:text-slate-500">{book.author}</p>
                       {/* mini accent bar */}
                       <div className="mt-2 h-0.5 w-0 rounded-full bg-blue-500 transition-all duration-500 group-hover:w-16" />
                     </div>
@@ -1389,7 +1399,7 @@ function BestsellingRanking({ books, loading, t }) {
                     {/* Price + arrow */}
                     <div className="flex flex-shrink-0 items-center gap-4">
                       <div className="flex flex-col items-end">
-                        <span className="text-xl font-extrabold text-blue-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <span className="text-xl font-extrabold text-blue-900 dark:text-blue-300" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                           {bPrice ? `${Number(bPrice).toLocaleString("vi-VN")}đ` : "—"}
                         </span>
                         {bDiscount > 0 && bOldPrice > 0 && (
@@ -1399,9 +1409,9 @@ function BestsellingRanking({ books, loading, t }) {
                         )}
                       </div>
                       <div
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-100 bg-blue-50 transition-all duration-300 group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:shadow-[0_4px_12px_rgba(37,99,235,0.3)]"
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-100 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 transition-all duration-300 group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:shadow-[0_4px_12px_rgba(37,99,235,0.3)]"
                       >
-                        <ArrowRight size={15} className="text-blue-600 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white" />
+                        <ArrowRight size={15} className="text-blue-600 dark:text-blue-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white" />
                       </div>
                     </div>
                   </Link>
@@ -1421,7 +1431,7 @@ function BestsellingRanking({ books, loading, t }) {
         >
           <Link
             to="/category/all?sort=popular"
-            className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-widest text-slate-600 shadow-sm transition-all duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md"
+            className="group inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/[0.1] bg-white dark:bg-white/[0.04] px-8 py-3.5 text-sm font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300 shadow-sm transition-all duration-300 hover:border-blue-200 dark:hover:border-blue-500/30 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-700 dark:hover:text-blue-300 hover:shadow-md"
           >
             {t("home.viewAll")}
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
@@ -1605,12 +1615,12 @@ function AboutSection({ booksCount }) {
   const bullets = t("home.aboutBullets", { returnObjects: true });
 
   return (
-    <section className="relative overflow-hidden bg-white px-4 py-28 md:px-8">
+    <section className="relative overflow-hidden bg-white dark:bg-[#060f20] px-4 py-28 md:px-8">
       {/* Top border */}
-      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/[0.06] to-transparent" />
       {/* Decorative corner glows */}
-      <div className="pointer-events-none absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-blue-50/60 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-indigo-50/80 blur-[80px]" />
+      <div className="pointer-events-none absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-blue-50/60 dark:bg-blue-900/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-indigo-50/80 dark:bg-indigo-900/12 blur-[80px]" />
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-20 lg:grid-cols-2">
         {/* Left — Text */}
@@ -1620,7 +1630,7 @@ function AboutSection({ booksCount }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
             {t("home.whyUs")}
@@ -1645,7 +1655,7 @@ function AboutSection({ booksCount }) {
                   transition={{ duration: 0.7, delay: lineIdx * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <span
-                    className="block text-4xl font-bold leading-tight text-slate-900 md:text-5xl"
+                    className="block text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-5xl"
                     style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
                   >
                     {lineWords.join(" ")}
@@ -1656,7 +1666,7 @@ function AboutSection({ booksCount }) {
           )}
 
           <motion.p
-            className="mb-8 text-lg font-light leading-relaxed text-slate-500"
+            className="mb-8 text-lg font-light leading-relaxed text-slate-500 dark:text-slate-400"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1669,7 +1679,7 @@ function AboutSection({ booksCount }) {
             {(Array.isArray(bullets) ? bullets : []).map((item, i) => (
               <motion.li
                 key={item}
-                className="flex items-center gap-3 text-slate-700"
+                className="flex items-center gap-3 text-slate-700 dark:text-slate-300"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -1692,7 +1702,7 @@ function AboutSection({ booksCount }) {
 
           {/* Animated stat counters */}
           <motion.div
-            className="mb-10 grid grid-cols-3 gap-6 border-t border-slate-100 pt-8"
+            className="mb-10 grid grid-cols-3 gap-6 border-t border-slate-100 dark:border-white/[0.07] pt-8"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1705,7 +1715,7 @@ function AboutSection({ booksCount }) {
             ].map(({ num, label }) => (
               <div key={label} className="text-center">
                 <div
-                  className="text-3xl font-black text-blue-700"
+                  className="text-3xl font-black text-blue-700 dark:text-blue-400"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "-0.03em" }}
                 >
                   {num}
@@ -1723,7 +1733,7 @@ function AboutSection({ booksCount }) {
           >
             <Link
               to="/about"
-              className="group inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold tracking-wide text-white shadow-xl transition-all duration-300 hover:bg-blue-700 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)]"
+              className="group inline-flex items-center gap-3 rounded-full bg-slate-900 dark:bg-blue-600/20 dark:border dark:border-blue-500/30 px-8 py-4 font-bold tracking-wide text-white shadow-xl transition-all duration-300 hover:bg-blue-700 dark:hover:bg-blue-600 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] dark:hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
             >
               {t("home.learnMore")}
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -1742,7 +1752,7 @@ function AboutSection({ booksCount }) {
           {collageImages.map((img, i) => (
             <motion.div
               key={i}
-              className={`overflow-hidden rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.18)] ${img.cls}`}
+              className={`overflow-hidden rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_60px_rgba(0,0,0,0.55)] ${img.cls}`}
               style={{ zIndex: img.zIndex }}
               initial={{ opacity: 0, y: 30 + i * 10, rotate: img.cls.includes("-3") ? -5 : img.cls.includes("4") ? 6 : 2 }}
               whileInView={{ opacity: 1, y: 0, rotate: img.cls.includes("-3") ? -3 : img.cls.includes("4") ? 4 : 1.5 }}
@@ -1761,7 +1771,7 @@ function AboutSection({ booksCount }) {
 
           {/* Floating badge */}
           <motion.div
-            className="absolute bottom-8 right-4 z-20 rounded-2xl border border-blue-200 bg-white/90 px-5 py-3 shadow-xl backdrop-blur-md"
+            className="absolute bottom-8 right-4 z-20 rounded-2xl border border-blue-200 dark:border-blue-500/20 bg-white/90 dark:bg-white/[0.06] px-5 py-3 shadow-xl backdrop-blur-md"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1769,8 +1779,8 @@ function AboutSection({ booksCount }) {
             animate={{ y: [0, -6, 0] }}
           >
             <div className="text-center">
-              <div className="text-2xl font-black text-blue-700" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>✦ Aivira</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Knowledge On Every Page</div>
+              <div className="text-2xl font-black text-blue-700 dark:text-blue-300" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>✦ Aivira</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Knowledge On Every Page</div>
             </div>
           </motion.div>
         </motion.div>
@@ -1818,11 +1828,11 @@ function LatestNews() {
   const secondary = posts.slice(1);
 
   return (
-    <section className="relative overflow-hidden bg-[#fafaf8] px-4 py-24 md:px-8">
+    <section className="relative overflow-hidden bg-[#fafaf8] dark:bg-[#040d1e] px-4 py-24 md:px-8">
       {/* Top separator */}
-      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-blue-50/80 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-indigo-50/60 blur-3xl" />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/[0.06] to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-blue-50/80 dark:bg-blue-900/12 blur-3xl" />
+      <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-indigo-50/60 dark:bg-indigo-900/10 blur-3xl" />
 
       <div className="mx-auto max-w-7xl">
         <SectionHead chip={t("home.insights")} title={t("home.blog")} link="/blog" />
@@ -1904,7 +1914,7 @@ function LatestNews() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 + index * 0.14, ease: [0.22, 1, 0.36, 1] }}
-                className="group flex flex-1 cursor-pointer gap-5 overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 shadow-sm transition-all duration-350 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_12px_40px_rgba(37,99,235,0.1)]"
+                className="group flex flex-1 cursor-pointer gap-5 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-4 shadow-sm transition-all duration-350 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-500/20 hover:shadow-[0_12px_40px_rgba(37,99,235,0.1)] dark:hover:shadow-[0_12px_40px_rgba(37,99,235,0.10)]"
                 whileHover={{ x: 2 }}
               >
                 {/* Thumbnail with inner zoom */}
@@ -1923,13 +1933,13 @@ function LatestNews() {
                 {/* Text */}
                 <div className="flex min-w-0 flex-col justify-center gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-blue-700 transition-colors duration-300 group-hover:bg-blue-100">
+                    <span className="rounded-full bg-blue-50 dark:bg-blue-500/10 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 transition-colors duration-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20">
                       {post.category}
                     </span>
-                    <span className="text-[0.65rem] text-slate-400">{post.date}</span>
+                    <span className="text-[0.65rem] text-slate-400 dark:text-slate-500">{post.date}</span>
                   </div>
                   <h3
-                    className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 transition-colors duration-300 group-hover:text-blue-700 md:text-base"
+                    className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors duration-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-base"
                     style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   >
                     {post.title}
@@ -1955,9 +1965,9 @@ function LatestNews() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="group flex flex-1 cursor-pointer items-center justify-between rounded-2xl border border-dashed border-blue-200 bg-blue-50/50 p-5 transition-all duration-300 hover:border-blue-300 hover:bg-blue-50"
+              className="group flex flex-1 cursor-pointer items-center justify-between rounded-2xl border border-dashed border-blue-200 dark:border-blue-500/20 bg-blue-50/50 dark:bg-blue-500/[0.05] p-5 transition-all duration-300 hover:border-blue-300 dark:hover:border-blue-400/30 hover:bg-blue-50 dark:hover:bg-blue-500/10"
             >
-              <span className="text-sm font-bold text-blue-700">Xem tất cả bài viết</span>
+              <span className="text-sm font-bold text-blue-700 dark:text-blue-300">Xem tất cả bài viết</span>
               <ArrowRight size={16} className="text-blue-500 transition-transform group-hover:translate-x-1" />
             </motion.div>
           </div>
@@ -1976,24 +1986,25 @@ function SectionHead({ chip, title, link, dark = false }) {
       <div>
         {/* Chip */}
         <div
-          className="mb-3 inline-flex items-center gap-1.5"
+          className={`mb-3 inline-flex items-center gap-1.5 ${dark ? "text-blue-200/90" : "text-blue-600 dark:text-blue-400"}`}
           style={{
             fontSize: "0.65rem",
             fontWeight: 800,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: dark ? "rgba(147,197,253,0.9)" : "#2563eb",
           }}
         >
           <span
-            className="inline-block h-[6px] w-[6px] rounded-full"
-            style={{ background: dark ? "#60a5fa" : "#2563eb" }}
+            className={`inline-block h-[6px] w-[6px] rounded-full ${dark ? "" : "bg-blue-600 dark:bg-blue-400"}`}
+            style={dark ? { background: "#60a5fa" } : undefined}
           />
           {chip}
         </div>
         {/* Title */}
         <h2
-          className={`text-4xl font-bold leading-tight md:text-5xl ${dark ? "text-white" : "text-slate-900"}`}
+          className={`text-4xl font-bold leading-tight md:text-5xl ${
+            dark ? "text-white" : "text-slate-900 dark:text-white"
+          }`}
           style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
         >
           {title}
@@ -2004,7 +2015,7 @@ function SectionHead({ chip, title, link, dark = false }) {
         <Link
           to={link}
           className={`group flex flex-shrink-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] transition-colors ${
-            dark ? "text-white/40 hover:text-blue-300" : "text-slate-400 hover:text-blue-600"
+            dark ? "text-white/40 hover:text-blue-300" : "text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
           }`}
         >
           <span className="relative">

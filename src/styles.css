@@ -53,11 +53,23 @@ body {
 
 html.dark {
   color-scheme: dark;
+  /* ── Deep Editorial dark palette ── */
+  --dark-base:       #040d1e;
+  --dark-surface:    #081228;
+  --dark-raised:     #0d1e3a;
+  --dark-float:      #122448;
+  --dark-border:     rgba(255,255,255,0.07);
+  --dark-border-m:   rgba(255,255,255,0.12);
+  --dark-border-b:   rgba(99,179,237,0.18);
+  --dark-text-1:     #f0f4ff;
+  --dark-text-2:     #a8b9d4;
+  --dark-text-3:     #617593;
+  --dark-glow-blue:  rgba(56,189,248,0.15);
 }
 
 html.dark body {
-  background: #020617;
-  color: #e2e8f0;
+  background: var(--dark-base);
+  color: var(--dark-text-1);
 }
 
 .admin-shell {
@@ -309,6 +321,15 @@ section:where([class]) {
   mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
+html.dark .new-arrivals-paper-texture {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(37, 99, 235, 0.10), transparent 24%),
+    radial-gradient(circle at 86% 8%, rgba(139, 92, 246, 0.07), transparent 22%),
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.008) 1px, transparent 1px);
+  background-size: auto, auto, 56px 56px, 56px 56px;
+}
+
 @keyframes new-arrivals-shimmer {
   0% {
     background-position: -900px 0;
@@ -319,10 +340,26 @@ section:where([class]) {
   }
 }
 
+@keyframes dark-shimmer {
+  0%   { background-position: -900px 0; }
+  100% { background-position: 900px 0; }
+}
+
 .new-arrivals-skeleton {
   background: linear-gradient(105deg, rgba(226, 232, 240, 0.82) 24%, rgba(248, 250, 252, 0.95) 48%, rgba(226, 232, 240, 0.82) 72%);
   background-size: 1800px 100%;
   animation: new-arrivals-shimmer 1.55s ease-in-out infinite;
+}
+
+html.dark .new-arrivals-skeleton {
+  background: linear-gradient(
+    105deg,
+    rgba(15, 30, 58, 0.95) 24%,
+    rgba(30, 55, 90, 0.75) 48%,
+    rgba(15, 30, 58, 0.95) 72%
+  );
+  background-size: 1800px 100%;
+  animation: dark-shimmer 1.55s ease-in-out infinite;
 }
 
 .catalog-paper-texture {
@@ -529,16 +566,61 @@ body.admin-route #btt {
 html.dark .catalog-skeleton-premium {
   background: linear-gradient(
     105deg,
-    rgba(30, 41, 59, 0.8) 20%,
-    rgba(51, 65, 85, 0.95) 40%,
-    rgba(37, 99, 235, 0.1) 55%,
-    rgba(30, 41, 59, 0.8) 75%
+    rgba(15, 30, 58, 0.95) 20%,
+    rgba(30, 55, 90, 0.70) 40%,
+    rgba(37, 99, 235, 0.08) 55%,
+    rgba(15, 30, 58, 0.95) 75%
   );
   background-size: 2400px 100%;
 }
 
 html.dark .catalog-category-active {
   background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+}
+
+html.dark .catalog-skeleton {
+  background: linear-gradient(
+    105deg,
+    rgba(15, 30, 58, 0.95) 24%,
+    rgba(30, 55, 90, 0.70) 48%,
+    rgba(15, 30, 58, 0.95) 72%
+  );
+  background-size: 1560px 100%;
+}
+
+/* ── Dark glass utility ── */
+.dark-glass-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Ambient glow pulse for dark mode sections ── */
+@keyframes dark-ambient-pulse {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.28; }
+}
+
+.dark-ambient-glow {
+  animation: dark-ambient-pulse 4s ease-in-out infinite;
+}
+
+/* ── Dark scroll progress bar ── */
+html.dark #sprog {
+  background: linear-gradient(90deg, #3b82f6, #818cf8);
+}
+
+/* ── Dark back-to-top button ── */
+html.dark #btt {
+  background: rgba(8, 18, 40, 0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+}
+
+html.dark #btt:hover {
+  background: #2563eb;
+  box-shadow: 0 0 24px rgba(37,99,235,0.45);
 }
 
 /* ─────────────────────────────────────────
