@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   AlertCircle, BadgeCheck, Camera, CheckCircle2,
-  ChevronRight, Globe, Home, Key, Laptop, Lock,
+  ChevronDown, ChevronRight, Globe, Home, Key, Laptop, Lock,
   LogOut, Mail, MapPin, Monitor, Phone, Plus,
   ShieldOff, Star, Trash2, User, UserCircle,
   X, Eye, EyeOff, Edit3, Save, RotateCcw,
@@ -113,6 +113,8 @@ export default function AccountPage({ onAuth }) {
   const [tab, setTab]                             = useState(() => tabFromHash(location.hash) || "profile");
   const [profile, setProfile]                     = useState(getCurrentUser());
   const [profileForm, setProfileForm]             = useState({ firstName:"", lastName:"", gender:"" });
+  const [profileLoading, setProfileLoading]       = useState(Boolean(getAccessToken()));
+  const [profileError, setProfileError]           = useState(false);
   const [passwordForm, setPasswordForm]           = useState(emptyPassword);
   const [addresses, setAddresses]                 = useState([]);
   const [addressForm, setAddressForm]             = useState(emptyAddress);
@@ -127,14 +129,16 @@ export default function AccountPage({ onAuth }) {
 
   /* ── Data loaders ── */
   const refreshProfile = useCallback(async () => {
-    setBusy(c => c||"profile");
+    setProfileLoading(true); setProfileError(false);
     try {
       const data = await getProfile();
       setProfile(data); saveCurrentUser(data);
       setProfileForm({ firstName:data?.firstName||"", lastName:data?.lastName||"", gender:data?.gender||"" });
-    } catch(e) { toast(false, e.message||t("account.profileLoadFailed")); }
-    finally { setBusy(c => c==="profile"?"":c); }
-  }, [t]);
+    } catch(e) {
+      console.error("Profile request failed", e);
+      setProfileError(true);
+    } finally { setProfileLoading(false); }
+  }, []);
 
   const refreshAddresses = useCallback(async () => {
     try { setAddresses((await getAddresses()||[]).map(normalizeAddress).filter(Boolean)); }
@@ -166,7 +170,10 @@ export default function AccountPage({ onAuth }) {
     try {
       const u = await updateProfile({ firstName:profileForm.firstName||null, lastName:profileForm.lastName||null, gender:profileForm.gender||null });
       setProfile(u); saveCurrentUser(u); toast(true,t("account.profileUpdated"));
-    } catch(err) { toast(false,err.message||t("account.profileUpdateFailed")); }
+    } catch(err) {
+      console.error("Profile update failed", err);
+      toast(false,t("account.profileUpdateFailed","Không thể cập nhật hồ sơ. Vui lòng thử lại."));
+    }
     finally { setBusy(""); }
   }
 
@@ -263,6 +270,10 @@ export default function AccountPage({ onAuth }) {
 
   const loggedIn = Boolean(getAccessToken());
 
+  const profileChanged = Boolean(profile) && ["firstName","lastName","gender"].some(
+    key => (profileForm[key]||"") !== (profile[key]||"")
+  );
+
   /* ── Avatar initial ── */
   const initials = [profile?.firstName, profile?.lastName].filter(Boolean).map(s=>s[0]).join("") || (profile?.username||"A")[0].toUpperCase();
 
@@ -283,9 +294,11 @@ export default function AccountPage({ onAuth }) {
       <div className="relative z-10 mx-auto max-w-7xl px-4 pb-28 pt-20 md:px-8">
 
         {/* ── Hero bar with avatar ── */}
-        <AccountHeroBar profile={profile} initials={initials} tk={tk} isDark={isDark} t={t}
-          onAvatarClick={() => fileRef.current?.click()}
-          busy={busy==="avatar"}/>
+        {profileLoading
+          ? <ProfileBannerSkeleton tk={tk}/>
+          : <ProfileBanner profile={profile} initials={initials} tk={tk} t={t}
+              onAvatarClick={() => fileRef.current?.click()} busy={busy==="avatar"}/>
+        }
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={uploadAvatar}/>
 
         {/* Toast */}
@@ -302,7 +315,7 @@ export default function AccountPage({ onAuth }) {
               }}>
               {msgOk?<CheckCircle2 size={15} color={tk.emerald}/>:<AlertCircle size={15} color={tk.red}/>}
               <span className="text-sm font-bold" style={{ color:msgOk?tk.emerald:tk.red }}>{message}</span>
-              <button type="button" onClick={() => setMessage("")} className="ml-auto opacity-60 hover:opacity-100">
+              <button type="button" aria-label={t("common.close","Đóng")} onClick={() => setMessage("")} className="ml-auto rounded-md p-1 opacity-60 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-current">
                 <X size={13} color={msgOk?tk.emerald:tk.red}/>
               </button>
             </motion.div>
@@ -310,7 +323,7 @@ export default function AccountPage({ onAuth }) {
         </AnimatePresence>
 
         {/* Not logged in */}
-        {(!loggedIn||!profile) && (
+        {!profileLoading && (!loggedIn||(!profile && !profileError)) && (
           <motion.div initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{duration:0.5}}
             className="flex flex-col items-center justify-center gap-6 rounded-[32px] px-8 py-24 text-center"
             style={{ background:tk.surface1, border:`1px solid ${tk.border}`, backdropFilter:"blur(24px)" }}>
@@ -333,7 +346,7 @@ export default function AccountPage({ onAuth }) {
         )}
 
         {/* Main logged-in content */}
-        {loggedIn && profile && (
+        {loggedIn && (profile || profileError) && (
           <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
 
             {/* ── Tab sidebar ── */}
@@ -384,12 +397,16 @@ export default function AccountPage({ onAuth }) {
                 initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}}
                 transition={{duration:0.32,ease:[0.22,1,0.36,1]}}>
 
+                {profileError && tab==="profile" && (
+                  <ErrorAlert tk={tk} t={t} onRetry={refreshProfile} onClose={() => setProfileError(false)}/>
+                )}
+
                 {/* PROFILE TAB */}
-                {tab==="profile" && (
+                {profile && tab==="profile" && (
                   <div className="grid gap-6">
                     {/* Profile meta */}
                     <Section title={t("account.profile")} icon={UserCircle} tk={tk} isDark={isDark}>
-                      <div className="grid gap-4 md:grid-cols-[80px_1fr]">
+                      <div className="hidden">
                         {/* Avatar */}
                         <motion.div whileHover={{scale:1.05}} className="relative cursor-pointer"
                           onClick={() => fileRef.current?.click()}>
@@ -434,10 +451,11 @@ export default function AccountPage({ onAuth }) {
                         </div>
                       </div>
                       {/* Meta rows */}
-                      <div className="mt-4 grid gap-3 rounded-2xl p-4" style={{ background:tk.surface2 }}>
-                        <MetaLine icon={User} label={t("account.userId")} value={profile.id} tk={tk}/>
-                        <MetaLine icon={Phone} label={t("account.phone")} value={profile.phoneNumber||"—"} tk={tk}/>
+                      <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
+                        <MetaLine icon={Mail} label={t("common.email","Email")} value={profile.email||t("account.notUpdated","Chưa cập nhật")} tk={tk}/>
+                        <MetaLine icon={Phone} label={t("account.phone")} value={profile.phoneNumber||t("account.notUpdated","Chưa cập nhật")} tk={tk}/>
                         <MetaLine icon={Globe} label={t("account.createdAt")} value={formatDateTime(profile.createdAt,i18n.language)} tk={tk}/>
+                        <MetaLine icon={Key} label={t("account.loginMethod","Phương thức đăng nhập")} value={profile.provider||"Email"} tk={tk}/>
                       </div>
                     </Section>
 
@@ -445,21 +463,32 @@ export default function AccountPage({ onAuth }) {
                     <Section title={t("account.saveProfile")} icon={Edit3} tk={tk} isDark={isDark}>
                       <form className="grid gap-4" onSubmit={saveProfile}>
                         <div className="grid gap-4 md:grid-cols-2">
-                          <PInput value={profileForm.firstName} placeholder={t("account.firstName")} tk={tk} isDark={isDark}
-                            onChange={e => setProfileForm({...profileForm,firstName:e.target.value})}/>
-                          <PInput value={profileForm.lastName} placeholder={t("account.lastName")} tk={tk} isDark={isDark}
-                            onChange={e => setProfileForm({...profileForm,lastName:e.target.value})}/>
+                          <Field label={t("account.firstName")} htmlFor="profile-first-name" tk={tk}>
+                            <PInput id="profile-first-name" value={profileForm.firstName} placeholder={t("account.firstName")} tk={tk} isDark={isDark} disabled={busy==="profileSave"}
+                              onChange={e => setProfileForm({...profileForm,firstName:e.target.value})}/>
+                          </Field>
+                          <Field label={t("account.lastName")} htmlFor="profile-last-name" tk={tk}>
+                            <PInput id="profile-last-name" value={profileForm.lastName} placeholder={t("account.lastName")} tk={tk} isDark={isDark} disabled={busy==="profileSave"}
+                              onChange={e => setProfileForm({...profileForm,lastName:e.target.value})}/>
+                          </Field>
                         </div>
-                        <PSelect value={profileForm.gender} tk={tk} isDark={isDark}
-                          onChange={e => setProfileForm({...profileForm,gender:e.target.value})}>
-                          <option value="">{t("account.gender")}</option>
-                          <option value="MALE">{t("account.male")}</option>
-                          <option value="FEMALE">{t("account.female")}</option>
-                          <option value="OTHER">{t("account.other")}</option>
-                        </PSelect>
-                        <PrimaryBtn type="submit" loading={busy==="profileSave"} icon={Save} tk={tk}>
-                          {busy==="profileSave"?t("common.working"):t("account.saveProfile")}
-                        </PrimaryBtn>
+                        <Field label={t("account.gender")} htmlFor="profile-gender" tk={tk}>
+                          <div className="relative">
+                            <PSelect id="profile-gender" value={profileForm.gender} tk={tk} isDark={isDark} disabled={busy==="profileSave"}
+                              onChange={e => setProfileForm({...profileForm,gender:e.target.value})}>
+                              <option value="">{t("account.notDisclosed","Không muốn tiết lộ")}</option>
+                              <option value="MALE">{t("account.male")}</option>
+                              <option value="FEMALE">{t("account.female")}</option>
+                              <option value="OTHER">{t("account.other")}</option>
+                            </PSelect>
+                            <ChevronDown aria-hidden="true" size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2" style={{color:tk.text2}}/>
+                          </div>
+                        </Field>
+                        <div className="flex justify-end">
+                          <PrimaryBtn type="submit" disabled={!profileChanged||busy==="profileSave"} loading={busy==="profileSave"} icon={Save} tk={tk} style={{width:"min(100%, 210px)"}}>
+                            {busy==="profileSave"?t("account.saving","Đang lưu..."):t("account.saveProfile")}
+                          </PrimaryBtn>
+                        </div>
                       </form>
                     </Section>
                   </div>
@@ -715,19 +744,39 @@ export default function AccountPage({ onAuth }) {
 }
 
 /* ── Account Hero Bar ───────────────────────── */
-function AccountHeroBar({ profile, initials, tk, t, onAvatarClick, busy }) {
+function ProfileBannerSkeleton({ tk }) {
+  return (
+    <div className="mb-6 flex min-h-[96px] animate-pulse items-center gap-5 rounded-[20px] px-7 py-5" style={{background:tk.heroBg}} aria-label="Loading profile">
+      <div className="h-14 w-14 rounded-2xl bg-white/10"/>
+      <div className="flex-1 space-y-2"><div className="h-3 w-24 rounded bg-white/10"/><div className="h-6 w-52 max-w-full rounded bg-white/10"/><div className="h-3 w-40 max-w-full rounded bg-white/10"/></div>
+    </div>
+  );
+}
+
+function ErrorAlert({ t, onRetry, onClose }) {
+  return (
+    <div role="alert" className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-800">
+      <AlertCircle size={18} aria-hidden="true"/>
+      <p className="min-w-[220px] flex-1 text-sm font-semibold">{t("account.profileLoadFailed","Không thể tải thông tin hồ sơ. Vui lòng thử lại.")}</p>
+      <button type="button" onClick={onRetry} className="rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-bold outline-none hover:bg-red-100 focus-visible:ring-2 focus-visible:ring-red-500">{t("common.retry","Thử lại")}</button>
+      <button type="button" aria-label={t("common.close","Đóng")} onClick={onClose} className="rounded-lg p-2 outline-none hover:bg-red-100 focus-visible:ring-2 focus-visible:ring-red-500"><X size={17}/></button>
+    </div>
+  );
+}
+
+function ProfileBanner({ profile, initials, tk, t, onAvatarClick, busy }) {
   return (
     <motion.div initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}}
       transition={{duration:0.55,ease:[0.22,1,0.36,1]}}
-      className="relative mb-8 overflow-hidden rounded-[22px] px-8 py-7"
-      style={{ background:tk.heroBg, border:"1px solid rgba(255,255,255,0.07)", boxShadow:"0 24px 60px rgba(0,0,0,0.4)" }}>
+      className="relative mb-6 overflow-hidden rounded-[20px] px-5 py-5 sm:px-7"
+      style={{ background:tk.heroBg, border:"1px solid rgba(255,255,255,0.10)" }}>
       <div className="absolute left-0 right-0 top-0 h-[1.5px]" style={{ background:tk.heroLine }}/>
       <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full"
         style={{ background:"radial-gradient(circle,rgba(79,110,247,0.18) 0%,transparent 70%)" }}/>
       <div className="relative flex items-center gap-5">
         {/* Mini avatar */}
-        <motion.div whileHover={{scale:1.06}} className="relative cursor-pointer flex-shrink-0" onClick={onAvatarClick}>
-          <div className="overflow-hidden rounded-2xl" style={{ width:52, height:52, boxShadow:"0 6px 20px rgba(0,0,0,0.4)" }}>
+        <motion.button type="button" aria-label={t("account.uploadNewAvatar","Cập nhật ảnh đại diện")} whileHover={{scale:1.04}} className="relative flex-shrink-0 rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-blue-300" onClick={onAvatarClick}>
+          <div className="h-14 w-14 overflow-hidden rounded-2xl">
             {profile?.avatarUrl
               ? <img className="h-full w-full object-cover" src={profile.avatarUrl} alt="avatar"/>
               : <div className="flex h-full w-full items-center justify-center font-black text-xl text-white"
@@ -741,16 +790,16 @@ function AccountHeroBar({ profile, initials, tk, t, onAvatarClick, busy }) {
               </motion.div>
             </div>
           )}
-        </motion.div>
+        </motion.button>
         <div>
-          <p className="text-[0.6rem] font-black uppercase tracking-[0.2em]" style={{ color:"rgba(255,255,255,0.55)" }}>
+          <p className="text-xs font-semibold" style={{ color:"rgba(255,255,255,0.78)" }}>
             {t("account.eyebrow","Tài khoản")}
           </p>
-          <h1 className="text-2xl font-black md:text-3xl" style={{ color:"#e8eeff", fontFamily:"var(--f-serif)" }}>
+          <h1 className="text-[22px] font-bold md:text-2xl" style={{ color:"#fff" }}>
             {[profile?.firstName,profile?.lastName].filter(Boolean).join(" ")||profile?.username||t("account.title","Tài khoản của tôi")}
           </h1>
           {profile?.email && (
-            <p className="mt-0.5 flex items-center gap-1.5 text-xs" style={{ color:"rgba(255,255,255,0.6)" }}>
+            <p className="mt-0.5 flex items-center gap-1.5 text-[13px]" style={{ color:"rgba(255,255,255,0.78)" }}>
               <Mail size={10}/>{profile.email}
             </p>
           )}
@@ -758,7 +807,9 @@ function AccountHeroBar({ profile, initials, tk, t, onAvatarClick, busy }) {
         {profile?.emailVerified && (
           <motion.div initial={{scale:0}} animate={{scale:1}}
             transition={{type:"spring",stiffness:400,damping:18,delay:0.4}}
-            className="ml-auto flex h-10 w-10 items-center justify-center rounded-full"
+            title={t("account.verifiedAccount","Tài khoản đã xác minh")}
+            aria-label={t("account.verifiedAccount","Tài khoản đã xác minh")}
+            className="ml-auto flex h-9 w-9 items-center justify-center rounded-full"
             style={{ background:"rgba(16,217,138,0.15)", border:"1px solid rgba(16,217,138,0.35)" }}>
             <BadgeCheck size={18} color="#10d98a"/>
           </motion.div>
@@ -796,6 +847,10 @@ function Section({ id, title, icon:Icon, children, tk, danger, action }) {
 }
 
 /* ── Premium Input ──────────────────────────── */
+function Field({ label, htmlFor, tk, children }) {
+  return <div className="grid gap-2"><label htmlFor={htmlFor} className="text-[13px] font-semibold" style={{color:tk.text2}}>{label}</label>{children}</div>;
+}
+
 function PInput({ tk, isDark, ...props }) {
   const [focus, setFocus] = useState(false);
   return (
