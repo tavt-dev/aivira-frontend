@@ -51,7 +51,7 @@ function tokens(isDark) {
     borderMid: "rgba(255,255,255,0.14)",
     text1:     "#e8eeff",
     text2:     "#8892b0",
-    text3:     "#4a5578",
+    text3:     "#6b7fa3",
     accent:    "#4f6ef7",
     gold:      "#f0a500",
     emerald:   "#10d98a",
@@ -743,14 +743,14 @@ function AccountHeroBar({ profile, initials, tk, t, onAvatarClick, busy }) {
           )}
         </motion.div>
         <div>
-          <p className="text-[0.6rem] font-black uppercase tracking-[0.2em]" style={{ color:"#4a5578" }}>
+          <p className="text-[0.6rem] font-black uppercase tracking-[0.2em]" style={{ color:"rgba(255,255,255,0.55)" }}>
             {t("account.eyebrow","Tài khoản")}
           </p>
           <h1 className="text-2xl font-black md:text-3xl" style={{ color:"#e8eeff", fontFamily:"var(--f-serif)" }}>
             {[profile?.firstName,profile?.lastName].filter(Boolean).join(" ")||profile?.username||t("account.title","Tài khoản của tôi")}
           </h1>
           {profile?.email && (
-            <p className="mt-0.5 flex items-center gap-1.5 text-xs" style={{ color:"#4a5578" }}>
+            <p className="mt-0.5 flex items-center gap-1.5 text-xs" style={{ color:"rgba(255,255,255,0.6)" }}>
               <Mail size={10}/>{profile.email}
             </p>
           )}
