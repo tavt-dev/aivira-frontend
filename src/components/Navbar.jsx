@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ChevronDown, Compass, KeyRound, LogOut, Menu, Moon, Search, Settings, ShoppingBag, Sun, User, UserCircle } from "lucide-react";
@@ -168,7 +168,7 @@ export default function Navbar({ solid, user, onAuth }) {
                 "text-[1.35rem] font-black transition-colors duration-500",
                 isSolid ? "text-slate-950" : "text-white"
               ].join(" ")}
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              style={{ fontFamily: "'Roboto', sans-serif" }}
             >
               Aivira
             </span>

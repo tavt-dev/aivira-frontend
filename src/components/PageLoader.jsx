@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 /**
  * PageLoader — full-screen brand splash shown on every page load/refresh.
@@ -97,7 +97,7 @@ export default function PageLoader({ onDone }) {
 
         <h2
           style={{
-            fontFamily: "var(--f-display, 'Bebas Neue', sans-serif)",
+            fontFamily: "'Roboto', sans-serif",
             fontSize: "clamp(6rem, 18vw, 24rem)",
             letterSpacing: "0.02em",
             margin: 0,

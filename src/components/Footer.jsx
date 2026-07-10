@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 
@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer 
       className="tw-footer relative overflow-hidden bg-slate-950 px-4 pb-10 pt-20 text-blue-100/60 antialiased md:px-8 md:pt-28"
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      style={{ fontFamily: "'Roboto', sans-serif" }}
     >
       {/* Premium Animated Aurora Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
@@ -61,7 +61,7 @@ export default function Footer() {
                style={{ boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
              />
              <span className="flex flex-col leading-none text-white transition-opacity duration-500 group-hover:opacity-90">
-               <span className="text-3xl font-black" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+               <span className="text-3xl font-black" style={{ fontFamily: "'Roboto', sans-serif" }}>
                  Aivira
                </span>
                <span className="mt-1 text-xs font-bold uppercase text-blue-200">

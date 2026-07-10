@@ -370,7 +370,7 @@ export default function OrdersPage({ onAuth }) {
               style={{ background:tk.surface1, border:`1px solid ${tk.border}`, backdropFilter:"blur(24px)" }}>
               <div className="flex items-center gap-3 border-b px-6 py-4" style={{ borderColor:tk.border }}>
                 <Filter size={15} style={{ color:tk.accent }}/>
-                <span className="text-sm font-black uppercase tracking-wider" style={{ color:tk.text2 }}>
+                <span className="text-sm font-black tracking-normal" style={{ color:tk.text2 }}>
                   {t("orders.filterStatus")}
                 </span>
               </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, Lock, Mail, User, X, CheckCircle2, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -414,7 +414,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
             />
             <div
               style={{
-                fontFamily: "var(--f-display, 'Bebas Neue', sans-serif)",
+                fontFamily: "'Roboto', sans-serif",
                 fontSize: "clamp(3rem, 5vw, 4.2rem)",
                 letterSpacing: "0.22em",
                 color: "#fff",
@@ -427,7 +427,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
             <p
               style={{
                 marginTop: 10,
-                fontFamily: "var(--f-serif, 'Cormorant Garamond', serif)",
+                fontFamily: "'Roboto', sans-serif",
                 fontSize: "1.12rem",
                 fontStyle: "italic",
                 color: "rgba(255,255,255,0.38)",
@@ -447,7 +447,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
                     borderRadius: 999,
                     border: "1px solid rgba(255,255,255,0.12)",
                     background: "rgba(255,255,255,0.07)",
-                    fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+                    fontFamily: "'Roboto', sans-serif",
                     fontSize: "0.68rem",
                     fontWeight: 800,
                     letterSpacing: "0.1em",
@@ -509,7 +509,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
                   padding: "9px 12px",
                   fontSize: "0.82rem",
                   fontWeight: 800,
-                  fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+                  fontFamily: "'Roboto', sans-serif",
                   letterSpacing: "0.04em",
                   transition: "all 0.22s ease",
                   border: "none",
@@ -541,7 +541,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
                 borderRadius: 999,
                 background: "rgba(37,99,235,0.14)",
                 border: "1px solid rgba(37,99,235,0.28)",
-                fontFamily: "var(--f-display, 'Bebas Neue', sans-serif)",
+                fontFamily: "'Roboto', sans-serif",
                 fontSize: "0.78rem",
                 letterSpacing: "0.14em",
                 color: "#93c5fd",
@@ -554,7 +554,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
               id="auth-title"
               style={{
                 margin: "0 0 8px",
-                fontFamily: "var(--f-serif, 'Cormorant Garamond', serif)",
+                fontFamily: "'Roboto', sans-serif",
                 fontSize: "clamp(1.6rem, 3.5vw, 2.6rem)",
                 fontStyle: "italic",
                 fontWeight: 700,
@@ -768,7 +768,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
               borderRadius: 12,
               border: "none",
               padding: "13px 20px",
-              fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+              fontFamily: "'Roboto', sans-serif",
               fontWeight: 800,
               fontSize: "0.9rem",
               letterSpacing: "0.04em",
@@ -842,7 +842,7 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
                   border: "1px solid rgba(255,255,255,0.16)",
                   background: "rgba(255,255,255,0.96)",
                   color: "#374151",
-                  fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+                  fontFamily: "'Roboto', sans-serif",
                   fontWeight: 700,
                   fontSize: "0.87rem",
                   letterSpacing: "0.01em",
@@ -1012,7 +1012,7 @@ function Field({
     padding: Icon ? "11px 12px 11px 40px" : "11px 14px",
     paddingRight: passwordToggle ? 50 : undefined,
     fontSize: "0.88rem",
-    fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+    fontFamily: "'Roboto', sans-serif",
     outline: "none",
     transition: "all 0.18s ease",
     ...(bright
@@ -1042,7 +1042,7 @@ function Field({
         style={{
           fontSize: "0.7rem",
           fontWeight: 800,
-          fontFamily: "var(--f-body, 'Outfit', sans-serif)",
+          fontFamily: "'Roboto', sans-serif",
           textTransform: "uppercase",
           letterSpacing: "0.1em",
           color: "rgba(255,255,255,0.65)"

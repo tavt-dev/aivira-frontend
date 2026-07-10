@@ -229,7 +229,7 @@
 }
 
 .aiv-page-num {
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: 1.2rem;
   font-weight: 700;
   color: rgba(7, 21, 38, 0.8);
@@ -244,7 +244,7 @@
 }
 
 .aiv-page-heading {
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: clamp(2rem, 3.5vw, 2.5rem);
   line-height: 1.1;
   color: #041022;
@@ -260,7 +260,7 @@
 }
 
 .aiv-page-text {
-  font-family: var(--f-serif, Georgia, serif);
+  font-family: var(--f-serif, "Roboto", sans-serif);
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(7, 21, 38, 0.7);
@@ -380,7 +380,7 @@
   border: 1px solid rgba(200, 217, 255, 0.28);
   background: rgba(255, 255, 255, 0.045);
   color: #fff;
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: 3rem;
   text-shadow: 0 0 30px rgba(111, 191, 255, 0.86);
   box-shadow: 0 0 32px rgba(24, 83, 227, 0.32);
@@ -389,7 +389,7 @@
 
 .aiv-book-title {
   color: #fff;
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: clamp(1.8rem, 5vw, 2.8rem);
   letter-spacing: 0.16em;
   text-shadow: 0 0 36px rgba(111, 191, 255, 0.78);
@@ -440,7 +440,7 @@
 
 .aiv-inside-cover-brand {
   color: rgba(24, 83, 227, 0.7);
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -482,7 +482,7 @@
 .aiv-intro-copy h1 {
   margin: 0;
   color: #fff;
-  font-family: var(--f-display, Georgia, serif);
+  font-family: var(--f-display, "Roboto", sans-serif);
   font-size: clamp(3.5rem, 10vw, 7rem);
   line-height: 0.9;
   letter-spacing: 0.12em;
@@ -494,7 +494,7 @@
 .aiv-intro-copy p:last-child {
   margin: 0;
   color: rgba(255, 255, 255, 0.8);
-  font-family: var(--f-serif, Georgia, serif);
+  font-family: var(--f-serif, "Roboto", sans-serif);
   font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-style: italic;
   letter-spacing: 0.04em;

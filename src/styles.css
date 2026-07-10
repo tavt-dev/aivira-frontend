@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --f-display: "Bebas Neue", sans-serif;
-  --f-serif: "Cormorant Garamond", serif;
-  --f-body: "Inter", sans-serif;
+  --f-display: "Roboto", sans-serif;
+  --f-serif: "Roboto", sans-serif;
+  --f-body: "Roboto", sans-serif;
 
   /* ── Palette ── */
   --navy-950: #020c1b;

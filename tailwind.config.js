@@ -5,9 +5,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Outfit", "sans-serif"],
-        serif: ["Cormorant Garamond", "serif"],
-        display: ["Bebas Neue", "sans-serif"]
+        sans: ["Roboto", "sans-serif"],
+        serif: ["Roboto", "sans-serif"],
+        display: ["Roboto", "sans-serif"]
       }
     }
   },

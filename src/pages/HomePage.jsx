@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
@@ -604,7 +604,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
         <div
           className="pointer-events-none absolute -right-4 -top-6 select-none leading-none text-white/[0.07] transition-all duration-700 group-hover:text-white/[0.13] group-hover:-right-2 group-hover:-top-4"
           style={{
-            fontFamily: "var(--f-display, 'Bebas Neue', sans-serif)",
+            fontFamily: "'Roboto', sans-serif",
             fontSize: "clamp(7rem, 14vw, 11rem)",
             letterSpacing: "-0.02em",
           }}
@@ -626,7 +626,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
           style={{
             background: `${accent.color}dd`,
             backdropFilter: "blur(10px)",
-            fontFamily: "var(--f-display, 'Bebas Neue', sans-serif)",
+            fontFamily: "'Roboto', sans-serif",
             fontSize: "0.8rem",
             letterSpacing: "0.1em",
             color: "#fff",
@@ -656,7 +656,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
             <div className="p-4 pb-0">
               <h3 
                 className="text-xl font-bold leading-tight tracking-tight text-white/95 md:text-2xl"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ fontFamily: "'Roboto', sans-serif" }}
               >
                 {category.categoryName}
               </h3>
@@ -802,7 +802,7 @@ function QuoteSection() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-2 inline-block select-none text-[7rem] leading-none text-blue-500/25"
-          style={{ fontFamily: "Georgia, serif", lineHeight: 0.8 }}
+          style={{ fontFamily: "'Roboto', sans-serif", lineHeight: 0.8 }}
         >
           &ldquo;
         </motion.div>
@@ -1358,7 +1358,7 @@ function BestsellingRanking({ books, loading, t }) {
                         background: `linear-gradient(135deg, ${meta.color}18, transparent)`,
                         border: `1.5px solid ${meta.color}35`,
                         color: meta.color,
-                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        fontFamily: "'Roboto', sans-serif",
                       }}
                     >
                       {index < 3 ? meta.label : <span className="text-xl">{meta.label}</span>}
@@ -1399,7 +1399,7 @@ function BestsellingRanking({ books, loading, t }) {
                     {/* Price + arrow */}
                     <div className="flex flex-shrink-0 items-center gap-4">
                       <div className="flex flex-col items-end">
-                        <span className="text-xl font-extrabold text-blue-900 dark:text-blue-300" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <span className="text-xl font-extrabold text-blue-900 dark:text-blue-300" style={{ fontFamily: "'Roboto', sans-serif" }}>
                           {bPrice ? `${Number(bPrice).toLocaleString("vi-VN")}đ` : "—"}
                         </span>
                         {bDiscount > 0 && bOldPrice > 0 && (
@@ -1566,14 +1566,14 @@ function HowItWorks() {
               {/* Number watermark */}
               <div
                 className="pointer-events-none absolute -right-3 -top-4 select-none text-[6rem] font-black leading-none opacity-[0.06] transition-opacity duration-500 group-hover:opacity-[0.12]"
-                style={{ color: STEP_ACCENTS[index], fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ color: STEP_ACCENTS[index], fontFamily: "'Roboto', sans-serif" }}
               >
                 {item.num}
               </div>
 
               <h3
                 className="mb-3 text-xl font-bold text-white md:text-2xl"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ fontFamily: "'Roboto', sans-serif" }}
               >
                 {item.title}
               </h3>
@@ -1716,7 +1716,7 @@ function AboutSection({ booksCount }) {
               <div key={label} className="text-center">
                 <div
                   className="text-3xl font-black text-blue-700 dark:text-blue-400"
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "-0.03em" }}
+                  style={{ fontFamily: "'Roboto', sans-serif", letterSpacing: "-0.03em" }}
                 >
                   {num}
                 </div>
@@ -1779,7 +1779,7 @@ function AboutSection({ booksCount }) {
             animate={{ y: [0, -6, 0] }}
           >
             <div className="text-center">
-              <div className="text-2xl font-black text-blue-700 dark:text-blue-300" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>✦ Aivira</div>
+              <div className="text-2xl font-black text-blue-700 dark:text-blue-300" style={{ fontFamily: "'Roboto', sans-serif" }}>✦ Aivira</div>
               <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Knowledge On Every Page</div>
             </div>
           </motion.div>
@@ -1888,7 +1888,7 @@ function LatestNews() {
               </div>
               <h3
                 className="text-2xl font-bold leading-snug text-white transition-colors group-hover:text-blue-200 md:text-3xl"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ fontFamily: "'Roboto', sans-serif" }}
               >
                 {featured.title}
               </h3>
@@ -1940,7 +1940,7 @@ function LatestNews() {
                   </div>
                   <h3
                     className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors duration-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-base"
-                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    style={{ fontFamily: "'Roboto', sans-serif" }}
                   >
                     {post.title}
                   </h3>

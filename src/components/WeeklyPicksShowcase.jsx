@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { ShoppingCart, Star, ArrowRight, Bookmark } from "lucide-react";
@@ -223,7 +223,7 @@ function SpotlightBook({ book }) {
           <Link to={`/product/${book.slug}`} className="group/title block">
             <h3
               className="mb-2 text-4xl font-extrabold leading-[1.05] text-white transition-colors duration-300 group-hover/title:text-blue-200 lg:text-5xl"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "-0.02em" }}
+              style={{ fontFamily: "'Roboto', sans-serif", letterSpacing: "-0.02em" }}
             >
               {book.title}
             </h3>
@@ -241,11 +241,11 @@ function SpotlightBook({ book }) {
           style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)" }}
         >
           <div className="absolute -left-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.5)]">
-            <span style={{ fontFamily: "Georgia, serif", fontSize: "1.4rem", lineHeight: 1, paddingTop: 2 }}>&ldquo;</span>
+            <span style={{ fontFamily: "'Roboto', sans-serif", fontSize: "1.4rem", lineHeight: 1, paddingTop: 2 }}>&ldquo;</span>
           </div>
           <p
             className="text-base italic leading-relaxed text-blue-100/80"
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.1rem" }}
+            style={{ fontFamily: "'Roboto', sans-serif", fontSize: "1.1rem" }}
           >
             A standout pick with a sharp point of view and a story that keeps its hold through the final page.
           </p>
@@ -341,7 +341,7 @@ function RunnerUpBook({ book, index }) {
           className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 select-none text-[3.5rem] font-black leading-none"
           style={{
             color: "rgba(255,255,255,0.04)",
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontFamily: "'Roboto', sans-serif",
             opacity: hovered ? 0.08 : 0.04,
             transition: "opacity 0.3s",
           }}
@@ -377,7 +377,7 @@ function RunnerUpBook({ book, index }) {
           </span>
           <p
             className="line-clamp-2 text-base font-bold leading-snug text-white/90 transition-colors duration-300 group-hover:text-blue-200"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            style={{ fontFamily: "'Roboto', sans-serif" }}
           >
             {book.title}
           </p>
