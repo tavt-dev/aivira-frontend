@@ -11,6 +11,35 @@ import { server } from "../test/server.js";
 const API = "http://localhost/api/v1";
 
 describe("OrdersPage payment actions", () => {
+  it("renders list preview without requesting order detail", async () => {
+    seedAuth(customerUser);
+    const detailRequest = vi.fn();
+    const summary = {
+      ...order,
+      items: undefined,
+      itemCount: 3,
+      previewItem: {
+        productId: 10,
+        productName: "Clean Architecture",
+        thumbnailUrl: "https://example.test/order-cover.jpg"
+      }
+    };
+    server.use(
+      http.get(`${API}/orders`, () => HttpResponse.json(apiResponse(pageResponse([summary])))),
+      http.get(`${API}/orders/:id`, () => {
+        detailRequest();
+        return HttpResponse.json(apiResponse(order));
+      })
+    );
+
+    renderWithProviders(<OrdersPage onAuth={() => {}} />, { route: "/orders" });
+
+    expect(await screen.findByText("Clean Architecture")).toBeInTheDocument();
+    expect(screen.getByAltText("Clean Architecture")).toHaveAttribute("src", "https://example.test/order-cover.jpg");
+    expect(screen.getByText(/\+2/)).toBeInTheDocument();
+    expect(detailRequest).not.toHaveBeenCalled();
+  });
+
   it("continues a pending online payment with the existing payment group", async () => {
     seedAuth(customerUser);
     const user = userEvent.setup();

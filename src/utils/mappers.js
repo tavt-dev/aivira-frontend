@@ -18,7 +18,11 @@ export function pageMeta(payload, defaults = {}) {
     totalElements > 0 ? Math.ceil(totalElements / Math.max(pageSize, 1)) : 1
   );
   const totalPages = totalElements > 0 ? Math.max(rawTotalPages, 1) : rawTotalPages;
-  const rawCurrentPage = payload?.currentPage ?? (payload?.number != null ? Number(payload.number) + 1 : payload?.page) ?? defaults.page ?? 1;
+  const rawCurrentPage =
+    payload?.currentPage ??
+    (payload?.number != null ? Number(payload.number) + 1 : payload?.page) ??
+    defaults.page ??
+    1;
   const currentPage = clamp(positiveInt(rawCurrentPage, 1), 1, Math.max(totalPages, 1));
 
   return {
@@ -80,7 +84,14 @@ export function normalizeCategoryHighlight(row, fallback = {}) {
 
 export function normalizeBook(row, fallback = {}) {
   const variation = row?.variations?.find((item) => item.active) || row?.variations?.[0] || {};
-  const image = row?.thumbnailUrl || row?.image || row?.cover || row?.media?.find((item) => item.primary)?.mediaUrl || fallback.cover || fallback.image || FALLBACK_IMAGE;
+  const image =
+    row?.thumbnailUrl ||
+    row?.image ||
+    row?.cover ||
+    row?.media?.find((item) => item.primary)?.mediaUrl ||
+    fallback.cover ||
+    fallback.image ||
+    FALLBACK_IMAGE;
   return {
     id: row?.id ?? fallback.id ?? row?.slug,
     productId: row?.productId ?? row?.id ?? fallback.id,
@@ -158,6 +169,25 @@ export function normalizeReview(row) {
 }
 
 export function normalizeOrder(row) {
+  const itemSource = row?.items || row?.orderItems || row?.lineItems;
+  const rawItems = Array.isArray(itemSource) ? itemSource : [];
+  const previewItem =
+    row?.previewItem ||
+    row?.firstItem ||
+    (row?.firstItemName || row?.firstProductName || row?.firstItemImageUrl || row?.firstProductImageUrl
+      ? {
+          productName: row.firstItemName || row.firstProductName,
+          thumbnailUrl: row.firstItemImageUrl || row.firstProductImageUrl,
+          quantity: 1
+        }
+      : null);
+  const normalizedItems = rawItems.length
+    ? rawItems.map(normalizeOrderItem)
+    : previewItem
+      ? [normalizeOrderItem(previewItem)]
+      : [];
+  const normalizedPreviewItem = previewItem ? normalizeOrderItem(previewItem) : normalizedItems[0] || null;
+
   return {
     ...row,
     id: row?.id,
@@ -181,8 +211,9 @@ export function normalizeOrder(row) {
     shippingWard: row?.shippingWard || row?.ward,
     shippingDistrict: row?.shippingDistrict || row?.district,
     shippingCity: row?.shippingCity || row?.city,
-    itemCount: row?.itemCount || row?.items?.length || 0,
-    items: (row?.items || []).map(normalizeOrderItem),
+    itemCount: row?.itemCount || row?.totalItemCount || row?.totalItems || rawItems.length || 0,
+    previewItem: normalizedPreviewItem,
+    items: normalizedItems,
     createdAt: row?.createdAt,
     updatedAt: row?.updatedAt
   };
@@ -198,11 +229,11 @@ export function normalizeOrderItem(row) {
     id: row?.id ?? row?.orderItemId,
     productId: row?.productId,
     productVariationId: row?.productVariationId,
-    productName: row?.productName || row?.title || "Aivira Book",
+    productName: row?.productName || row?.productTitle || row?.name || row?.title || "",
     sku: row?.sku,
     variationColor: row?.variationColor || row?.color,
     variationSize: row?.variationSize || row?.size,
-    thumbnailUrl: row?.thumbnailUrl || row?.image,
+    thumbnailUrl: row?.thumbnailUrl || row?.imageUrl || row?.coverUrl || row?.image,
     basePrice: Number(row?.basePrice || 0),
     additionalPrice: Number(row?.additionalPrice || 0),
     discountAmount: Number(row?.discountAmount || 0),
