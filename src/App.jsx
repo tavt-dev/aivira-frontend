@@ -15,6 +15,8 @@ import CategoryPage from "./pages/CategoryPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import GoogleOAuthResultPage from "./pages/GoogleOAuthResultPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import BlogPage from "./pages/BlogPage.jsx";
+import BlogPostPage from "./pages/BlogPostPage.jsx";
 import OrdersPage from "./pages/OrdersPage.jsx";
 import PaymentResultPage from "./pages/PaymentResultPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -29,6 +31,7 @@ import AdminPermissionsPage from "./pages/admin/AdminPermissionsPage.jsx";
 import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminReviewsPage from "./pages/admin/AdminReviewsPage.jsx";
 import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
+import AdminBlogPage from "./pages/admin/AdminBlogPage.jsx";
 import { initMotionEffects } from "./utils/motion.js";
 import { getCurrentUser } from "./utils/storage.js";
 
@@ -43,10 +46,11 @@ export default function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
   const searchParams = new URLSearchParams(location.search);
   const authParam = searchParams.get("auth");
-  const isAuthRequest = location.pathname === "/login"
-    || location.pathname === "/register"
-    || authParam === "login"
-    || authParam === "register";
+  const isAuthRequest =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    authParam === "login" ||
+    authParam === "register";
   const authNextPath = sanitizeNextPath(searchParams.get("next"));
 
   useEffect(() => {
@@ -117,9 +121,7 @@ export default function App() {
     <ToastProvider>
       <ConfirmDialogProvider>
         {/* Brand splash — shown on every page load, fades out in ~880ms */}
-        {!pageLoaderDone && !isAdminRoute && (
-          <PageLoader onDone={() => setPageLoaderDone(true)} />
-        )}
+        {!pageLoaderDone && !isAdminRoute && <PageLoader onDone={() => setPageLoaderDone(true)} />}
         {!isAdminRoute && <MotionChrome />}
         <RouteScrollManager />
         <Routes>
@@ -139,6 +141,7 @@ export default function App() {
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="products" element={<AdminProductsPage />} />
             <Route path="categories" element={<AdminCategoriesPage />} />
+            <Route path="blog" element={<AdminBlogPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
             <Route path="orders-pending" element={<Navigate to="/admin/orders" replace />} />
             <Route path="discounts" element={<AdminDiscountsPage />} />
@@ -157,12 +160,42 @@ export default function App() {
             <Route path="/verify-otp" element={<Navigate to="/login" replace />} />
             <Route path="/category" element={<Navigate to="/category/all" replace />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/books/:slug" element={<LegacyProductRedirect />} />
             <Route path="/product/:slug" element={<ProductPage onAuth={() => openAuth("login")} />} />
-            <Route path="/cart" element={<RequireAuth><CartPage onAuth={() => openAuth("login")} /></RequireAuth>} />
-            <Route path="/checkout" element={<RequireAuth><CheckoutPage onAuth={() => openAuth("login")} /></RequireAuth>} />
-            <Route path="/orders" element={<RequireAuth><OrdersPage onAuth={() => openAuth("login")} /></RequireAuth>} />
-            <Route path="/account" element={<RequireAuth><AccountPage onAuth={() => openAuth("login")} /></RequireAuth>} />
+            <Route
+              path="/cart"
+              element={
+                <RequireAuth>
+                  <CartPage onAuth={() => openAuth("login")} />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <RequireAuth>
+                  <CheckoutPage onAuth={() => openAuth("login")} />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <RequireAuth>
+                  <OrdersPage onAuth={() => openAuth("login")} />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <RequireAuth>
+                  <AccountPage onAuth={() => openAuth("login")} />
+                </RequireAuth>
+              }
+            />
             <Route path="/payment/result" element={<Navigate to="/payment-result" replace />} />
             <Route path="/payment-result" element={<PaymentResultPage />} />
             <Route path="*" element={<NotFoundPage />} />

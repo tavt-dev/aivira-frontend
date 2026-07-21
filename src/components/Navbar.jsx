@@ -1,7 +1,20 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ChevronDown, Compass, KeyRound, LogOut, Menu, Moon, Search, Settings, ShoppingBag, Sun, User, UserCircle } from "lucide-react";
+import {
+  ChevronDown,
+  Compass,
+  KeyRound,
+  LogOut,
+  Menu,
+  Moon,
+  Search,
+  Settings,
+  ShoppingBag,
+  Sun,
+  User,
+  UserCircle
+} from "lucide-react";
 import { logout as logoutRequest } from "../api/authApi.js";
 import { getCart } from "../api/cartApi.js";
 import { getProducts } from "../api/catalogApi.js";
@@ -154,13 +167,15 @@ export default function Navbar({ solid, user, onAuth }) {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 md:px-8">
         <Link to="/" onClick={closePanels} className="group flex flex-shrink-0 items-center gap-3">
-          <img 
-             src="/logo.png" 
-             alt="Aivira Bookstore" 
-             className={[
-                "h-10 w-auto rounded-lg object-contain transition-transform duration-500 group-hover:scale-105",
-                isSolid ? "shadow-[0_4px_14px_rgba(0,0,0,0.18)]" : "border border-white/10 shadow-[0_4px_14px_rgba(0,0,0,0.4)]"
-             ].join(" ")}
+          <img
+            src="/logo.png"
+            alt="Aivira Bookstore"
+            className={[
+              "h-10 w-auto rounded-lg object-contain transition-transform duration-500 group-hover:scale-105",
+              isSolid
+                ? "shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
+                : "border border-white/10 shadow-[0_4px_14px_rgba(0,0,0,0.4)]"
+            ].join(" ")}
           />
           <span className="flex flex-col leading-none">
             <span
@@ -188,7 +203,9 @@ export default function Navbar({ solid, user, onAuth }) {
             <Search
               className={[
                 "absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors duration-300",
-                isSolid ? "text-slate-400 group-focus-within:text-blue-500" : "text-white/60 group-focus-within:text-white"
+                isSolid
+                  ? "text-slate-400 group-focus-within:text-blue-500"
+                  : "text-white/60 group-focus-within:text-white"
               ].join(" ")}
               strokeWidth={2.5}
             />
@@ -252,23 +269,67 @@ export default function Navbar({ solid, user, onAuth }) {
 
         <div className={["hidden items-center gap-8 transition-colors duration-500 md:flex", navTextClass].join(" ")}>
           <div className="flex items-center gap-6 text-sm font-bold tracking-wide">
-            <NavLink to="/" className={({ isActive }) => ["group relative flex items-center gap-2 transition-colors hover:text-blue-500", isActive ? activeTextClass : ""].join(" ")}>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                [
+                  "group relative flex items-center gap-2 transition-colors hover:text-blue-500",
+                  isActive ? activeTextClass : ""
+                ].join(" ")
+              }
+            >
               <span>{t("common.home")}</span>
               <span className="absolute -bottom-1.5 left-0 h-[2px] w-full origin-left scale-x-0 rounded-full bg-blue-500 transition-transform group-hover:scale-x-100" />
             </NavLink>
-            <NavLink to="/category/all" className={({ isActive }) => ["group relative flex items-center gap-2 transition-colors hover:text-blue-500", isActive ? activeTextClass : ""].join(" ")}>
+            <NavLink
+              to="/category/all"
+              className={({ isActive }) =>
+                [
+                  "group relative flex items-center gap-2 transition-colors hover:text-blue-500",
+                  isActive ? activeTextClass : ""
+                ].join(" ")
+              }
+            >
               <Compass className="h-4 w-4 opacity-70 transition-opacity group-hover:opacity-100" />
               <span>{t("common.explore")}</span>
               <span className="absolute -bottom-1.5 left-0 h-[2px] w-full origin-left scale-x-0 rounded-full bg-blue-500 transition-transform group-hover:scale-x-100" />
             </NavLink>
-            <NavLink to="/orders" className={({ isActive }) => ["group relative flex items-center gap-2 transition-colors hover:text-blue-500", isActive ? activeTextClass : ""].join(" ")}>
+            <NavLink
+              to="/blog"
+              className={({ isActive }) =>
+                [
+                  "group relative flex items-center gap-2 transition-colors hover:text-blue-500",
+                  isActive ? activeTextClass : ""
+                ].join(" ")
+              }
+            >
+              <span>{t("common.news")}</span>
+              <span className="absolute -bottom-1.5 left-0 h-[2px] w-full origin-left scale-x-0 rounded-full bg-blue-500 transition-transform group-hover:scale-x-100" />
+            </NavLink>
+            <NavLink
+              to="/orders"
+              className={({ isActive }) =>
+                [
+                  "group relative flex items-center gap-2 transition-colors hover:text-blue-500",
+                  isActive ? activeTextClass : ""
+                ].join(" ")
+              }
+            >
               <span>{t("common.orders")}</span>
               <span className="absolute -bottom-1.5 left-0 h-[2px] w-full origin-left scale-x-0 rounded-full bg-blue-500 transition-transform group-hover:scale-x-100" />
             </NavLink>
           </div>
 
           <div className="flex items-center gap-4">
-            <NavLink to="/cart" className={({ isActive }) => ["relative rounded-full p-2 transition-colors hover:bg-slate-500/10", isActive ? activeTextClass : ""].join(" ")}>
+            <NavLink
+              to="/cart"
+              className={({ isActive }) =>
+                [
+                  "relative rounded-full p-2 transition-colors hover:bg-slate-500/10",
+                  isActive ? activeTextClass : ""
+                ].join(" ")
+              }
+            >
               <ShoppingBag className="h-5 w-5" strokeWidth={2} />
               {cartCount > 0 && (
                 <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-bold text-white ring-2 ring-white">
@@ -288,34 +349,54 @@ export default function Navbar({ solid, user, onAuth }) {
                   onClick={() => setUserMenuOpen((value) => !value)}
                   className={[
                     "flex items-center gap-2 rounded-full border p-1.5 pl-2 pr-3 transition-all duration-300 hover:shadow-md",
-                    isSolid ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300" : "border-white/20 bg-white/10 text-white hover:bg-white/20"
+                    isSolid
+                      ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                      : "border-white/20 bg-white/10 text-white hover:bg-white/20"
                   ].join(" ")}
                   aria-expanded={userMenuOpen}
                 >
-                  <div className={["flex h-7 w-7 items-center justify-center rounded-full", isSolid ? "bg-slate-100" : "bg-white/20"].join(" ")}>
+                  <div
+                    className={[
+                      "flex h-7 w-7 items-center justify-center rounded-full",
+                      isSolid ? "bg-slate-100" : "bg-white/20"
+                    ].join(" ")}
+                  >
                     <User className="h-4 w-4" />
                   </div>
                   <span className="max-w-[140px] truncate text-sm font-bold">
                     {t("nav.greeting", { name: displayName })}
                   </span>
-                  <ChevronDown className={["h-4 w-4 transition-transform", userMenuOpen ? "rotate-180" : ""].join(" ")} />
+                  <ChevronDown
+                    className={["h-4 w-4 transition-transform", userMenuOpen ? "rotate-180" : ""].join(" ")}
+                  />
                 </button>
 
                 {userMenuOpen && (
                   <div className="absolute right-0 top-[calc(100%+12px)] z-50 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 text-slate-700 shadow-2xl shadow-slate-950/15">
                     <div className="mb-1 rounded-xl bg-slate-50 px-3 py-3">
                       <p className="truncate text-sm font-black text-slate-950">{displayName}</p>
-                      <p className="mt-0.5 truncate text-xs font-semibold text-slate-500">{user.email || t("account.aiviraAccount")}</p>
+                      <p className="mt-0.5 truncate text-xs font-semibold text-slate-500">
+                        {user.email || t("account.aiviraAccount")}
+                      </p>
                     </div>
                     <UserMenuLink to="/account" icon={UserCircle} label={t("common.account")} onClick={closePanels} />
                     <UserMenuLink to="/account" icon={Settings} label={t("common.settings")} onClick={closePanels} />
-                    <UserMenuLink to="/account#security" icon={KeyRound} label={t("common.changePassword")} onClick={closePanels} />
+                    <UserMenuLink
+                      to="/account#security"
+                      icon={KeyRound}
+                      label={t("common.changePassword")}
+                      onClick={closePanels}
+                    />
                     <button
                       type="button"
                       onClick={switchTheme}
                       className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-slate-100"
                     >
-                      {isDark ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-500" />}
+                      {isDark ? (
+                        <Sun className="h-4 w-4 text-amber-500" />
+                      ) : (
+                        <Moon className="h-4 w-4 text-slate-500" />
+                      )}
                       <span>{isDark ? t("common.lightMode") : t("common.darkMode")}</span>
                     </button>
                     <div className="my-1 h-px bg-slate-100" />
@@ -336,10 +417,17 @@ export default function Navbar({ solid, user, onAuth }) {
                 onClick={onAuth}
                 className={[
                   "flex items-center gap-2 rounded-full border p-1.5 pl-2 pr-4 transition-all duration-300 hover:shadow-md",
-                  isSolid ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300" : "border-white/20 bg-white/10 text-white hover:bg-white/20"
+                  isSolid
+                    ? "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                    : "border-white/20 bg-white/10 text-white hover:bg-white/20"
                 ].join(" ")}
               >
-                <div className={["flex h-6 w-6 items-center justify-center rounded-full", isSolid ? "bg-slate-100" : "bg-white/20"].join(" ")}>
+                <div
+                  className={[
+                    "flex h-6 w-6 items-center justify-center rounded-full",
+                    isSolid ? "bg-slate-100" : "bg-white/20"
+                  ].join(" ")}
+                >
                   <User className="h-3.5 w-3.5" />
                 </div>
                 <span className="text-sm font-bold">{t("common.login")}</span>
@@ -349,7 +437,14 @@ export default function Navbar({ solid, user, onAuth }) {
         </div>
 
         <div className="flex items-center gap-4 md:hidden">
-          <NavLink to="/cart" onClick={() => setMobileOpen(false)} className={["relative rounded-full p-2 transition-colors hover:bg-slate-500/10", isSolid ? "text-slate-700" : "text-white"].join(" ")}>
+          <NavLink
+            to="/cart"
+            onClick={() => setMobileOpen(false)}
+            className={[
+              "relative rounded-full p-2 transition-colors hover:bg-slate-500/10",
+              isSolid ? "text-slate-700" : "text-white"
+            ].join(" ")}
+          >
             <ShoppingBag className="h-5 w-5" strokeWidth={2} />
             {cartCount > 0 && (
               <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-bold text-white ring-2 ring-white">
@@ -360,7 +455,10 @@ export default function Navbar({ solid, user, onAuth }) {
           <button
             type="button"
             onClick={() => setMobileOpen((value) => !value)}
-            className={["rounded-lg p-2 transition-colors", isSolid ? "text-slate-900 hover:bg-slate-100" : "bg-white/80 text-slate-900 hover:bg-white"].join(" ")}
+            className={[
+              "rounded-lg p-2 transition-colors",
+              isSolid ? "text-slate-900 hover:bg-slate-100" : "bg-white/80 text-slate-900 hover:bg-white"
+            ].join(" ")}
             aria-label={t("nav.toggleMenu")}
           >
             <Menu className="h-6 w-6" />
@@ -384,7 +482,12 @@ export default function Navbar({ solid, user, onAuth }) {
           {results.length > 0 && (
             <div className="mb-4 overflow-hidden rounded-xl border border-slate-100">
               {results.map((book) => (
-                <Link key={book.id} to={`/product/${book.slug}`} onClick={closePanels} className="flex items-center gap-3 border-b border-slate-100 p-3 last:border-b-0">
+                <Link
+                  key={book.id}
+                  to={`/product/${book.slug}`}
+                  onClick={closePanels}
+                  className="flex items-center gap-3 border-b border-slate-100 p-3 last:border-b-0"
+                >
                   <img src={book.image || book.cover} alt={book.title} className="h-14 w-10 rounded object-cover" />
                   <span className="min-w-0">
                     <strong className="line-clamp-1 text-sm text-slate-900">{book.title}</strong>
@@ -396,9 +499,18 @@ export default function Navbar({ solid, user, onAuth }) {
           )}
 
           <div className="grid gap-2 text-sm font-bold text-slate-700">
-            <NavLink to="/" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.home")}</NavLink>
-            <NavLink to="/category/all" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.categories")}</NavLink>
-            <NavLink to="/orders" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.orders")}</NavLink>
+            <NavLink to="/" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+              {t("common.home")}
+            </NavLink>
+            <NavLink to="/category/all" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+              {t("common.categories")}
+            </NavLink>
+            <NavLink to="/blog" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+              {t("common.news")}
+            </NavLink>
+            <NavLink to="/orders" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+              {t("common.orders")}
+            </NavLink>
             <div className="px-3 py-2">
               <LanguageSwitcher compact />
             </div>
@@ -408,9 +520,19 @@ export default function Navbar({ solid, user, onAuth }) {
                   <p className="truncate text-sm font-black text-slate-950">{displayName}</p>
                   <p className="mt-0.5 truncate text-xs text-slate-500">{user.email || t("account.aiviraAccount")}</p>
                 </div>
-                <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.account")}</NavLink>
-                <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.settings")}</NavLink>
-                <NavLink to="/account#security" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">{t("common.changePassword")}</NavLink>
+                <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+                  {t("common.account")}
+                </NavLink>
+                <NavLink to="/account" onClick={closePanels} className="rounded-xl px-3 py-2 hover:bg-slate-100">
+                  {t("common.settings")}
+                </NavLink>
+                <NavLink
+                  to="/account#security"
+                  onClick={closePanels}
+                  className="rounded-xl px-3 py-2 hover:bg-slate-100"
+                >
+                  {t("common.changePassword")}
+                </NavLink>
                 <button
                   type="button"
                   onClick={switchTheme}
@@ -418,7 +540,11 @@ export default function Navbar({ solid, user, onAuth }) {
                 >
                   {isDark ? t("common.lightMode") : t("common.darkMode")}
                 </button>
-                <button type="button" onClick={logout} className="rounded-xl px-3 py-2 text-left text-red-600 hover:bg-red-50">
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="rounded-xl px-3 py-2 text-left text-red-600 hover:bg-red-50"
+                >
                   {t("common.logout")}
                 </button>
               </>

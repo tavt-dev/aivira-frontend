@@ -8,3 +8,4 @@ export * from "./adminCouponsApi.js";
 export * from "./adminPromotionsApi.js";
 export * from "./adminReviewsApi.js";
 export * from "./adminDashboardApi.js";
+export * from "./blogApi.js";

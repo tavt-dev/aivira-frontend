@@ -16,22 +16,23 @@ const CATEGORY_FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=800&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=800&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop"
 ];
 
 // Accent color per category index — harmonizes with the blue brand palette
 const CAT_ACCENTS = [
-  { color: "#f59e0b", glow: "rgba(245,158,11,0.35)" },   // amber
-  { color: "#3b82f6", glow: "rgba(59,130,246,0.35)" },   // blue (brand)
-  { color: "#ec4899", glow: "rgba(236,72,153,0.35)" },   // pink
-  { color: "#10b981", glow: "rgba(16,185,129,0.35)" },   // emerald
-  { color: "#8b5cf6", glow: "rgba(139,92,246,0.35)" },   // violet
-  { color: "#38bdf8", glow: "rgba(56,189,248,0.35)" },   // sky
+  { color: "#f59e0b", glow: "rgba(245,158,11,0.35)" }, // amber
+  { color: "#3b82f6", glow: "rgba(59,130,246,0.35)" }, // blue (brand)
+  { color: "#ec4899", glow: "rgba(236,72,153,0.35)" }, // pink
+  { color: "#10b981", glow: "rgba(16,185,129,0.35)" }, // emerald
+  { color: "#8b5cf6", glow: "rgba(139,92,246,0.35)" }, // violet
+  { color: "#38bdf8", glow: "rgba(56,189,248,0.35)" } // sky
 ];
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { featured, newArrivals, bestselling, categoryHighlights, books, loading, message } = useStorefrontHome();
+  const { featured, newArrivals, bestselling, categoryHighlights, latestPosts, books, loading, message } =
+    useStorefrontHome();
   const orbitBooks = featured.length ? featured : newArrivals.length ? newArrivals : bestselling;
   const [activeOrbit, setActiveOrbit] = useState(0);
 
@@ -68,9 +69,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md"
             >
               <span className="h-2 w-2 animate-pulse rounded-full bg-blue-400" />
-              <span className="text-sm font-medium tracking-wide text-slate-300">
-                {t("home.heroKicker")}
-              </span>
+              <span className="text-sm font-medium tracking-wide text-slate-300">{t("home.heroKicker")}</span>
             </motion.div>
 
             <motion.h1
@@ -86,7 +85,10 @@ export default function HomePage() {
                 {t("home.titleWorld")}
               </span>
               <br />
-              <em className="mt-2 block text-3xl font-light italic text-slate-400 md:text-5xl" style={{ fontFamily: "var(--f-serif)" }}>
+              <em
+                className="mt-2 block text-3xl font-light italic text-slate-400 md:text-5xl"
+                style={{ fontFamily: "var(--f-serif)" }}
+              >
                 {t("home.subtitle")}
               </em>
             </motion.h1>
@@ -112,10 +114,14 @@ export default function HomePage() {
                 style={{
                   borderRadius: "var(--r-pill)",
                   background: "linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6)",
-                  boxShadow: "0 0 40px rgba(37,99,235,0.4), 0 4px 16px rgba(0,0,0,0.25)",
+                  boxShadow: "0 0 40px rgba(37,99,235,0.4), 0 4px 16px rgba(0,0,0,0.25)"
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.boxShadow="0 0 60px rgba(56,189,248,0.6), 0 8px 24px rgba(0,0,0,0.3)"}
-                onMouseLeave={(e) => e.currentTarget.style.boxShadow="0 0 40px rgba(37,99,235,0.4), 0 4px 16px rgba(0,0,0,0.25)"}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow = "0 0 60px rgba(56,189,248,0.6), 0 8px 24px rgba(0,0,0,0.3)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.boxShadow = "0 0 40px rgba(37,99,235,0.4), 0 4px 16px rgba(0,0,0,0.25)")
+                }
               >
                 {t("home.exploreLibrary")}
               </Link>
@@ -125,7 +131,7 @@ export default function HomePage() {
                 style={{
                   borderRadius: "var(--r-pill)",
                   border: "1.5px solid rgba(255,255,255,0.2)",
-                  background: "rgba(255,255,255,0.06)",
+                  background: "rgba(255,255,255,0.06)"
                 }}
               >
                 {t("home.viewCart")}
@@ -140,9 +146,7 @@ export default function HomePage() {
             >
               <div>
                 <strong className="block font-display text-4xl text-blue-400">{books.length}+</strong>
-                <span className="mt-1 block text-xs uppercase tracking-widest text-slate-400">
-                  {t("home.titles")}
-                </span>
+                <span className="mt-1 block text-xs uppercase tracking-widest text-slate-400">{t("home.titles")}</span>
               </div>
               <div>
                 <strong className="block font-display text-4xl text-white">COD</strong>
@@ -152,9 +156,7 @@ export default function HomePage() {
               </div>
               <div>
                 <strong className="block font-display text-4xl text-white">VNPay</strong>
-                <span className="mt-1 block text-xs uppercase tracking-widest text-slate-400">
-                  {t("home.momo")}
-                </span>
+                <span className="mt-1 block text-xs uppercase tracking-widest text-slate-400">{t("home.momo")}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -172,8 +174,17 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-[#0a1128] px-4 py-24 md:px-8">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
         <div className="mx-auto max-w-7xl relative z-10">
-          <SectionHead chip={t("home.weeklyPicksChip")} title={t("home.weeklyPicks")} link="/category/all" dark={true} />
-          {message && <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-700">{message}</div>}
+          <SectionHead
+            chip={t("home.weeklyPicksChip")}
+            title={t("home.weeklyPicks")}
+            link="/category/all"
+            dark={true}
+          />
+          {message && (
+            <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-700">
+              {message}
+            </div>
+          )}
           <WeeklyPicksShowcase books={featured} loading={loading} emptyMessage={t("home.noFeaturedBooks")} />
         </div>
       </section>
@@ -204,7 +215,7 @@ export default function HomePage() {
       <HowItWorks />
 
       {/* ── Latest News — light cream ── */}
-      <LatestNews />
+      <LatestNews posts={latestPosts} loading={loading} />
     </div>
   );
 }
@@ -216,6 +227,7 @@ function useStorefrontHome() {
     newArrivals: [],
     bestselling: [],
     categoryHighlights: [],
+    latestPosts: [],
     books: []
   });
   const [loading, setLoading] = useState(true);
@@ -243,6 +255,7 @@ function useStorefrontHome() {
             newArrivals: [],
             bestselling: [],
             categoryHighlights: [],
+            latestPosts: [],
             books: []
           });
           setMessage(fallbackError.message || error.message || t("home.storefrontFailed"));
@@ -275,6 +288,7 @@ function toHomeState(payload) {
     newArrivals,
     bestselling,
     categoryHighlights,
+    latestPosts: payload?.latestPosts || [],
     books: uniqueBooks([...featured, ...newArrivals, ...bestselling])
   };
 }
@@ -310,7 +324,8 @@ async function getStorefrontFallback(signal) {
     categoryHighlights: categoryRows.map((category) => ({
       ...category,
       categoryId: category.categoryId ?? category.id
-    }))
+    })),
+    latestPosts: []
   };
 }
 
@@ -336,7 +351,7 @@ function HeroBookOrbit({ books, activeOrbit }) {
     { x: -132, y: -14, rotate: -5, scale: 0.94, z: 20, opacity: 0.9 },
     { x: 0, y: -34, rotate: 0, scale: 1.12, z: 40, opacity: 1 },
     { x: 138, y: -12, rotate: 5, scale: 0.95, z: 22, opacity: 0.9 },
-    { x: 268, y: 18, rotate: 11, scale: 0.82, z: 10, opacity: 0.72 },
+    { x: 268, y: 18, rotate: 11, scale: 0.82, z: 10, opacity: 0.72 }
   ];
 
   const visibleBooks = useMemo(() => {
@@ -377,25 +392,25 @@ function HeroBookOrbit({ books, activeOrbit }) {
               x: position.x,
               y: position.y + 28,
               rotate: position.rotate,
-              scale: position.scale * 0.92,
+              scale: position.scale * 0.92
             }}
             animate={{
               opacity: position.opacity,
               x: position.x,
               y: position.y,
               rotate: position.rotate,
-              scale: position.scale,
+              scale: position.scale
             }}
             transition={{
               opacity: { duration: 0.5 },
               x: { type: "spring", stiffness: 44, damping: 18, mass: 1.1 },
               y: { type: "spring", stiffness: 44, damping: 18, mass: 1.1 },
               rotate: { type: "spring", stiffness: 48, damping: 19, mass: 1 },
-              scale: { type: "spring", stiffness: 48, damping: 19, mass: 1 },
+              scale: { type: "spring", stiffness: 48, damping: 19, mass: 1 }
             }}
             className="absolute left-1/2 top-1/2 aspect-[2/3] w-[190px] cursor-pointer rounded-xl will-change-transform"
             style={{
-              zIndex: position.z,
+              zIndex: position.z
             }}
           >
             <motion.div
@@ -404,7 +419,7 @@ function HeroBookOrbit({ books, activeOrbit }) {
                 duration: 4.8 + index * 0.25,
                 ease: "easeInOut",
                 repeat: Infinity,
-                repeatType: "mirror",
+                repeatType: "mirror"
               }}
               className="absolute left-0 top-0 h-full w-full"
             >
@@ -421,12 +436,8 @@ function HeroBookOrbit({ books, activeOrbit }) {
                 <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/60 via-transparent to-white/25 opacity-80" />
                 <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/10 to-transparent opacity-70" />
                 <div className="absolute bottom-0 left-0 right-0 translate-y-3 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent p-4 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <p className="line-clamp-2 font-serif text-lg font-bold leading-tight text-white">
-                    {book.title}
-                  </p>
-                  <p className="mt-1 line-clamp-1 text-xs font-medium text-slate-300">
-                    {book.author}
-                  </p>
+                  <p className="line-clamp-2 font-serif text-lg font-bold leading-tight text-white">{book.title}</p>
+                  <p className="mt-1 line-clamp-1 text-xs font-medium text-slate-300">{book.author}</p>
                 </div>
                 <div className="pointer-events-none absolute inset-0 rounded-[22px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_18px_0_28px_rgba(2,6,23,0.28)]" />
               </Link>
@@ -483,9 +494,7 @@ function Ticker() {
   const text = t("home.ticker");
 
   return (
-    <div
-      className="relative flex overflow-hidden whitespace-nowrap border-y border-blue-900/50 dark:border-blue-500/20 bg-[#0a1128] py-4"
-    >
+    <div className="relative flex overflow-hidden whitespace-nowrap border-y border-blue-900/50 dark:border-blue-500/20 bg-[#0a1128] py-4">
       <motion.div
         animate={{ x: ["0%", "-50%"] }}
         transition={{ ease: "linear", duration: 35, repeat: Infinity }}
@@ -533,23 +542,20 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
       transition={{
         duration: 0.7,
         delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1]
       }}
       style={{ perspective: "1000px" }}
     >
       <Link
         ref={cardRef}
         to={`/category/${category.slug}`}
-        className={[
-          "group relative block w-full overflow-hidden rounded-2xl bg-slate-900",
-          getAspect(index),
-        ].join(" ")}
+        className={["group relative block w-full overflow-hidden rounded-2xl bg-slate-900", getAspect(index)].join(" ")}
         style={{
           boxShadow: isHovered
             ? `0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px ${accent.color}40, 0 0 60px ${accent.glow}`
             : "0 8px 32px rgba(0,0,0,0.2)",
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${isHovered ? 1.012 : 1})`,
-          transition: "box-shadow 0.5s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)",
+          transition: "box-shadow 0.5s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)"
         }}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
@@ -559,17 +565,14 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
         }}
       >
         {/* ── Background image with parallax ── */}
-        <div
-          className="absolute inset-0 overflow-hidden"
-          style={{ borderRadius: "inherit" }}
-        >
+        <div className="absolute inset-0 overflow-hidden" style={{ borderRadius: "inherit" }}>
           <img
             src={category.imageUrl || CATEGORY_FALLBACK_IMAGES[index % CATEGORY_FALLBACK_IMAGES.length]}
             alt={category.categoryName}
             className="absolute inset-[-6%] h-[112%] w-[112%] object-cover"
             style={{
               transform: `translate(${-offsetX * 3}%, ${-offsetY * 3}%) scale(1)`,
-              transition: isHovered ? "transform 0.1s linear" : "transform 0.6s cubic-bezier(0.22,1,0.36,1)",
+              transition: isHovered ? "transform 0.1s linear" : "transform 0.6s cubic-bezier(0.22,1,0.36,1)"
             }}
           />
         </div>
@@ -579,7 +582,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
           className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background: `radial-gradient(320px circle at ${mousePos.x}% ${mousePos.y}%, ${accent.color}22 0%, transparent 70%)`,
-            pointerEvents: "none",
+            pointerEvents: "none"
           }}
         />
 
@@ -588,7 +591,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
         <div
           className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
           style={{
-            background: `linear-gradient(135deg, ${accent.color}10 0%, transparent 50%, ${accent.glow} 100%)`,
+            background: `linear-gradient(135deg, ${accent.color}10 0%, transparent 50%, ${accent.glow} 100%)`
           }}
         />
 
@@ -596,7 +599,8 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
         <div
           className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
           style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")"
           }}
         />
 
@@ -606,7 +610,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
           style={{
             fontFamily: "'Roboto', sans-serif",
             fontSize: "clamp(7rem, 14vw, 11rem)",
-            letterSpacing: "-0.02em",
+            letterSpacing: "-0.02em"
           }}
         >
           {String(index + 1).padStart(2, "0")}
@@ -630,7 +634,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
             fontSize: "0.8rem",
             letterSpacing: "0.1em",
             color: "#fff",
-            boxShadow: `0 0 20px ${accent.glow}, inset 0 1px 0 rgba(255,255,255,0.25)`,
+            boxShadow: `0 0 20px ${accent.glow}, inset 0 1px 0 rgba(255,255,255,0.25)`
           }}
         >
           {String(index + 1).padStart(2, "0")}
@@ -649,12 +653,12 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
               borderTop: `1.5px solid ${accent.color}55`,
               borderLeft: "1px solid rgba(255,255,255,0.05)",
               borderRight: "1px solid rgba(255,255,255,0.05)",
-              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.07), 0 -8px 32px ${accent.glow}`,
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.07), 0 -8px 32px ${accent.glow}`
             }}
           >
             {/* Category name row */}
             <div className="p-4 pb-0">
-              <h3 
+              <h3
                 className="text-xl font-bold leading-tight tracking-tight text-white/95 md:text-2xl"
                 style={{ fontFamily: "'Roboto', sans-serif" }}
               >
@@ -675,7 +679,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
                     style={{
                       background: "rgba(255,255,255,0.08)",
                       border: "1px solid rgba(255,255,255,0.14)",
-                      color: "rgba(255,255,255,0.8)",
+                      color: "rgba(255,255,255,0.8)"
                     }}
                   >
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: accent.color }} />
@@ -691,12 +695,14 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
                 className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full"
                 animate={{
                   scale: isHovered ? 1.15 : 1,
-                  x: isHovered ? 1 : 0,
+                  x: isHovered ? 1 : 0
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 style={{
                   background: `linear-gradient(135deg, ${accent.color}, ${accent.color}bb)`,
-                  boxShadow: isHovered ? `0 0 20px ${accent.glow}, 0 4px 12px rgba(0,0,0,0.4)` : `0 2px 8px ${accent.glow}`,
+                  boxShadow: isHovered
+                    ? `0 0 20px ${accent.glow}, 0 4px 12px rgba(0,0,0,0.4)`
+                    : `0 2px 8px ${accent.glow}`
                 }}
               >
                 <ArrowRight size={13} color="#fff" strokeWidth={2.5} />
@@ -718,7 +724,7 @@ function CategoryCard({ category, index, getGridClass, getAspect, t }) {
         <div
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
-            background: `linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)`,
+            background: `linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)`
           }}
         />
       </Link>
@@ -770,22 +776,24 @@ function CategoryShowcase({ categories, loading }) {
   );
 }
 
-
 function QuoteSection() {
   const { t } = useTranslation();
   const quote = t("home.quote");
   const words = quote.split(" ");
 
   return (
-    <section className="relative flex items-center justify-center overflow-hidden px-4 py-32 text-white" style={{ background: "linear-gradient(180deg, #050818 0%, #040d24 100%)" }}>
+    <section
+      className="relative flex items-center justify-center overflow-hidden px-4 py-32 text-white"
+      style={{ background: "linear-gradient(180deg, #050818 0%, #040d24 100%)" }}
+    >
       {/* Animated star particles */}
       {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
           className="pointer-events-none absolute h-0.5 w-0.5 rounded-full bg-blue-300/40"
           style={{
-            left: `${8 + (i * 7.7) % 84}%`,
-            top: `${10 + (i * 13) % 80}%`,
+            left: `${8 + ((i * 7.7) % 84)}%`,
+            top: `${10 + ((i * 13) % 80)}%`
           }}
           animate={{ opacity: [0.2, 0.8, 0.2], scale: [1, 1.8, 1] }}
           transition={{ duration: 2.5 + (i % 4) * 0.7, repeat: Infinity, delay: i * 0.3 }}
@@ -987,11 +995,11 @@ function NewArrivalSpotlight({ book }) {
               y: isHovered ? -8 : 0,
               scale: isHovered ? 1.025 : 1,
               rotateX,
-              rotateY,
+              rotateY
             }}
             transition={{ type: "spring", stiffness: 190, damping: 20 }}
             style={{
-              transformStyle: "preserve-3d",
+              transformStyle: "preserve-3d"
             }}
           >
             <img
@@ -1005,7 +1013,7 @@ function NewArrivalSpotlight({ book }) {
               className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
               style={{
                 background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(255,255,255,0.6), rgba(255,255,255,0.14) 34%, transparent 66%)`,
-                mixBlendMode: "overlay",
+                mixBlendMode: "overlay"
               }}
             />
             <div className="absolute inset-0 rounded-l-lg rounded-r-[28px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14),inset_18px_0_26px_rgba(2,6,23,0.24)]" />
@@ -1061,7 +1069,10 @@ function NewArrivalSpotlight({ book }) {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2">
-            <NewArrivalMetaPill icon={<BookOpen size={13} />} label={book.catLabel || book.categoryName || t("common.books")} />
+            <NewArrivalMetaPill
+              icon={<BookOpen size={13} />}
+              label={book.catLabel || book.categoryName || t("common.books")}
+            />
             <NewArrivalMetaPill
               icon={stockQuantity > 0 ? <CheckCircle2 size={13} /> : <PackageCheck size={13} />}
               label={stockQuantity > 0 ? t("home.inStock", { count: stockQuantity }) : t("home.outOfStock")}
@@ -1136,7 +1147,9 @@ function NewArrivalShelfCard({ book, index }) {
               {t("home.justArrived")}
             </span>
             {book.publicationYear && (
-              <span className="text-[0.68rem] font-bold text-slate-400 dark:text-slate-500">{book.publicationYear}</span>
+              <span className="text-[0.68rem] font-bold text-slate-400 dark:text-slate-500">
+                {book.publicationYear}
+              </span>
             )}
           </div>
 
@@ -1159,7 +1172,9 @@ function NewArrivalShelfCard({ book, index }) {
                 </div>
               )}
               <div className="text-lg font-black text-slate-950 dark:text-white">{formatVND(book.price)}</div>
-              <div className={`mt-1 text-[0.68rem] font-bold ${stockQuantity > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}>
+              <div
+                className={`mt-1 text-[0.68rem] font-bold ${stockQuantity > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}
+              >
                 {stockQuantity > 0 ? t("home.inStock", { count: stockQuantity }) : t("home.outOfStock")}
               </div>
             </div>
@@ -1181,9 +1196,10 @@ function NewArrivalShelfCard({ book, index }) {
 
 function NewArrivalMetaPill({ icon, label, tone = "blue" }) {
   const toneClass = {
-    blue:  "border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300",
-    green: "border-emerald-100 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400",
-    red:   "border-rose-100 bg-rose-50 text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400",
+    blue: "border-blue-100 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300",
+    green:
+      "border-emerald-100 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400",
+    red: "border-rose-100 bg-rose-50 text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400"
   }[tone];
 
   return (
@@ -1214,7 +1230,10 @@ function NewArrivalsSkeleton() {
         <div className="new-arrivals-skeleton mb-4 h-6 w-44 rounded-full" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="flex min-h-[214px] rounded-2xl border border-white/80 bg-white/70 p-3 dark:border-white/[0.05] dark:bg-white/[0.02]">
+            <div
+              key={index}
+              className="flex min-h-[214px] rounded-2xl border border-white/80 bg-white/70 p-3 dark:border-white/[0.05] dark:bg-white/[0.02]"
+            >
               <div className="new-arrivals-skeleton h-[188px] w-[126px] flex-shrink-0 rounded-l-md rounded-r-2xl" />
               <div className="flex flex-1 flex-col px-4 py-2">
                 <div className="new-arrivals-skeleton h-6 w-24 rounded-full" />
@@ -1288,7 +1307,7 @@ function BestsellingRanking({ books, loading, t }) {
     { color: "#94a3b8", label: "🥈", glow: "rgba(148,163,184,0.2)" },
     { color: "#cd7f32", label: "🥉", glow: "rgba(205,127,50,0.2)" },
     { color: "#475569", label: "04", glow: "rgba(71,85,105,0.1)" },
-    { color: "#475569", label: "05", glow: "rgba(71,85,105,0.1)" },
+    { color: "#475569", label: "05", glow: "rgba(71,85,105,0.1)" }
   ];
 
   return (
@@ -1312,7 +1331,10 @@ function BestsellingRanking({ books, loading, t }) {
         {loading ? (
           <div className="mt-10 space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-6 rounded-2xl border border-slate-100 dark:border-white/[0.05] bg-slate-50 dark:bg-white/[0.03] p-5">
+              <div
+                key={i}
+                className="flex items-center gap-6 rounded-2xl border border-slate-100 dark:border-white/[0.05] bg-slate-50 dark:bg-white/[0.03] p-5"
+              >
                 <div className="h-12 w-12 animate-pulse rounded-full bg-slate-200 dark:bg-white/[0.08]" />
                 <div className="h-20 w-14 animate-pulse rounded-lg bg-slate-200 dark:bg-white/[0.08]" />
                 <div className="flex-1 space-y-2">
@@ -1330,9 +1352,8 @@ function BestsellingRanking({ books, loading, t }) {
               // Compute discount: API first, then priceOld diff
               const bPrice = Number(book.price || 0);
               const bOldPrice = Number(book.priceOld || 0);
-              const bDiscount = bOldPrice > bPrice && bOldPrice > 0
-                ? Math.round(((bOldPrice - bPrice) / bOldPrice) * 100)
-                : 0;
+              const bDiscount =
+                bOldPrice > bPrice && bOldPrice > 0 ? Math.round(((bOldPrice - bPrice) / bOldPrice) * 100) : 0;
               return (
                 <motion.div
                   key={book.id}
@@ -1348,7 +1369,9 @@ function BestsellingRanking({ books, loading, t }) {
                     {/* Hover glow sweep */}
                     <div
                       className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                      style={{ background: `radial-gradient(600px circle at 0% 50%, rgba(37,99,235,0.03), transparent 60%)` }}
+                      style={{
+                        background: `radial-gradient(600px circle at 0% 50%, rgba(37,99,235,0.03), transparent 60%)`
+                      }}
                     />
 
                     {/* Rank badge */}
@@ -1358,7 +1381,7 @@ function BestsellingRanking({ books, loading, t }) {
                         background: `linear-gradient(135deg, ${meta.color}18, transparent)`,
                         border: `1.5px solid ${meta.color}35`,
                         color: meta.color,
-                        fontFamily: "'Roboto', sans-serif",
+                        fontFamily: "'Roboto', sans-serif"
                       }}
                     >
                       {index < 3 ? meta.label : <span className="text-xl">{meta.label}</span>}
@@ -1399,7 +1422,10 @@ function BestsellingRanking({ books, loading, t }) {
                     {/* Price + arrow */}
                     <div className="flex flex-shrink-0 items-center gap-4">
                       <div className="flex flex-col items-end">
-                        <span className="text-xl font-extrabold text-blue-900 dark:text-blue-300" style={{ fontFamily: "'Roboto', sans-serif" }}>
+                        <span
+                          className="text-xl font-extrabold text-blue-900 dark:text-blue-300"
+                          style={{ fontFamily: "'Roboto', sans-serif" }}
+                        >
                           {bPrice ? `${Number(bPrice).toLocaleString("vi-VN")}đ` : "—"}
                         </span>
                         {bDiscount > 0 && bOldPrice > 0 && (
@@ -1408,10 +1434,11 @@ function BestsellingRanking({ books, loading, t }) {
                           </span>
                         )}
                       </div>
-                      <div
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-100 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 transition-all duration-300 group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:shadow-[0_4px_12px_rgba(37,99,235,0.3)]"
-                      >
-                        <ArrowRight size={15} className="text-blue-600 dark:text-blue-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white" />
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-100 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 transition-all duration-300 group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:shadow-[0_4px_12px_rgba(37,99,235,0.3)]">
+                        <ArrowRight
+                          size={15}
+                          className="text-blue-600 dark:text-blue-400 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white"
+                        />
                       </div>
                     </div>
                   </Link>
@@ -1442,8 +1469,6 @@ function BestsellingRanking({ books, loading, t }) {
   );
 }
 
-
-
 function HowItWorks() {
   const { t } = useTranslation();
   const STEP_ICONS = [
@@ -1461,18 +1486,21 @@ function HowItWorks() {
     <svg key="track" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-8 w-8">
       <path d="M9 12l2 2 4-4" />
       <path d="M7.86 2.07A2 2 0 0 1 9 2h6a2 2 0 0 1 1.14.07L21 4.93A2 2 0 0 1 22 6.7V12c0 5.5-4.6 8.3-10 10-5.4-1.7-10-4.5-10-10V6.7a2 2 0 0 1 1-1.77z" />
-    </svg>,
+    </svg>
   ];
   const STEP_ACCENTS = ["#3b82f6", "#8b5cf6", "#10b981"];
 
   const steps = [
     { num: "01", title: t("home.steps.discoverTitle"), desc: t("home.steps.discoverDesc") },
     { num: "02", title: t("home.steps.chooseTitle"), desc: t("home.steps.chooseDesc") },
-    { num: "03", title: t("home.steps.trackTitle"), desc: t("home.steps.trackDesc") },
+    { num: "03", title: t("home.steps.trackTitle"), desc: t("home.steps.trackDesc") }
   ];
 
   return (
-    <section className="relative overflow-hidden px-4 py-28 text-white md:px-8" style={{ background: "linear-gradient(180deg, #040d24 0%, #071035 50%, #040d24 100%)" }}>
+    <section
+      className="relative overflow-hidden px-4 py-28 text-white md:px-8"
+      style={{ background: "linear-gradient(180deg, #040d24 0%, #071035 50%, #040d24 100%)" }}
+    >
       {/* Top border from QuoteSection */}
       <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
       {/* Mesh radial glows */}
@@ -1542,7 +1570,10 @@ function HowItWorks() {
                 style={{ background: `radial-gradient(circle at 40% 40%, ${STEP_ACCENTS[index]}18, transparent 65%)` }}
               />
               {/* Top accent border */}
-              <div className="absolute left-0 right-0 top-0 h-[2px] rounded-t-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: `linear-gradient(to right, transparent, ${STEP_ACCENTS[index]}, transparent)` }} />
+              <div
+                className="absolute left-0 right-0 top-0 h-[2px] rounded-t-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{ background: `linear-gradient(to right, transparent, ${STEP_ACCENTS[index]}, transparent)` }}
+              />
 
               {/* Floating icon */}
               <motion.div
@@ -1556,7 +1587,7 @@ function HowItWorks() {
                     background: `linear-gradient(135deg, ${STEP_ACCENTS[index]}25, ${STEP_ACCENTS[index]}10)`,
                     border: `1.5px solid ${STEP_ACCENTS[index]}50`,
                     color: STEP_ACCENTS[index],
-                    boxShadow: `0 8px 24px ${STEP_ACCENTS[index]}25`,
+                    boxShadow: `0 8px 24px ${STEP_ACCENTS[index]}25`
                   }}
                 >
                   {STEP_ICONS[index]}
@@ -1607,9 +1638,21 @@ function AboutSection({ booksCount }) {
   const { t } = useTranslation();
 
   const collageImages = [
-    { src: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=800&auto=format&fit=crop", cls: "absolute -top-4 left-0 h-64 w-48 rotate-[-3deg]", zIndex: 3 },
-    { src: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=800&auto=format&fit=crop", cls: "absolute top-24 right-0 h-72 w-52 rotate-[4deg]", zIndex: 2 },
-    { src: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop", cls: "absolute bottom-0 left-12 h-60 w-44 rotate-[1.5deg]", zIndex: 4 },
+    {
+      src: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=800&auto=format&fit=crop",
+      cls: "absolute -top-4 left-0 h-64 w-48 rotate-[-3deg]",
+      zIndex: 3
+    },
+    {
+      src: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=800&auto=format&fit=crop",
+      cls: "absolute top-24 right-0 h-72 w-52 rotate-[4deg]",
+      zIndex: 2
+    },
+    {
+      src: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop",
+      cls: "absolute bottom-0 left-12 h-60 w-44 rotate-[1.5deg]",
+      zIndex: 4
+    }
   ];
 
   const bullets = t("home.aboutBullets", { returnObjects: true });
@@ -1639,29 +1682,32 @@ function AboutSection({ booksCount }) {
           {/* Staggered title lines */}
           {t("home.aboutTitle").split("\n").length > 0 && (
             <div className="mb-8 overflow-hidden">
-              {t("home.aboutTitle").split(" ").reduce((acc, word, i) => {
-                // Group into lines of 3 words
-                const lineIdx = Math.floor(i / 3);
-                if (!acc[lineIdx]) acc[lineIdx] = [];
-                acc[lineIdx].push(word);
-                return acc;
-              }, []).map((lineWords, lineIdx) => (
-                <motion.div
-                  key={lineIdx}
-                  className="block overflow-hidden"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: lineIdx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <span
-                    className="block text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-5xl"
-                    style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
+              {t("home.aboutTitle")
+                .split(" ")
+                .reduce((acc, word, i) => {
+                  // Group into lines of 3 words
+                  const lineIdx = Math.floor(i / 3);
+                  if (!acc[lineIdx]) acc[lineIdx] = [];
+                  acc[lineIdx].push(word);
+                  return acc;
+                }, [])
+                .map((lineWords, lineIdx) => (
+                  <motion.div
+                    key={lineIdx}
+                    className="block overflow-hidden"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, delay: lineIdx * 0.12, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    {lineWords.join(" ")}
-                  </span>
-                </motion.div>
-              ))}
+                    <span
+                      className="block text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-5xl"
+                      style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
+                    >
+                      {lineWords.join(" ")}
+                    </span>
+                  </motion.div>
+                ))}
             </div>
           )}
 
@@ -1687,12 +1733,24 @@ function AboutSection({ booksCount }) {
               >
                 <motion.div
                   className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600"
-                  whileInView={{ boxShadow: ["0 0 0px rgba(37,99,235,0)", "0 0 16px rgba(37,99,235,0.5)", "0 0 8px rgba(37,99,235,0.3)"] }}
+                  whileInView={{
+                    boxShadow: [
+                      "0 0 0px rgba(37,99,235,0)",
+                      "0 0 16px rgba(37,99,235,0.5)",
+                      "0 0 8px rgba(37,99,235,0.3)"
+                    ]
+                  }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
                 >
                   <svg viewBox="0 0 12 10" fill="none" className="h-3 w-3">
-                    <path d="M1 5l3 3 7-7" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M1 5l3 3 7-7"
+                      stroke="#fff"
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </motion.div>
                 <span className="font-medium">{item}</span>
@@ -1711,7 +1769,7 @@ function AboutSection({ booksCount }) {
             {[
               { num: "12K+", label: t("home.readers") },
               { num: `${booksCount || 500}+`, label: t("home.titles") },
-              { num: "99%", label: "Hài Lòng" },
+              { num: "99%", label: "Hài Lòng" }
             ].map(({ num, label }) => (
               <div key={label} className="text-center">
                 <div
@@ -1754,7 +1812,11 @@ function AboutSection({ booksCount }) {
               key={i}
               className={`overflow-hidden rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_60px_rgba(0,0,0,0.55)] ${img.cls}`}
               style={{ zIndex: img.zIndex }}
-              initial={{ opacity: 0, y: 30 + i * 10, rotate: img.cls.includes("-3") ? -5 : img.cls.includes("4") ? 6 : 2 }}
+              initial={{
+                opacity: 0,
+                y: 30 + i * 10,
+                rotate: img.cls.includes("-3") ? -5 : img.cls.includes("4") ? 6 : 2
+              }}
               whileInView={{ opacity: 1, y: 0, rotate: img.cls.includes("-3") ? -3 : img.cls.includes("4") ? 4 : 1.5 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, delay: 0.3 + i * 0.18, ease: [0.22, 1, 0.36, 1] }}
@@ -1779,8 +1841,15 @@ function AboutSection({ booksCount }) {
             animate={{ y: [0, -6, 0] }}
           >
             <div className="text-center">
-              <div className="text-2xl font-black text-blue-700 dark:text-blue-300" style={{ fontFamily: "'Roboto', sans-serif" }}>✦ Aivira</div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Knowledge On Every Page</div>
+              <div
+                className="text-2xl font-black text-blue-700 dark:text-blue-300"
+                style={{ fontFamily: "'Roboto', sans-serif" }}
+              >
+                ✦ Aivira
+              </div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                Knowledge On Every Page
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -1789,8 +1858,7 @@ function AboutSection({ booksCount }) {
   );
 }
 
-
-function LatestNews() {
+function LatestNews({ posts = [], loading = false }) {
   const { t } = useTranslation();
   const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 });
   const [cursorVisible, setCursorVisible] = React.useState(false);
@@ -1802,30 +1870,16 @@ function LatestNews() {
     setCursorPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   }
 
-  const posts = [
-    {
-      title: t("home.posts.one"),
-      category: t("home.categories.business"),
-      date: "02 Jun, 2026",
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=900&auto=format&fit=crop",
-      featured: true,
-    },
-    {
-      title: t("home.posts.two"),
-      category: t("home.categories.wellness"),
-      date: "28 May, 2026",
-      image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop",
-    },
-    {
-      title: t("home.posts.three"),
-      category: t("home.categories.literature"),
-      date: "20 May, 2026",
-      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop",
-    },
-  ];
-
-  const featured = posts[0];
-  const secondary = posts.slice(1);
+  const normalizedPosts = posts.map((post) => ({
+    ...post,
+    category: post.category?.name || t("home.insights"),
+    date: post.publishedAt
+      ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(post.publishedAt))
+      : "",
+    image: post.coverUrl
+  }));
+  const featured = normalizedPosts[0];
+  const secondary = normalizedPosts.slice(1, 4);
 
   return (
     <section className="relative overflow-hidden bg-[#fafaf8] dark:bg-[#040d1e] px-4 py-24 md:px-8">
@@ -1837,146 +1891,165 @@ function LatestNews() {
       <div className="mx-auto max-w-7xl">
         <SectionHead chip={t("home.insights")} title={t("home.blog")} link="/blog" />
 
-        {/* Editorial layout: 60/40 */}
-        <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-5">
-
-          {/* Featured article — custom cursor */}
-          <motion.article
-            ref={featuredRef}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="group relative col-span-1 cursor-none overflow-hidden rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500 hover:shadow-[0_24px_64px_rgba(0,0,0,0.2)] lg:col-span-3"
-            onMouseMove={handleFeaturedMouseMove}
-            onMouseEnter={() => setCursorVisible(true)}
-            onMouseLeave={() => setCursorVisible(false)}
-          >
-            {/* Custom cursor orb */}
-            <motion.div
-              className="pointer-events-none absolute z-30 flex items-center justify-center rounded-full bg-white/90 text-[11px] font-black uppercase tracking-widest text-slate-900 shadow-xl"
-              style={{ width: 72, height: 72, left: cursorPos.x - 36, top: cursorPos.y - 36, backdropFilter: "blur(8px)" }}
-              animate={{ opacity: cursorVisible ? 1 : 0, scale: cursorVisible ? 1 : 0.3 }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Đọc
-            </motion.div>
-
-            {/* Image with inner-parallax zoom */}
-            <div className="aspect-[4/3] overflow-hidden lg:aspect-[16/11]">
-              <motion.img
-                src={featured.image}
-                alt={featured.title}
-                className="h-full w-full object-cover"
-                style={{ transformOrigin: "center" }}
-                whileHover={{ scale: 1.08 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              />
-            </div>
-
-            {/* Gradient overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-transparent" />
-            <div className="absolute inset-0 bg-blue-900/0 transition-colors duration-500 group-hover:bg-blue-900/15" />
-
-            {/* Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <div className="mb-3 flex items-center gap-3">
-                <span className="rounded-full bg-blue-600 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-white shadow-[0_0_12px_rgba(37,99,235,0.5)]">
-                  {featured.category}
-                </span>
-                <span className="text-xs text-white/50">{featured.date}</span>
-              </div>
-              <h3
-                className="text-2xl font-bold leading-snug text-white transition-colors group-hover:text-blue-200 md:text-3xl"
-                style={{ fontFamily: "'Roboto', sans-serif" }}
-              >
-                {featured.title}
-              </h3>
-              <motion.div
-                className="mt-5 flex items-center gap-2 text-sm font-bold text-blue-400"
-                initial={{ opacity: 0, y: 8 }}
+        {loading && <div className="mt-12 h-80 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/5" />}
+        {!loading && !featured && (
+          <div className="mt-12 rounded-3xl border border-dashed border-slate-300 px-6 py-16 text-center text-slate-500 dark:border-white/10">
+            {t("blog.empty")}
+          </div>
+        )}
+        {!loading && featured && (
+          <>
+            {/* Editorial layout: 60/40 */}
+            <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-5">
+              {/* Featured article — custom cursor */}
+              <motion.article
+                ref={featuredRef}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.5 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative col-span-1 cursor-none overflow-hidden rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500 hover:shadow-[0_24px_64px_rgba(0,0,0,0.2)] lg:col-span-3"
+                onMouseMove={handleFeaturedMouseMove}
+                onMouseEnter={() => setCursorVisible(true)}
+                onMouseLeave={() => setCursorVisible(false)}
               >
-                <span className="h-px w-8 bg-blue-400/60" />
-                {t("home.readMore") || "Đọc thêm"}
-              </motion.div>
-            </div>
-          </motion.article>
+                <Link to={`/blog/${featured.slug}`} className="absolute inset-0 z-20" aria-label={featured.title} />
+                {/* Custom cursor orb */}
+                <motion.div
+                  className="pointer-events-none absolute z-30 flex items-center justify-center rounded-full bg-white/90 text-[11px] font-black uppercase tracking-widest text-slate-900 shadow-xl"
+                  style={{
+                    width: 72,
+                    height: 72,
+                    left: cursorPos.x - 36,
+                    top: cursorPos.y - 36,
+                    backdropFilter: "blur(8px)"
+                  }}
+                  animate={{ opacity: cursorVisible ? 1 : 0, scale: cursorVisible ? 1 : 0.3 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {t("home.readArticle")}
+                </motion.div>
 
-          {/* Secondary articles */}
-          <div className="col-span-1 flex flex-col gap-4 lg:col-span-2">
-            {secondary.map((post, index) => (
-              <motion.article
-                key={post.title}
-                initial={{ opacity: 0, x: 24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 + index * 0.14, ease: [0.22, 1, 0.36, 1] }}
-                className="group flex flex-1 cursor-pointer gap-5 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-4 shadow-sm transition-all duration-350 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-500/20 hover:shadow-[0_12px_40px_rgba(37,99,235,0.1)] dark:hover:shadow-[0_12px_40px_rgba(37,99,235,0.10)]"
-                whileHover={{ x: 2 }}
-              >
-                {/* Thumbnail with inner zoom */}
-                <div className="relative h-28 w-24 flex-shrink-0 overflow-hidden rounded-xl shadow-md">
+                {/* Image with inner-parallax zoom */}
+                <div className="aspect-[4/5] overflow-hidden sm:aspect-[4/3] lg:aspect-[16/11]">
                   <motion.img
-                    src={post.image}
-                    alt={post.title}
+                    src={featured.image}
+                    alt={featured.title}
                     className="h-full w-full object-cover"
-                    whileHover={{ scale: 1.12 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformOrigin: "center" }}
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   />
-                  {/* Category color stripe on image */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
 
-                {/* Text */}
-                <div className="flex min-w-0 flex-col justify-center gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-blue-50 dark:bg-blue-500/10 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 transition-colors duration-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20">
-                      {post.category}
+                {/* Gradient overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-transparent" />
+                <div className="absolute inset-0 bg-blue-900/0 transition-colors duration-500 group-hover:bg-blue-900/15" />
+
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+                  <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
+                    <span className="rounded-full bg-blue-600 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-white shadow-[0_0_12px_rgba(37,99,235,0.5)]">
+                      {featured.category}
                     </span>
-                    <span className="text-[0.65rem] text-slate-400 dark:text-slate-500">{post.date}</span>
+                    <span className="text-xs text-white/50">{featured.date}</span>
                   </div>
                   <h3
-                    className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors duration-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-base"
+                    className="line-clamp-3 text-xl font-bold leading-snug text-white transition-colors group-hover:text-blue-200 sm:text-2xl md:text-3xl"
                     style={{ fontFamily: "'Roboto', sans-serif" }}
                   >
-                    {post.title}
+                    {featured.title}
                   </h3>
-                  <motion.span
-                    className="inline-flex w-fit items-center gap-1 text-xs font-bold text-blue-500"
-                    initial={{ opacity: 0, x: -8 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                  <motion.div
+                    className="mt-5 flex items-center gap-2 text-sm font-bold text-blue-400"
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      Đọc thêm <ArrowRight size={11} className="inline" />
-                    </span>
-                  </motion.span>
+                    <span className="h-px w-8 bg-blue-400/60" />
+                    {t("home.readMore")}
+                  </motion.div>
                 </div>
               </motion.article>
-            ))}
 
-            {/* View all blog link card */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="group flex flex-1 cursor-pointer items-center justify-between rounded-2xl border border-dashed border-blue-200 dark:border-blue-500/20 bg-blue-50/50 dark:bg-blue-500/[0.05] p-5 transition-all duration-300 hover:border-blue-300 dark:hover:border-blue-400/30 hover:bg-blue-50 dark:hover:bg-blue-500/10"
-            >
-              <span className="text-sm font-bold text-blue-700 dark:text-blue-300">Xem tất cả bài viết</span>
-              <ArrowRight size={16} className="text-blue-500 transition-transform group-hover:translate-x-1" />
-            </motion.div>
-          </div>
-        </div>
+              {/* Secondary articles */}
+              <div className="col-span-1 flex flex-col gap-4 lg:col-span-2">
+                {secondary.map((post, index) => (
+                  <motion.article
+                    key={post.title}
+                    initial={{ opacity: 0, x: 24 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.1 + index * 0.14, ease: [0.22, 1, 0.36, 1] }}
+                    className="group relative flex flex-1 cursor-pointer gap-5 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-white/[0.07] bg-white dark:bg-white/[0.03] p-4 shadow-sm transition-all duration-350 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-500/20 hover:shadow-[0_12px_40px_rgba(37,99,235,0.1)] dark:hover:shadow-[0_12px_40px_rgba(37,99,235,0.10)]"
+                    whileHover={{ x: 2 }}
+                  >
+                    <Link to={`/blog/${post.slug}`} className="absolute inset-0 z-20" aria-label={post.title} />
+                    {/* Thumbnail with inner zoom */}
+                    <div className="relative h-28 w-24 flex-shrink-0 overflow-hidden rounded-xl shadow-md">
+                      <motion.img
+                        src={post.image}
+                        alt={post.title}
+                        className="h-full w-full object-cover"
+                        whileHover={{ scale: 1.12 }}
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      />
+                      {/* Category color stripe on image */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    </div>
+
+                    {/* Text */}
+                    <div className="flex min-w-0 flex-col justify-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-blue-50 dark:bg-blue-500/10 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 transition-colors duration-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20">
+                          {post.category}
+                        </span>
+                        <span className="text-[0.65rem] text-slate-400 dark:text-slate-500">{post.date}</span>
+                      </div>
+                      <h3
+                        className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors duration-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-base"
+                        style={{ fontFamily: "'Roboto', sans-serif" }}
+                      >
+                        {post.title}
+                      </h3>
+                      <motion.span
+                        className="inline-flex w-fit items-center gap-1 text-xs font-bold text-blue-500"
+                        initial={{ opacity: 0, x: -8 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 + index * 0.1 }}
+                      >
+                        <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          {t("home.readMore")} <ArrowRight size={11} className="inline" />
+                        </span>
+                      </motion.span>
+                    </div>
+                  </motion.article>
+                ))}
+
+                {/* View all blog link card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="group relative flex flex-1 cursor-pointer items-center justify-between rounded-2xl border border-dashed border-blue-200 dark:border-blue-500/20 bg-blue-50/50 dark:bg-blue-500/[0.05] p-5 transition-all duration-300 hover:border-blue-300 dark:hover:border-blue-400/30 hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                >
+                  <Link to="/blog" className="absolute inset-0" aria-label={t("home.viewAll")} />
+                  <span className="text-sm font-bold text-blue-700 dark:text-blue-300">
+                    {t("home.viewAllPosts")}
+                  </span>
+                  <ArrowRight size={16} className="text-blue-500 transition-transform group-hover:translate-x-1" />
+                </motion.div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
 }
-
 
 function SectionHead({ chip, title, link, dark = false }) {
   const { t } = useTranslation();
@@ -1991,7 +2064,7 @@ function SectionHead({ chip, title, link, dark = false }) {
             fontSize: "0.65rem",
             fontWeight: 800,
             letterSpacing: "0.18em",
-            textTransform: "uppercase",
+            textTransform: "uppercase"
           }}
         >
           <span
@@ -2015,7 +2088,9 @@ function SectionHead({ chip, title, link, dark = false }) {
         <Link
           to={link}
           className={`group flex flex-shrink-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] transition-colors ${
-            dark ? "text-white/40 hover:text-blue-300" : "text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
+            dark
+              ? "text-white/40 hover:text-blue-300"
+              : "text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
           }`}
         >
           <span className="relative">
