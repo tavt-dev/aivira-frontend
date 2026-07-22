@@ -7,6 +7,7 @@ import { ArrowRight, BookOpen, CheckCircle2, Clock3, PackageCheck, Sparkles } fr
 import { getCategories, getProducts } from "../api/catalogApi.js";
 import { getStorefrontHome } from "../api/storefrontApi.js";
 import WeeklyPicksShowcase from "../components/WeeklyPicksShowcase.jsx";
+import RecentlyViewedBooks from "../components/RecentlyViewedBooks.jsx";
 import { formatVND } from "../utils/formatters.js";
 import { normalizeBook, normalizeCategoryHighlight, pageRows } from "../utils/mappers.js";
 
@@ -204,6 +205,8 @@ export default function HomePage() {
 
       {/* ── Bestselling — light ── */}
       <BestsellingRanking books={bestselling} loading={loading} t={t} />
+
+      <RecentlyViewedBooks limit={8} />
 
       {/* ── Quote — dark blue ── */}
       <QuoteSection />

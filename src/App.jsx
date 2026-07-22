@@ -34,6 +34,7 @@ import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
 import AdminBlogPage from "./pages/admin/AdminBlogPage.jsx";
 import { initMotionEffects } from "./utils/motion.js";
 import { getCurrentUser } from "./utils/storage.js";
+import { claimGuestViewHistory } from "./utils/claimViewHistory.js";
 
 export default function App() {
   const [authOpen, setAuthOpen] = useState(false);
@@ -58,6 +59,11 @@ export default function App() {
     window.addEventListener("aivira-auth", sync);
     return () => window.removeEventListener("aivira-auth", sync);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    claimGuestViewHistory().catch(() => {});
+  }, [user]);
 
   useEffect(() => {
     const handleExpired = () => {

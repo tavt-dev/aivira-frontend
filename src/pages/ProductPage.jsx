@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   BookOpen, ChevronRight, Home, Layers, Minus, Plus,
@@ -12,6 +12,7 @@ import {
 import { addCartItem } from "../api/cartApi.js";
 import { getProduct } from "../api/catalogApi.js";
 import { getProductReviews } from "../api/reviewApi.js";
+import { trackProductView } from "../api/viewHistoryApi.js";
 import { saveCheckoutCartItemIds } from "../utils/checkoutSelection.js";
 import { discount, formatSold, formatVND } from "../utils/formatters.js";
 import {
@@ -20,6 +21,7 @@ import {
 } from "../utils/mappers.js";
 import { getAccessToken } from "../utils/storage.js";
 import { getTheme } from "../utils/theme.js";
+import { getViewerIdentity, rememberGuestProduct } from "../utils/viewerIdentity.js";
 
 /* ── Constants ─────────────────────────────── */
 const REVIEW_SIZE = 5;
@@ -108,6 +110,8 @@ export default function ProductPage({ onAuth }) {
   const tk = tokens(isDark);
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const trackedSlug = useRef("");
 
   const [book, setBook]                         = useState(null);
   const [selectedImage, setSelectedImage]       = useState("");
@@ -135,6 +139,26 @@ export default function ProductPage({ onAuth }) {
       .finally(() => { if (!ctrl.signal.aborted) setLoading(false); });
     return () => ctrl.abort();
   }, [slug, t]);
+
+  useEffect(() => {
+    if (!book || trackedSlug.current === slug) return undefined;
+    const timer = window.setTimeout(() => {
+      if (document.visibilityState !== "visible" || trackedSlug.current === slug) return;
+      trackedSlug.current = slug;
+      const identity = getViewerIdentity();
+      const allowedSources = ["DIRECT", "HOME", "SEARCH", "CATEGORY", "BLOG", "CART", "ORDER", "RECOMMENDATION", "OTHER"];
+      const source = allowedSources.includes(location.state?.viewSource) ? location.state.viewSource : "DIRECT";
+      if (!getAccessToken()) rememberGuestProduct(book);
+      trackProductView(slug, {
+        ...identity,
+        source,
+        referrerPath: window.location.pathname
+      }).catch((error) => {
+        if (import.meta.env.DEV) console.debug("Product view tracking failed", error);
+      });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [book, location.state, slug]);
 
   const selectedVariation = useMemo(
     () => book?.variations?.find(v => String(v.id) === String(selectedVariationId)),

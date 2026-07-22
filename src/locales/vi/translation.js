@@ -594,6 +594,18 @@ const vi = {
     loadFailed: "Không thể tải tin tức",
     notFound: "Không tìm thấy bài viết"
   },
+  recentlyViewed: {
+    eyebrow: "Hành trình đọc của bạn",
+    title: "Sách đã xem gần đây",
+    empty: "Bạn chưa xem cuốn sách nào.",
+    loadFailed: "Không thể tải danh sách sách đã xem.",
+    remove: "Xóa khỏi lịch sử",
+    clear: "Xóa lịch sử",
+    clearTitle: "Xóa toàn bộ sách đã xem?",
+    clearConfirm: "Tất cả sách trong lịch sử hiển thị sẽ bị xóa và không thể hoàn tác.",
+    previous: "Trang trước",
+    next: "Trang sau"
+  },
   adminBlog: {
     title: "Tin tức & Blog",
     subtitle: "Biên soạn, xuất bản và tổ chức nội dung của Aivira.",

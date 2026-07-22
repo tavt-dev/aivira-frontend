@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  AlertCircle, BadgeCheck, Camera, CheckCircle2,
+  AlertCircle, BadgeCheck, BookOpen, Camera, CheckCircle2,
   ChevronDown, ChevronRight, Globe, Home, Key, Laptop, Lock,
   LogOut, Mail, MapPin, Monitor, Phone, Plus,
   ShieldOff, Star, Trash2, User, UserCircle,
@@ -20,6 +20,7 @@ import { formatDateTime } from "../utils/formatters.js";
 import { normalizeAddress } from "../utils/mappers.js";
 import { clearAuth, getAccessToken, getCurrentUser, saveCurrentUser } from "../utils/storage.js";
 import { getTheme } from "../utils/theme.js";
+import RecentlyViewedBooks from "../components/RecentlyViewedBooks.jsx";
 
 /* ── Constants ─────────────────────────────── */
 const emptyAddress  = { recipientName:"", phoneNumber:"", addressLine:"", ward:"", district:"", city:"", defaultAddress:false };
@@ -30,6 +31,7 @@ const TABS = [
   { id:"address",   icon:MapPin,     label:"account.addresses" },
   { id:"security",  icon:Key,        label:"account.password" },
   { id:"sessions",  icon:Monitor,    label:"account.sessions" },
+  { id:"history",   icon:BookOpen,   label:"recentlyViewed.title" },
   { id:"danger",    icon:ShieldOff,  label:"account.deactivate" },
 ];
 
@@ -400,6 +402,8 @@ export default function AccountPage({ onAuth }) {
                 {profileError && tab==="profile" && (
                   <ErrorAlert tk={tk} t={t} onRetry={refreshProfile} onClose={() => setProfileError(false)}/>
                 )}
+
+                {tab === "history" && <RecentlyViewedBooks manage limit={20} />}
 
                 {/* PROFILE TAB */}
                 {profile && tab==="profile" && (

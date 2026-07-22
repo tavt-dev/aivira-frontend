@@ -594,6 +594,18 @@ const en = {
     loadFailed: "Could not load news",
     notFound: "Article not found"
   },
+  recentlyViewed: {
+    eyebrow: "Your reading trail",
+    title: "Recently viewed books",
+    empty: "You have not viewed any books yet.",
+    loadFailed: "Could not load recently viewed books.",
+    remove: "Remove from history",
+    clear: "Clear history",
+    clearTitle: "Clear recently viewed books?",
+    clearConfirm: "This removes every book from your visible history. This action cannot be undone.",
+    previous: "Previous",
+    next: "Next"
+  },
   adminBlog: {
     title: "News & Blog",
     subtitle: "Create, publish, and organize Aivira editorial content.",
