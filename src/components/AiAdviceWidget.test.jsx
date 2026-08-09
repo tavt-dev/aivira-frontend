@@ -22,29 +22,37 @@ describe("AiAdviceWidget", () => {
 
   it("creates a member session and renders recommended catalog books", async () => {
     server.use(
-      http.post(`${API}/ai-advice/sessions`, () => HttpResponse.json(apiResponse({
-        id: "session-1",
-        locale: "vi",
-        personalizationEnabled: true,
-        messages: [],
-        quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" }
-      }))),
-      http.post(`${API}/ai-advice/sessions/session-1/messages`, () => HttpResponse.json(apiResponse({
-        id: 2,
-        role: "ASSISTANT",
-        content: "Mình tìm thấy một cuốn phù hợp.",
-        status: "RECOMMENDATION",
-        suggestedPrompts: [],
-        quota: { limit: 30, used: 1, remaining: 29, resetsAt: "2026-09-01T00:00:00Z" },
-        recommendations: {
-          items: [{ id: 10, rank: 1, product: book, reason: "Phù hợp để bắt đầu.", matchedCriteria: ["dễ đọc"] }],
-          page: 1,
-          pageSize: 10,
-          totalElements: 1,
-          totalPages: 1,
-          hasNext: false
-        }
-      })))
+      http.post(`${API}/ai-advice/sessions`, () =>
+        HttpResponse.json(
+          apiResponse({
+            id: "session-1",
+            locale: "vi",
+            personalizationEnabled: true,
+            messages: [],
+            quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" }
+          })
+        )
+      ),
+      http.post(`${API}/ai-advice/sessions/session-1/messages`, () =>
+        HttpResponse.json(
+          apiResponse({
+            id: 2,
+            role: "ASSISTANT",
+            content: "Mình tìm thấy một cuốn phù hợp.",
+            status: "RECOMMENDATION",
+            suggestedPrompts: [],
+            quota: { limit: 30, used: 1, remaining: 29, resetsAt: "2026-09-01T00:00:00Z" },
+            recommendations: {
+              items: [{ id: 10, rank: 1, product: book, reason: "Phù hợp để bắt đầu.", matchedCriteria: ["dễ đọc"] }],
+              page: 1,
+              pageSize: 10,
+              totalElements: 1,
+              totalPages: 1,
+              hasNext: false
+            }
+          })
+        )
+      )
     );
 
     renderWithProviders(<AiAdviceWidget user={customerUser} onAuth={vi.fn()} />);
