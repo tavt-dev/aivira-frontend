@@ -1099,36 +1099,6 @@ const en = {
     copy: "Touch to open a world of knowledge",
     open: "Open book"
   },
-  advisor: {
-    open: "Open AI book advisor",
-    shortTitle: "AI advisor",
-    title: "Aivira AI",
-    powered: "Your personalized book-finding assistant",
-    loginTitle: "Sign in to begin",
-    loginCopy: "Each member gets 30 AI advice messages per month and may use purchase and review history for better suggestions.",
-    quota: "{{remaining}}/{{limit}} messages left this month",
-    personalize: "Personalize",
-    loadingSession: "Opening your advice session...",
-    welcomeTitle: "What would you like to read?",
-    welcomeCopy: "Share your goal, genre, favorite author, or budget. I will search Aivira's currently available catalog.",
-    promptOne: "Suggest an accessible personal-growth book",
-    promptTwo: "I want to learn programming from scratch",
-    promptThree: "Find a good novel under 200,000 VND",
-    placeholder: "Describe the book you are looking for...",
-    limitPlaceholder: "You have used this month's allowance",
-    send: "Send advice request",
-    thinking: "Understanding your request and finding suitable books...",
-    loadMore: "Show 10 more books",
-    helpfulQuestion: "Was this useful?",
-    helpful: "Helpful",
-    notHelpful: "Not helpful",
-    matches: "Matches",
-    limitReached: "You have used all 30 advice messages. Your allowance resets automatically next month.",
-    loadFailed: "Could not open the AI advice session.",
-    sendFailed: "Could not send the advice request.",
-    moreFailed: "Could not load more recommendations.",
-    preferenceFailed: "Could not update personalization."
-  },
   notFound: {
     title: "Page not found"
   }
