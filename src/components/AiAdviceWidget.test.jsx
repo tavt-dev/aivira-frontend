@@ -17,13 +17,17 @@ describe("AiAdviceWidget", () => {
 
   it("lets guests ask without signing in", async () => {
     server.use(
-      http.post(`${API}/ai-advice/sessions`, () => HttpResponse.json(apiResponse({
-        id: "guest-session",
-        locale: "vi",
-        personalizationEnabled: false,
-        messages: [],
-        quota: { limit: 30, used: 0, remaining: 30 }
-      })))
+      http.post(`${API}/ai-advice/sessions`, () =>
+        HttpResponse.json(
+          apiResponse({
+            id: "guest-session",
+            locale: "vi",
+            personalizationEnabled: false,
+            messages: [],
+            quota: { limit: 30, used: 0, remaining: 30 }
+          })
+        )
+      )
     );
     renderWithProviders(<AiAdviceWidget user={null} onAuth={vi.fn()} />);
 
@@ -81,29 +85,37 @@ describe("AiAdviceWidget", () => {
 
   it("shows a degraded-mode notice while keeping suggestions usable", async () => {
     server.use(
-      http.post(`${API}/ai-advice/sessions`, () => HttpResponse.json(apiResponse({
-        id: "session-fallback",
-        locale: "vi",
-        personalizationEnabled: true,
-        messages: [],
-        quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" }
-      }))),
-      http.post(`${API}/ai-advice/sessions/session-fallback/messages`, () => HttpResponse.json(apiResponse({
-        id: 3,
-        role: "ASSISTANT",
-        content: "Catalog fallback",
-        status: "DEGRADED_RECOMMENDATION",
-        suggestedPrompts: [],
-        quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" },
-        recommendations: {
-          items: [{ id: 11, rank: 1, product: book, reason: "Catalog match", matchedCriteria: [] }],
-          page: 1,
-          pageSize: 10,
-          totalElements: 1,
-          totalPages: 1,
-          hasNext: false
-        }
-      })))
+      http.post(`${API}/ai-advice/sessions`, () =>
+        HttpResponse.json(
+          apiResponse({
+            id: "session-fallback",
+            locale: "vi",
+            personalizationEnabled: true,
+            messages: [],
+            quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" }
+          })
+        )
+      ),
+      http.post(`${API}/ai-advice/sessions/session-fallback/messages`, () =>
+        HttpResponse.json(
+          apiResponse({
+            id: 3,
+            role: "ASSISTANT",
+            content: "Catalog fallback",
+            status: "DEGRADED_RECOMMENDATION",
+            suggestedPrompts: [],
+            quota: { limit: 30, used: 0, remaining: 30, resetsAt: "2026-09-01T00:00:00Z" },
+            recommendations: {
+              items: [{ id: 11, rank: 1, product: book, reason: "Catalog match", matchedCriteria: [] }],
+              page: 1,
+              pageSize: 10,
+              totalElements: 1,
+              totalPages: 1,
+              hasNext: false
+            }
+          })
+        )
+      )
     );
 
     renderWithProviders(<AiAdviceWidget user={customerUser} onAuth={vi.fn()} />);
