@@ -267,9 +267,9 @@ section:where([class]) {
 
 #btt {
   position: fixed;
-  right: 24px;
+  right: 26px;
   bottom: 24px;
-  z-index: 60;
+  z-index: 70;
   display: flex;
   height: 44px;
   width: 44px;
@@ -285,6 +285,13 @@ section:where([class]) {
     opacity 0.25s ease,
     transform 0.25s ease,
     background 0.2s ease;
+}
+
+@media (max-width: 639px) {
+  #btt {
+    right: 26px;
+    bottom: 24px;
+  }
 }
 
 #btt svg {

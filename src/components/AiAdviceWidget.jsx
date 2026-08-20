@@ -4,9 +4,10 @@ import { useTranslation } from "react-i18next";
 import {
   Bot,
   ChevronDown,
+  CircleHelp,
   LoaderCircle,
-  LogIn,
-  MessageCircle,
+  Mic,
+  MicOff,
   Send,
   Sparkles,
   ThumbsDown,
@@ -25,21 +26,40 @@ import { formatVND } from "../utils/formatters.js";
 import { normalizeBook } from "../utils/mappers.js";
 
 const STORAGE_PREFIX = "aivira_ai_advice_session_";
+const GUEST_ID_KEY = "aivira_ai_guest_id";
+const FACEBOOK_URL = import.meta.env.VITE_FACEBOOK_URL || "https://www.facebook.com/";
+const ZALO_URL = import.meta.env.VITE_ZALO_URL || "https://zalo.me/";
 
-export default function AiAdviceWidget({ user, onAuth }) {
+export default function AiAdviceWidget({ user }) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
+  const [listening, setListening] = useState(false);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState({});
   const inputRef = useRef(null);
   const endRef = useRef(null);
-  const identity = user?.id || user?.username || user?.email || "member";
+  const recognitionRef = useRef(null);
+  const guestId = useMemo(() => {
+    if (user) return null;
+    const saved = localStorage.getItem(GUEST_ID_KEY);
+    if (saved) return saved;
+    const created = crypto.randomUUID();
+    localStorage.setItem(GUEST_ID_KEY, created);
+    return created;
+  }, [user]);
+  const identity = user?.id || user?.username || user?.email || "guest";
   const storageKey = `${STORAGE_PREFIX}${identity}`;
+  const guestRequestOptions = user ? {} : {
+    skipAuth: true,
+    skipRefresh: true,
+    headers: { "X-Guest-Id": guestId }
+  };
 
   useEffect(() => {
     setSession(null);
@@ -57,12 +77,14 @@ export default function AiAdviceWidget({ user, onAuth }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  useEffect(() => () => recognitionRef.current?.stop?.(), []);
+
   useEffect(() => {
     endRef.current?.scrollIntoView?.({ behavior: "smooth", block: "end" });
   }, [loading, messages]);
 
   useEffect(() => {
-    if (open && user && !session && !initializing) initialize();
+    if (open && !session && !initializing) initialize();
   }, [open, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const quota = session?.quota;
@@ -80,7 +102,7 @@ export default function AiAdviceWidget({ user, onAuth }) {
       let loaded;
       if (savedId) {
         try {
-          loaded = await getAdviceSession(savedId);
+          loaded = await getAdviceSession(savedId, guestRequestOptions);
         } catch (requestError) {
           if (requestError.status !== 404) throw requestError;
           localStorage.removeItem(storageKey);
@@ -89,8 +111,8 @@ export default function AiAdviceWidget({ user, onAuth }) {
       if (!loaded) {
         loaded = await createAdviceSession({
           locale: i18n.language?.startsWith("en") ? "en" : "vi",
-          personalizationEnabled: true
-        });
+          personalizationEnabled: Boolean(user)
+        }, guestRequestOptions);
         localStorage.setItem(storageKey, loaded.id);
       }
       setSession(loaded);
@@ -118,17 +140,21 @@ export default function AiAdviceWidget({ user, onAuth }) {
       const assistant = await sendAdviceMessage(session.id, {
         clientMessageId: crypto.randomUUID(),
         content
-      });
+      }, guestRequestOptions);
       setMessages((current) => [...current, assistant]);
       setSession((current) => ({ ...current, quota: assistant.quota || current.quota }));
     } catch (requestError) {
       setMessages((current) => current.filter((message) => message.id !== optimisticId));
       const details = requestError.data;
+      let displayError = requestError.message || t("advisor.sendFailed");
       if (requestError.status === 429 && details) {
         setSession((current) => ({ ...current, quota: details }));
+        if (details.resetsAt) {
+          displayError = t("advisor.limitReset", { date: new Date(details.resetsAt).toLocaleDateString(i18n.language) });
+        }
       }
       setInput(content);
-      setError(requestError.message || t("advisor.sendFailed"));
+      setError(displayError);
     } finally {
       setLoading(false);
       inputRef.current?.focus();
@@ -152,7 +178,7 @@ export default function AiAdviceWidget({ user, onAuth }) {
     const currentPage = message.recommendations?.page || 1;
     setMessages((current) => current.map((item) => item.id === message.id ? { ...item, loadingMore: true } : item));
     try {
-      const next = await getAdviceRecommendations(session.id, message.id, currentPage + 1);
+      const next = await getAdviceRecommendations(session.id, message.id, currentPage + 1, guestRequestOptions);
       setMessages((current) => current.map((item) => item.id === message.id ? {
         ...item,
         loadingMore: false,
@@ -169,31 +195,104 @@ export default function AiAdviceWidget({ user, onAuth }) {
 
   function trackClick(messageId, recommendationId) {
     if (!session) return;
-    recordAdviceEvent(session.id, { eventType: "CLICK", messageId, recommendationId }).catch(() => {});
+    recordAdviceEvent(session.id, { eventType: "CLICK", messageId, recommendationId }, guestRequestOptions).catch(() => {});
   }
 
   async function sendFeedback(messageId, eventType) {
     if (!session) return;
     setFeedback((current) => ({ ...current, [messageId]: eventType }));
     try {
-      await recordAdviceEvent(session.id, { eventType, messageId });
+      await recordAdviceEvent(session.id, { eventType, messageId }, guestRequestOptions);
     } catch {
       setFeedback((current) => ({ ...current, [messageId]: undefined }));
     }
   }
 
+  function toggleVoiceInput() {
+    if (listening) {
+      recognitionRef.current?.stop?.();
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setError(t("advisor.voiceUnsupported"));
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = i18n.language?.startsWith("en") ? "en-US" : "vi-VN";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    const originalInput = input.trim();
+
+    recognition.onstart = () => {
+      setError("");
+      setListening(true);
+    };
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0]?.transcript || "")
+        .join("")
+        .trim();
+      setInput([originalInput, transcript].filter(Boolean).join(" "));
+    };
+    recognition.onerror = (event) => {
+      if (event.error !== "aborted") setError(t("advisor.voiceFailed"));
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      inputRef.current?.focus();
+    };
+    recognitionRef.current = recognition;
+    recognition.start();
+  }
+
   return (
     <>
-      <button
-        type="button"
-        className="fixed bottom-5 right-5 z-40 flex h-14 items-center gap-2 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 px-4 text-sm font-bold text-white shadow-[0_16px_40px_rgba(37,99,235,.35)] transition hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(37,99,235,.45)]"
-        aria-label={t("advisor.open")}
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? <X size={21} /> : <Sparkles size={21} />}
-        <span className="hidden sm:inline">{t("advisor.shortTitle")}</span>
-      </button>
+      <div className={`fixed bottom-24 right-4 flex flex-col items-end gap-3 transition-all duration-200 sm:right-6 ${open ? "pointer-events-none -z-10 scale-90 opacity-0" : "z-[60] scale-100 opacity-100"}`}>
+        <div
+          className={`flex flex-col items-end gap-3 transition-all duration-300 ${contactOpen ? "pointer-events-auto translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"}`}
+          aria-hidden={!contactOpen}
+        >
+          <ContactBubble
+            label={t("advisor.facebook")}
+            href={FACEBOOK_URL}
+            color="bg-[#1877F2]"
+            delay="100ms"
+            icon={<FacebookIcon />}
+          />
+          <ContactBubble
+            label={t("advisor.zalo")}
+            href={ZALO_URL}
+            color="bg-[#0068ff]"
+            delay="50ms"
+            icon={<ZaloIcon />}
+          />
+          <ContactBubble
+            label={t("advisor.chatbot")}
+            color="bg-gradient-to-br from-indigo-600 to-violet-600"
+            icon={<Bot size={22} />}
+            onClick={() => {
+              setOpen(true);
+              setContactOpen(false);
+            }}
+          />
+        </div>
+
+        <button
+          type="button"
+          className="group relative grid h-16 w-16 place-items-center rounded-full border border-white/70 bg-gradient-to-br from-slate-950 via-indigo-950 to-blue-700 text-white shadow-[0_16px_40px_rgba(30,64,175,.42)] transition duration-300 hover:-translate-y-1 hover:scale-105 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
+          aria-label={t("advisor.contactOpen")}
+          aria-expanded={contactOpen}
+          onClick={() => setContactOpen((value) => !value)}
+        >
+          <span className="absolute inset-[-5px] -z-10 animate-pulse rounded-full bg-blue-500/20" />
+          {contactOpen ? <X size={24} /> : <AiLogo />}
+          {!contactOpen && <span className="absolute right-0 top-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400" />}
+        </button>
+      </div>
 
       {open && (
         <button
@@ -208,7 +307,7 @@ export default function AiAdviceWidget({ user, onAuth }) {
           role="dialog"
           aria-modal="true"
           aria-label={t("advisor.title")}
-          className="fixed inset-x-0 bottom-0 z-50 flex h-[88dvh] flex-col overflow-hidden rounded-t-[2rem] border border-slate-200 bg-white shadow-2xl sm:inset-auto sm:bottom-24 sm:right-5 sm:h-[min(720px,calc(100vh-8rem))] sm:w-[430px] sm:rounded-[2rem]"
+          className="fixed inset-x-0 bottom-0 z-50 flex h-[88dvh] flex-col overflow-hidden rounded-t-[2rem] border border-slate-200 bg-white shadow-2xl sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[min(720px,calc(100vh-8rem))] sm:w-[430px] sm:rounded-[2rem]"
         >
           <header className="flex items-center justify-between bg-gradient-to-r from-slate-950 to-indigo-950 px-5 py-4 text-white">
             <div className="flex items-center gap-3">
@@ -223,25 +322,12 @@ export default function AiAdviceWidget({ user, onAuth }) {
             </button>
           </header>
 
-          {!user ? (
-            <div className="grid flex-1 place-items-center p-8 text-center">
-              <div>
-                <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-blue-50 text-blue-600"><MessageCircle size={30} /></span>
-                <h3 className="mt-5 text-xl font-bold text-slate-950">{t("advisor.loginTitle")}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{t("advisor.loginCopy")}</p>
-                <button type="button" className="mt-6 inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3 text-sm font-bold text-white" onClick={onAuth}>
-                  <LogIn size={17} /> {t("common.login")}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-2.5 text-xs">
-                <span className="font-semibold text-slate-600">
-                  {quota ? t("advisor.quota", { remaining: quota.remaining, limit: quota.limit }) : t("common.loading")}
-                </span>
-                <label className="flex cursor-pointer items-center gap-2 text-slate-500">
-                  <span>{t("advisor.personalize")}</span>
+          <>
+              {user && (
+              <div className="flex items-center justify-end border-b border-slate-100 bg-slate-50 px-4 py-2.5 text-xs">
+                <label className="flex cursor-pointer items-center gap-2 text-slate-600" title={t("advisor.personalizeHelp")}>
+                  <CircleHelp size={14} className="text-blue-500" aria-hidden="true" />
+                  <span className="font-medium">{t("advisor.personalize")}</span>
                   <input
                     type="checkbox"
                     checked={Boolean(session?.personalizationEnabled)}
@@ -251,6 +337,7 @@ export default function AiAdviceWidget({ user, onAuth }) {
                   />
                 </label>
               </div>
+              )}
 
               <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/70 p-4" aria-live="polite">
                 {initializing && <LoadingBubble label={t("advisor.loadingSession")} />}
@@ -302,17 +389,66 @@ export default function AiAdviceWidget({ user, onAuth }) {
                       }
                     }}
                   />
+                  <button
+                    type="button"
+                    disabled={!session || loading || quotaEmpty}
+                    className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition disabled:cursor-not-allowed disabled:opacity-40 ${listening ? "animate-pulse bg-rose-100 text-rose-600 ring-2 ring-rose-200" : "text-slate-500 hover:bg-blue-100 hover:text-blue-700"}`}
+                    aria-label={listening ? t("advisor.voiceStop") : t("advisor.voiceStart")}
+                    title={listening ? t("advisor.voiceStop") : t("advisor.voiceStart")}
+                    onClick={toggleVoiceInput}
+                  >
+                    {listening ? <MicOff size={18} /> : <Mic size={18} />}
+                  </button>
                   <button type="submit" disabled={!input.trim() || loading || !session || quotaEmpty} className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-600 text-white disabled:cursor-not-allowed disabled:opacity-40" aria-label={t("advisor.send")}>
                     <Send size={17} />
                   </button>
                 </div>
               </form>
             </>
-          )}
         </section>
       )}
     </>
   );
+}
+
+function ContactBubble({ label, href, color, icon, onClick, delay = "0ms" }) {
+  const className = `group flex items-center gap-3 rounded-full text-sm font-bold text-slate-800 transition duration-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200`;
+  const content = (
+    <>
+      <span className="rounded-full border border-slate-200/80 bg-white px-3 py-2 shadow-lg transition group-hover:border-blue-200">{label}</span>
+      <span className={`grid h-12 w-12 place-items-center rounded-full border-2 border-white text-white shadow-[0_10px_28px_rgba(15,23,42,.24)] ${color}`}>{icon}</span>
+    </>
+  );
+
+  if (href) {
+    return <a href={href} target="_blank" rel="noreferrer" className={className} style={{ transitionDelay: delay }}>{content}</a>;
+  }
+  return <button type="button" className={className} style={{ transitionDelay: delay }} onClick={onClick}>{content}</button>;
+}
+
+function AiLogo() {
+  return (
+    <svg viewBox="0 0 40 40" className="h-10 w-10" aria-hidden="true">
+      <defs>
+        <linearGradient id="ai-mark" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#67e8f9" />
+          <stop offset="1" stopColor="#c4b5fd" />
+        </linearGradient>
+      </defs>
+      <path d="M20 5.5 23.2 14l8.3 3.2-8.3 3.2L20 29l-3.2-8.6-8.3-3.2 8.3-3.2L20 5.5Z" fill="none" stroke="url(#ai-mark)" strokeWidth="2.2" strokeLinejoin="round" />
+      <circle cx="30.5" cy="9" r="2.2" fill="#fff" />
+      <path d="M28 29.5h7M31.5 26v7" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <text x="10" y="36" fill="#fff" fontSize="8" fontWeight="900" letterSpacing="1">AI</text>
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return <span className="text-2xl font-black leading-none" aria-hidden="true">f</span>;
+}
+
+function ZaloIcon() {
+  return <span className="text-[11px] font-black tracking-[-.04em]" aria-hidden="true">Zalo</span>;
 }
 
 function MessageBubble({ message, feedback, onFeedback, onLoadMore, onTrackClick, t }) {
@@ -324,6 +460,11 @@ function MessageBubble({ message, feedback, onFeedback, onLoadMore, onTrackClick
         : "rounded-3xl rounded-tl-md border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm"}>
         {message.content}
       </div>
+      {!isUser && message.status === "DEGRADED_RECOMMENDATION" && (
+        <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
+          {t("advisor.degraded")}
+        </div>
+      )}
       {!isUser && message.recommendations?.items?.length > 0 && (
         <div className="mt-3 space-y-3">
           {message.recommendations.items.map((recommendation) => (
