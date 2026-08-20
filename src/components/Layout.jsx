@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Footer from "./Footer.jsx";
 import Navbar from "./Navbar.jsx";
+import AiAdviceWidget from "./AiAdviceWidget.jsx";
 
 export default function Layout({ user, onAuth }) {
   const location = useLocation();
@@ -13,6 +14,7 @@ export default function Layout({ user, onAuth }) {
         <Outlet />
       </main>
       <Footer />
+      <AiAdviceWidget user={user} onAuth={onAuth} />
     </div>
   );
 }
