@@ -10,6 +10,7 @@ import RequireAuth from "./components/RequireAuth.jsx";
 import RequireAdmin from "./components/RequireAdmin.jsx";
 import { ConfirmDialogProvider, ToastProvider } from "./components/ui/index.jsx";
 import AccountPage from "./pages/AccountPage.jsx";
+import AboutPage from "./pages/AboutPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
@@ -143,6 +144,7 @@ export default function App() {
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="blog" element={<AdminBlogPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="orders/:orderId" element={<AdminOrdersPage />} />
             <Route path="orders-pending" element={<Navigate to="/admin/orders" replace />} />
             <Route path="discounts" element={<AdminDiscountsPage />} />
             <Route path="coupons" element={<Navigate to="/admin/discounts" replace />} />
@@ -155,6 +157,7 @@ export default function App() {
           </Route>
           <Route element={<Layout user={user} onAuth={() => openAuth("login")} />}>
             <Route index element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="/register" element={<Navigate to="/" replace />} />
             <Route path="/verify-otp" element={<Navigate to="/login" replace />} />
@@ -182,6 +185,14 @@ export default function App() {
             />
             <Route
               path="/orders"
+              element={
+                <RequireAuth>
+                  <OrdersPage onAuth={() => openAuth("login")} />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/orders/:orderId"
               element={
                 <RequireAuth>
                   <OrdersPage onAuth={() => openAuth("login")} />

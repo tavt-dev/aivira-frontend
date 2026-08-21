@@ -442,6 +442,7 @@ function BookRow({ rank, image, title, sku, meta, value, to, warn }) {
 
 /* ── DashPanel ──────────────────────────────── */
 function DashPanel({ title, icon:Icon, children, danger, linkTo }) {
+  const { t } = useTranslation();
   return (
     <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}
       transition={{duration:0.45,ease:[0.22,1,0.36,1]}}
@@ -461,7 +462,7 @@ function DashPanel({ title, icon:Icon, children, danger, linkTo }) {
         {linkTo && (
           <Link to={linkTo} className="ml-auto flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity"
             style={{ color:tk.accent }}>
-            Xem thêm <ArrowUpRight size={11}/>
+            {t("common.showMore")} <ArrowUpRight size={11}/>
           </Link>
         )}
       </div>

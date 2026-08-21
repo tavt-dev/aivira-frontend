@@ -77,7 +77,7 @@ export default function AdminBlogPage() {
       setCategories(categoryRows || []);
       setProducts(pageRows(productRows));
     } catch (error) {
-      notify(toast, "error", error.message || t("adminBlog.loadFailed"));
+      notify(toast, "error", t("adminBlog.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export default function AdminBlogPage() {
       notify(toast, "success", t("adminBlog.saved"));
       await load();
     } catch (error) {
-      notify(toast, "error", error.message || t("adminBlog.saveFailed"));
+      notify(toast, "error", t("adminBlog.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -268,8 +268,8 @@ export default function AdminBlogPage() {
               className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950"
             >
               <option value="">{t("common.all")}</option>
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
+              <option value="DRAFT">{t("admin.draft")}</option>
+              <option value="PUBLISHED">{t("admin.publishedStatus")}</option>
             </select>
             <Button variant="secondary" onClick={load}>
               <RefreshCw size={15} />
@@ -609,7 +609,7 @@ function PostModal({
         </div>
         <div className="grid content-start gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">HTML content</span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-500">{t("admin.htmlContent")}</span>
             <label
               className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold ${!editingId ? "pointer-events-none opacity-40" : ""}`}
             >
@@ -626,7 +626,7 @@ function PostModal({
             className="rounded-xl border border-slate-200 bg-slate-950 p-4 font-mono text-xs leading-6 text-emerald-300 dark:border-slate-700"
           />
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-wider text-slate-500">Preview</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-wider text-slate-500">{t("admin.preview")}</p>
             <div
               className="blog-content max-h-80 overflow-auto rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-950"
               dangerouslySetInnerHTML={{ __html: form.contentHtml }}

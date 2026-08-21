@@ -21,8 +21,8 @@ const PAGE_SIZES = [10, 20, 50];
 const emptyFilters = { keyword:"", role:"", active:"", locked:"", emailVerified:"", page:1, size:20 };
 
 /* ── Shared UI Primitives ──────────────────────── */
-function PInput({ ...props }) {
-  return <input className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-shadow" {...props}/>;
+function PInput({ className = "", ...props }) {
+  return <input className={`w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-shadow ${className}`} {...props}/>;
 }
 function PSelect({ children, ...props }) {
   return (
@@ -97,7 +97,7 @@ export default function AdminUsersPage() {
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
     } catch (error) {
       setUsers([]); setPageMeta(createEmptyMeta(nextFilters));
-      setMessage(error.message || t("admin.userLoadFailed"));
+      setMessage(t("admin.userLoadFailed"));
     } finally { setLoading(false); }
   }, [appliedFilters, t]);
 
@@ -123,7 +123,7 @@ export default function AdminUsersPage() {
     try {
       const detail = await getAdminUser(user.id);
       setSelected(detail); setRoleDraft(roleCodes(detail));
-    } catch (error) { setMessage(error.message || t("admin.userDetailFailed")); }
+    } catch { setMessage(t("admin.userDetailFailed")); }
     finally { setDetailLoading(false); }
   }
 
@@ -143,7 +143,7 @@ export default function AdminUsersPage() {
       applyUpdatedUser(updated);
       setMessage(isLock ? t("admin.userLocked") : t("admin.userUnlocked"));
       await refreshUsers(appliedFilters);
-    } catch (error) { setMessage(error.message || (isLock ? t("admin.userLockFailed") : t("admin.userUnlockFailed"))); }
+    } catch { setMessage(isLock ? t("admin.userLockFailed") : t("admin.userUnlockFailed")); }
     finally { setBusy(""); }
   }
 
@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
       setRoleModalOpen(false);
       setMessage(t("admin.userRolesUpdated"));
       await refreshUsers(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.userRolesFailed")); }
+    } catch { setMessage(t("admin.userRolesFailed")); }
     finally { setBusy(""); }
   }
 
@@ -191,10 +191,10 @@ export default function AdminUsersPage() {
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">{t("admin.userFilters","Bộ lọc")}</h3>
         </div>
         <div className="p-5">
-          <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_130px_110px_110px_140px_90px_auto_auto]" onSubmit={applyFilters}>
+          <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(200px,1fr)_130px_110px_110px_140px_90px_auto_auto]" onSubmit={applyFilters}>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"/>
-              <PInput className="pl-9" value={filters.keyword} onChange={e => setFilters({ ...filters, keyword: e.target.value })} placeholder={t("admin.userKeyword","Tìm người dùng...")}/>
+              <PInput className="pl-9" autoComplete="off" value={filters.keyword} onChange={e => setFilters({ ...filters, keyword: e.target.value })} placeholder={t("admin.userKeyword","Tìm người dùng...")}/>
             </div>
             <PSelect value={filters.role} onChange={e => setFilters({ ...filters, role: e.target.value })}>
               <option value="">{t("admin.allRoles","Tất cả vai trò")}</option>

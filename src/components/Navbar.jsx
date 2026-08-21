@@ -19,6 +19,7 @@ import { logout as logoutRequest } from "../api/authApi.js";
 import { getCart } from "../api/cartApi.js";
 import { getProducts } from "../api/catalogApi.js";
 import LanguageSwitcher from "./LanguageSwitcher.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 import { normalizeBook, pageRows } from "../utils/mappers.js";
 import { clearAuth, getAccessToken, getRefreshToken } from "../utils/storage.js";
 import { getTheme, toggleTheme } from "../utils/theme.js";
@@ -321,6 +322,7 @@ export default function Navbar({ solid, user, onAuth }) {
           </div>
 
           <div className="flex items-center gap-4">
+            {user && <NotificationBell inverted={!isSolid} />}
             <NavLink
               to="/cart"
               className={({ isActive }) =>
@@ -437,6 +439,7 @@ export default function Navbar({ solid, user, onAuth }) {
         </div>
 
         <div className="flex items-center gap-4 md:hidden">
+          {user && <NotificationBell inverted={!isSolid} />}
           <NavLink
             to="/cart"
             onClick={() => setMobileOpen(false)}

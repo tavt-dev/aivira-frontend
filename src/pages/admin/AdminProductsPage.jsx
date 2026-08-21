@@ -221,7 +221,7 @@ export default function AdminProductsPage() {
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
     } catch (error) {
       setBooks([]); setPageMeta(createEmptyMeta(nextFilters));
-      setMessage(error.message || t("admin.errors.products"));
+      setMessage(t("admin.errors.products"));
     } finally { setLoading(false); }
   }, [appliedFilters, t]);
 
@@ -232,7 +232,7 @@ export default function AdminProductsPage() {
     if (!productId) return;
     setDetailLoading(true);
     try { setSelectedProduct(normalizeBook(await getAdminProduct(productId))); }
-    catch (error) { setMessage(error.message || t("admin.errors.productDetail")); }
+    catch { setMessage(t("admin.errors.productDetail")); }
     finally { setDetailLoading(false); }
   }
 
@@ -293,7 +293,7 @@ export default function AdminProductsPage() {
       setEditingProductId(null); setBookForm(emptyBookForm); setSlugTouched(false);
       setSelectedProduct(normalized); setShowForm(false);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.productSave")); }
+    } catch { setMessage(t("admin.errors.productSave")); }
   }
 
   async function remove(book) {
@@ -309,7 +309,7 @@ export default function AdminProductsPage() {
       setMessage(t("admin.productDeleted"));
       if (selectedProduct?.id === book.id) setSelectedProduct(null);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.delete")); }
+    } catch { setMessage(t("admin.errors.delete")); }
   }
 
   async function manageProduct(book) {
@@ -345,7 +345,7 @@ export default function AdminProductsPage() {
       setVariationModalOpen(false);
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.variationCreate")); }
+    } catch { setMessage(t("admin.errors.variationCreate")); }
   }
   async function removeVariation(variationId) {
     if (!selectedProduct?.id) return;
@@ -357,7 +357,7 @@ export default function AdminProductsPage() {
       setMessage(t("admin.variationDeleted"));
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.variationDelete")); }
+    } catch { setMessage(t("admin.errors.variationDelete")); }
   }
 
   // ── Stock handler (100% preserved) ──────────
@@ -369,7 +369,7 @@ export default function AdminProductsPage() {
       setStockModalOpen(false);
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.stock")); }
+    } catch { setMessage(t("admin.errors.stock")); }
   }
 
   // ── Media handlers (100% preserved) ─────────
@@ -383,7 +383,7 @@ export default function AdminProductsPage() {
       setMediaUploadOpen(false);
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.media")); }
+    } catch { setMessage(t("admin.errors.media")); }
   }
   function editMedia(media) {
     setMediaEditForm({ id: media.id, altText: media.altText || "", sortOrder: media.sortOrder ?? 0, primary: Boolean(media.primary), active: media.active !== false });
@@ -397,7 +397,7 @@ export default function AdminProductsPage() {
       setMediaEditOpen(false);
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.media")); }
+    } catch { setMessage(t("admin.errors.media")); }
   }
   async function removeMedia(mediaId) {
     if (!selectedProduct?.id) return;
@@ -409,7 +409,7 @@ export default function AdminProductsPage() {
       setMessage(t("admin.mediaDeleted"));
       await refreshSelectedProduct(selectedProduct.id);
       await refreshAdminProducts(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.errors.media")); }
+    } catch { setMessage(t("admin.errors.media")); }
   }
 
   // ── RENDER ───────────────────────────────────
@@ -563,21 +563,21 @@ export default function AdminProductsPage() {
                 {/* Basic info */}
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   <PInput required={!editingProductId} label={t("admin.sku","SKU")} value={bookForm.sku} onChange={e => handleBookField("sku", e.target.value)} placeholder="BOOK-001"/>
-                  <PInput required={!editingProductId} label={t("admin.bookTitle","Tên sách")} value={bookForm.productName} onChange={e => handleBookField("productName", e.target.value)} placeholder="Tên sách"/>
+                  <PInput required={!editingProductId} label={t("admin.bookTitle","Tên sách")} value={bookForm.productName} onChange={e => handleBookField("productName", e.target.value)} placeholder={t("admin.bookTitle")}/>
                   <PInput label={t("admin.slug","Slug")} value={bookForm.slug} onChange={e => handleBookField("slug", e.target.value)} placeholder="ten-sach"/>
                 </div>
-                <PTextarea required={!editingProductId} label={t("admin.description","Mô tả")} value={bookForm.description} onChange={e => handleBookField("description", e.target.value)} placeholder="Mô tả nội dung sách..."/>
+                <PTextarea required={!editingProductId} label={t("admin.description","Mô tả")} value={bookForm.description} onChange={e => handleBookField("description", e.target.value)} placeholder={t("admin.bookDescriptionPlaceholder")}/>
 
                 {/* Book metadata */}
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  <PInput required={!editingProductId} label={t("admin.bookAuthor","Tác giả")} value={bookForm.bookAuthor} onChange={e => handleBookField("bookAuthor", e.target.value)} placeholder="Tên tác giả"/>
+                  <PInput required={!editingProductId} label={t("admin.bookAuthor","Tác giả")} value={bookForm.bookAuthor} onChange={e => handleBookField("bookAuthor", e.target.value)} placeholder={t("admin.bookAuthor")}/>
                   <PInput maxLength={20} label={t("admin.isbn","ISBN")} value={bookForm.isbn} onChange={e => handleBookField("isbn", e.target.value)} placeholder="978-3-16-148410-0"/>
                   <PInput label={t("admin.publisher","NXB")} value={bookForm.publisher} onChange={e => handleBookField("publisher", e.target.value)}/>
                   <PSelect label={t("admin.bookFormat","Định dạng")} value={bookForm.bookFormat} onChange={e => handleBookField("bookFormat", e.target.value)}>
                     {BOOK_FORMATS.map(f => <option key={f} value={f}>{formatLabel(f)}</option>)}
                   </PSelect>
                   <PInput label={t("admin.publicationYear","Năm XB")} value={bookForm.publicationYear} onChange={e => handleBookField("publicationYear", e.target.value)} type="number" min="1000"/>
-                  <PInput label={t("admin.bookLanguage","Ngôn ngữ")} value={bookForm.bookLanguage} onChange={e => handleBookField("bookLanguage", e.target.value)} placeholder="Tiếng Việt"/>
+                  <PInput label={t("admin.bookLanguage","Ngôn ngữ")} value={bookForm.bookLanguage} onChange={e => handleBookField("bookLanguage", e.target.value)} placeholder={t("admin.bookLanguagePlaceholder")}/>
                   <PInput label={t("admin.pageCount","Số trang")} value={bookForm.pageCount} onChange={e => handleBookField("pageCount", e.target.value)} type="number" min="1"/>
                   <PInput label={t("admin.dimensions","Kích thước")} value={bookForm.dimensions} onChange={e => handleBookField("dimensions", e.target.value)} placeholder="14x20cm"/>
                 </div>
@@ -642,7 +642,7 @@ export default function AdminProductsPage() {
                   <p>{selectedProduct.author}</p>
                   <p className="font-mono text-xs">{selectedProduct.isbn || t("admin.noIsbn","Chưa có ISBN")}</p>
                   <p>{selectedProduct.publisher || "—"} {selectedProduct.publicationYear ? `· ${selectedProduct.publicationYear}` : ""}</p>
-                  <p>{selectedProduct.bookLanguage || "—"} · {selectedProduct.pageCount || "—"} tr · {selectedProduct.bookFormat || "—"}</p>
+                  <p>{selectedProduct.bookLanguage || "—"} · {selectedProduct.pageCount || "—"} {t("admin.pagesAbbrev")} · {selectedProduct.bookFormat || "—"}</p>
                 </div>
               </div>
 
@@ -765,7 +765,7 @@ export default function AdminProductsPage() {
           >
             <form className="grid gap-3" onSubmit={saveMedia}>
               <PInput type="file" accept="image/*" onChange={e => setMediaForm({ ...mediaForm, file: e.target.files?.[0] || null })}/>
-              <PInput label={t("admin.altText","Mô tả ảnh")} value={mediaForm.altText} onChange={e => setMediaForm({ ...mediaForm, altText: e.target.value })} placeholder="Mô tả ảnh bìa..."/>
+              <PInput label={t("admin.altText","Mô tả ảnh")} value={mediaForm.altText} onChange={e => setMediaForm({ ...mediaForm, altText: e.target.value })} placeholder={t("admin.coverDescriptionPlaceholder")}/>
               <PInput label={t("admin.sortOrder","Thứ tự hiển thị")} value={mediaForm.sortOrder} onChange={e => setMediaForm({ ...mediaForm, sortOrder: e.target.value })} type="number" min="0"/>
               <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 <input type="checkbox" checked={mediaForm.primary} onChange={e => setMediaForm({ ...mediaForm, primary: e.target.checked })} className="h-4 w-4 rounded text-indigo-600"/>

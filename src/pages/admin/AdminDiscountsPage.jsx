@@ -113,7 +113,7 @@ export default function AdminDiscountsPage() {
     } catch (error) {
       setCoupons([]);
       setCouponMeta(createEmptyMeta(next));
-      setMessage(error.message || t("admin.couponLoadFailed"));
+      setMessage(t("admin.couponLoadFailed"));
     } finally {
       setLoading("");
     }
@@ -130,7 +130,7 @@ export default function AdminDiscountsPage() {
     } catch (error) {
       setPromotions([]);
       setPromotionMeta(createEmptyMeta(next));
-      setMessage(error.message || t("admin.promotionLoadFailed"));
+      setMessage(t("admin.promotionLoadFailed"));
     } finally {
       setLoading("");
     }
@@ -164,7 +164,7 @@ export default function AdminDiscountsPage() {
       closeCouponForm();
       await refreshCoupons(couponPage);
     } catch (error) {
-      setMessage(error.message || t("admin.couponSaveFailed"));
+      setMessage(t("admin.couponSaveFailed"));
     }
   }
 
@@ -188,7 +188,7 @@ export default function AdminDiscountsPage() {
       closePromotionForm();
       await refreshPromotions(promotionPage);
     } catch (error) {
-      setMessage(error.message || t("admin.promotionSaveFailed"));
+      setMessage(t("admin.promotionSaveFailed"));
     }
   }
 
@@ -207,7 +207,7 @@ export default function AdminDiscountsPage() {
       setMessage(t("admin.couponDeactivated"));
       await refreshCoupons(couponPage);
     } catch (error) {
-      setMessage(error.message || t("admin.couponDeactivateFailed"));
+      setMessage(t("admin.couponDeactivateFailed"));
     }
   }
 
@@ -226,7 +226,7 @@ export default function AdminDiscountsPage() {
       setMessage(t("admin.promotionDeactivated"));
       await refreshPromotions(promotionPage);
     } catch (error) {
-      setMessage(error.message || t("admin.promotionDeactivateFailed"));
+      setMessage(t("admin.promotionDeactivateFailed"));
     }
   }
 

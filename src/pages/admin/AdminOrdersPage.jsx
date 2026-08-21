@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ShoppingBag, Search, Filter, Eye, Check, Package, Truck,
@@ -49,9 +49,9 @@ const PAYMENT_STATUS_STYLES = {
 const emptyFilters = { status:"", keyword:"", fromDate:"", toDate:"", page:1, size:20 };
 
 /* ── Shared UI Primitives ──────────────────────── */
-function PInput({ ...props }) {
+function PInput({ className = "", ...props }) {
   return (
-    <input className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-shadow focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20" {...props}/>
+    <input autoComplete="off" className={`w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-shadow focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 ${className}`} {...props}/>
   );
 }
 function PSelect({ children, ...props }) {
@@ -117,6 +117,8 @@ function PaymentBadge({ status }) {
 export default function AdminOrdersPage() {
   const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
+  const { orderId } = useParams();
+  const navigate = useNavigate();
   const initialFilters = useMemo(() => filtersFromSearch(searchParams), [searchParams]);
   const [filters, setFilters]           = useState(initialFilters);
   const [appliedFilters, setAppliedFilters] = useState(initialFilters);
@@ -140,7 +142,7 @@ export default function AdminOrdersPage() {
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
     } catch (error) {
       setOrders([]); setPageMeta(createEmptyMeta(nextFilters));
-      setMessage(error.message || t("admin.orderLoadFailed"));
+      setMessage(t("admin.orderLoadFailed"));
     } finally { setLoading(false); }
   }, [appliedFilters, t]);
 
@@ -149,6 +151,24 @@ export default function AdminOrdersPage() {
     const next = filtersFromSearch(searchParams);
     setFilters(next); setAppliedFilters(next);
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!orderId) return;
+    let active = true;
+    setDetailLoading(true);
+    setMessage("");
+    getAdminOrder(orderId)
+      .then((order) => {
+        if (active) setSelected(normalizeOrder(order));
+      })
+      .catch((error) => {
+        if (active) setMessage(t("admin.orderDetailFailed"));
+      })
+      .finally(() => {
+        if (active) setDetailLoading(false);
+      });
+    return () => { active = false; };
+  }, [orderId, t]);
 
   function applyFilters(event) {
     event.preventDefault();
@@ -171,7 +191,7 @@ export default function AdminOrdersPage() {
   async function openDetail(order) {
     setDetailLoading(true); setMessage("");
     try { setSelected(normalizeOrder(await getAdminOrder(order.id))); }
-    catch (error) { setMessage(error.message || t("admin.orderDetailFailed")); }
+    catch { setMessage(t("admin.orderDetailFailed")); }
     finally { setDetailLoading(false); }
   }
 
@@ -181,7 +201,7 @@ export default function AdminOrdersPage() {
       const updated = normalizeOrder(await action(order.id));
       applyUpdatedOrder(updated); setMessage(t(successKey));
       await refreshOrders(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.orderActionFailed")); }
+    } catch { setMessage(t("admin.orderActionFailed")); }
     finally { setActionBusy(""); }
   }
 
@@ -193,7 +213,7 @@ export default function AdminOrdersPage() {
       applyUpdatedOrder(updated); setCancelTarget(null); setCancelReason("");
       setMessage(t("admin.adminOrderCancelled"));
       await refreshOrders(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.orderCancelFailed")); }
+    } catch { setMessage(t("admin.orderCancelFailed")); }
     finally { setActionBusy(""); }
   }
 
@@ -211,7 +231,7 @@ export default function AdminOrdersPage() {
       setRefundForm({ amount:"", reason:"", note:"" });
       setMessage(t("admin.orderRefunded"));
       await refreshOrders(appliedFilters);
-    } catch (error) { setMessage(error.message || t("admin.orderRefundFailed")); }
+    } catch { setMessage(t("admin.orderRefundFailed")); }
     finally { setActionBusy(""); }
   }
 
@@ -363,7 +383,10 @@ export default function AdminOrdersPage() {
       {selected && (
         <OrderDetailDrawer
           actionBusy={actionBusy} language={i18n.language}
-          onCancel={() => setCancelTarget(selected)} onClose={() => setSelected(null)}
+          onCancel={() => setCancelTarget(selected)} onClose={() => {
+            setSelected(null);
+            if (orderId) navigate("/admin/orders", { replace: true });
+          }}
           onCompleted={() => runTransition(selected, markCompleted, "admin.orderCompleted")}
           onConfirm={() => runTransition(selected, confirmOrder, "admin.orderConfirmed")}
           onPacking={() => runTransition(selected, markPacking, "admin.orderPacking")}

@@ -650,6 +650,7 @@ function PriceBlock({ book, hasDiscount, tk, isDark, t }) {
 
 /* ── Description block ───────────────────────── */
 function DescriptionBlock({ desc, tk }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const SHORT_LEN = 280;
   const isLong = desc.length > SHORT_LEN;
@@ -661,7 +662,7 @@ function DescriptionBlock({ desc, tk }) {
         <button type="button" onClick={() => setExpanded(e => !e)}
           className="mt-2 text-xs font-bold transition-colors hover:opacity-80"
           style={{ color:tk.accent }}>
-          {expanded ? "Thu gọn ▲" : "Xem thêm ▼"}
+          {expanded ? t("common.collapse") : t("common.showMore")}
         </button>
       )}
     </div>

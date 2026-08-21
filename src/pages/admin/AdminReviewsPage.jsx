@@ -77,7 +77,7 @@ export default function AdminReviewsPage() {
     } catch (error) {
       setReviews([]);
       setPageMeta(createEmptyMeta(nextFilters));
-      setMessage(error.message || t("admin.reviewLoadFailed"));
+      setMessage(t("admin.reviewLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -150,7 +150,7 @@ export default function AdminReviewsPage() {
       toast({ message: t(successKey), variant: "success" });
       await refreshReviews(appliedFilters);
     } catch (error) {
-      setMessage(error.message || t("admin.reviewModerationFailed"));
+      setMessage(t("admin.reviewModerationFailed"));
     } finally {
       setBusy("");
     }
@@ -176,7 +176,7 @@ export default function AdminReviewsPage() {
       await refreshReviews(appliedFilters);
       setReplyOpen(false);
     } catch (error) {
-      setMessage(error.message || t("admin.reviewReplyFailed"));
+      setMessage(t("admin.reviewReplyFailed"));
     } finally {
       setBusy("");
     }
@@ -204,7 +204,7 @@ export default function AdminReviewsPage() {
       toast({ message: t("admin.reviewReplyCleared"), variant: "success" });
       await refreshReviews(appliedFilters);
     } catch (error) {
-      setMessage(error.message || t("admin.reviewReplyFailed"));
+      setMessage(t("admin.reviewReplyFailed"));
     } finally {
       setBusy("");
     }

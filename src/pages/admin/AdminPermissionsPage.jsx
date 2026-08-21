@@ -124,7 +124,7 @@ export default function AdminPermissionsPage() {
         const first = nextRoles[0]?.code || nextRoles[0]?.roleCode;
         if (first) setSelectedRole(first);
       })
-      .catch(error => setMessage(error.message || t("admin.errors.permissions")))
+      .catch(() => setMessage(t("admin.errors.permissions")))
       .finally(() => setLoading(false));
   }, [t]);
 
@@ -140,7 +140,7 @@ export default function AdminPermissionsPage() {
     try {
       await updateRolePermissions(selectedRole, rolePermissions.map(permissionCode));
       setMessage(t("admin.roleSaved"));
-    } catch (error) { setMessage(error.message || t("admin.errors.roleUpdate")); }
+    } catch { setMessage(t("admin.errors.roleUpdate")); }
   }
 
   async function loadUserPermissions(event) {
@@ -155,7 +155,7 @@ export default function AdminPermissionsPage() {
       setUserPermissions(await getUserPermissions(nextUserId));
       setUserDrawerOpen(true);
     }
-    catch (error) { setUserPermissions(null); setMessage(error.message || t("admin.errors.userPermissions")); }
+    catch { setUserPermissions(null); setMessage(t("admin.errors.userPermissions")); }
   }, [t]);
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export default function AdminPermissionsPage() {
       setGrantForm({ permissionCode:"", reason:"", expiresAt:"" });
       setGrantModalOpen(false);
       await loadUserPermissionsById(userId);
-    } catch (error) { setMessage(error.message || t("admin.errors.grant")); }
+    } catch { setMessage(t("admin.errors.grant")); }
   }
 
   async function revoke(permission) {
@@ -191,7 +191,7 @@ export default function AdminPermissionsPage() {
       await revokeUserPermission(userId, code);
       setMessage(t("admin.permissionRevoked"));
       await loadUserPermissionsById(userId);
-    } catch (error) { setMessage(error.message || t("admin.errors.revoke")); }
+    } catch { setMessage(t("admin.errors.revoke")); }
   }
 
   function toggleRolePermission(permission) {

@@ -57,6 +57,9 @@ describe("AiAdviceWidget", () => {
             role: "ASSISTANT",
             content: "Mình tìm thấy một cuốn phù hợp.",
             status: "RECOMMENDATION",
+            retrievalMode: "HYBRID",
+            embeddingProvider: "gemini",
+            embeddingModel: "gemini-embedding-001",
             suggestedPrompts: [],
             quota: { limit: 30, used: 1, remaining: 29, resetsAt: "2026-09-01T00:00:00Z" },
             recommendations: {
@@ -80,6 +83,7 @@ describe("AiAdviceWidget", () => {
 
     await screen.findByText("Mình tìm thấy một cuốn phù hợp.");
     expect(screen.getByText(book.productName)).toBeInTheDocument();
+    expect(screen.getByText(/tìm kiếm ai kết hợp/i)).toBeInTheDocument();
     expect(screen.queryByText(/lượt tháng này/i)).not.toBeInTheDocument();
   });
 

@@ -50,8 +50,13 @@ const en = {
     close: "Close",
     yes: "Yes",
     no: "No",
+    none: "None",
     top: "Top",
     viewAll: "View all",
+    showMore: "Show more",
+    collapse: "Collapse",
+    switchToLight: "Switch to light mode",
+    switchToDark: "Switch to dark mode",
     viewDetails: "View Details",
     backToBookstore: "Back to bookstore",
     noData: "No data.",
@@ -68,6 +73,9 @@ const en = {
     toggleMenu: "Toggle menu"
   },
   footer: {
+    stayUpdated: "Stay updated",
+    location: "Hanoi, Vietnam",
+    emailPlaceholder: "Enter your email",
     desc: "Aivira single-vendor online bookstore. Browse, checkout, pay, and track orders from one curated catalog.",
     business: "Business & Finance",
     selfHelp: "Self-help & Growth",
@@ -76,9 +84,88 @@ const en = {
     ourStory: "Our Story",
     orderTracking: "Order Tracking",
     contact: "Contact",
-    rights: "© {{year}} Aivira Bookstore. All rights reserved.",
+    rights: "© {{year}} Aivira Bookstore",
     privacy: "Privacy Policy",
     terms: "Terms of Service"
+  },
+  about: {
+    eyebrow: "The Aivira story",
+    heroTitle: "We believe every great book finds its reader.",
+    heroCopy: "Aivira was built on a simple belief: finding the right book should feel as inspiring as reading it. We are a curated bookstore, not a catalog.",
+    exploreBooks: "Explore our books",
+    readJournal: "Read the Aivira journal",
+    scrollDown: "Scroll to discover",
+
+    /* Stats */
+    statBooksValue: "500+",
+    statBooksLabel: "Curated titles",
+    statReadersValue: "10K+",
+    statReadersLabel: "Trusted readers",
+    statYearValue: "2022",
+    statYearLabel: "Year founded",
+
+    /* Our Story */
+    storyEyebrow: "Where we began",
+    storyTitle: "A bookstore created for people who love to read.",
+    storyCopy1: "With endless choices, finding a book that truly fits is not always easy. Aivira exists to make that journey clearer, warmer, and more inspiring.",
+    storyCopy2: "We curate books across business, personal growth, literature, and life skills; present every detail transparently; and connect discovery, checkout, and order tracking in one seamless experience.",
+    promise: "The Aivira promise",
+    promiseCopy: "We do more than sell books — we help every reader find one worth their time.",
+
+    /* Timeline */
+    timelineLabel: "Our milestones",
+    timeline: [
+      { year: "2022", title: "Aivira is born", desc: "Founded with a single mission: make book discovery feel personal and effortless." },
+      { year: "2023", title: "5,000 readers milestone", desc: "Our community grew as readers discovered books they would have never found otherwise." },
+      { year: "2024", title: "12 curated categories", desc: "Expanded our catalog to cover every dimension of a reader's life." }
+    ],
+
+    /* Core Values */
+    valuesEyebrow: "What we believe",
+    valuesTitle: "Four values that define us",
+    curatedTitle: "Thoughtful curation",
+    curatedCopy: "Every title is selected and organized to help you discover faster and choose with confidence.",
+    transparentTitle: "Clarity in every detail",
+    transparentCopy: "Book information, editions, prices, and availability are presented simply and transparently.",
+    readerTitle: "Readers at the center",
+    readerCopy: "From search to delivery, every touchpoint is designed to feel effortless and helpful.",
+    seamlessTitle: "Seamless experience",
+    seamlessCopy: "Discovery, checkout, and order tracking flow naturally in one connected place — no friction.",
+
+    /* How It Works */
+    experienceEyebrow: "The Aivira experience",
+    experienceTitle: "From a thought to a book in your hands.",
+    discover: "Discover",
+    discoverCopy: "Search by subject, author, or the inspiration you need right now.",
+    choose: "Choose",
+    chooseCopy: "Review clear details, ratings, and recommendations that fit.",
+    receive: "Order & track",
+    receiveCopy: "Pay flexibly and follow your order journey with ease.",
+
+    /* Team */
+    teamEyebrow: "Built with love",
+    teamTitle: "By people who live for books.",
+    teamCopy: "Aivira is built by a small, passionate team of readers. We are not a giant marketplace — we are fellow book lovers who wanted a better way to discover and share the books that shaped us.",
+    teamQuote: "\"A good book leaves you wanting to talk to someone about what you just read. That's the feeling we build toward.\" — Aivira Team",
+
+    /* Testimonials */
+    testimonialsEyebrow: "What readers say",
+    testimonialsTitle: "Stories from our community.",
+    testimonials: [
+      { quote: "Aivira is the only bookstore where I actually find what I'm looking for. The curation is incredibly thoughtful.", name: "M. Lan", location: "Hanoi" },
+      { quote: "I discovered three books this year that genuinely changed how I think. All three came from Aivira's recommendations.", name: "T. Hùng", location: "Ho Chi Minh City" },
+      { quote: "From browsing to receiving my order, everything was smooth and personal. This is how online shopping should feel.", name: "P. Ngọc", location: "Da Nang" }
+    ],
+
+    /* Press / Partners */
+    pressEyebrow: "Publishing partners",
+    pressTitle: "Working with the publishers we trust.",
+    pressItems: ["NXB Trẻ", "NXB Kim Đồng", "NXB Tổng Hợp", "NXB Hội Nhà Văn", "Alphabooks"],
+
+    /* CTA */
+    ctaTitle: "Your next chapter is waiting.",
+    ctaCopy: "Explore books curated by Aivira and find the pages that feel made for you.",
+    ctaButton: "Start exploring"
   },
   auth: {
     modes: "Authentication modes",
@@ -151,6 +238,12 @@ const en = {
     }
   },
   home: {
+    save: "SAVE",
+    editorsChoice: "Editor's Choice",
+    curatorQuote: "A standout pick with a sharp point of view and a story that keeps its hold through the final page.",
+    aiviraCurator: "Aivira Curator",
+    moreWeeklyPicks: "More picks this week",
+    satisfied: "Satisfied",
     heroKicker: "Aivira Single-Vendor Bookstore",
     title1: "EVERY BOOK",
     title2: "A",
@@ -556,6 +649,9 @@ const en = {
     logoutAll: "Logout all sessions",
     userId: "User ID",
     phone: "Phone",
+    recipientName: "Recipient",
+    phoneNumber: "Phone number",
+    addressLine: "Address",
     createdAt: "Created at",
     emailVerified: "Email verified",
     emailUnverified: "Email unverified",
@@ -624,8 +720,25 @@ const en = {
     confirmDeleteCategory: "Delete category ‘{{name}}’?"
   },
   admin: {
+    panel: "Admin Panel",
+    navContent: "Content Management",
+    navSales: "Sales",
+    navPeople: "People",
+    search: "Search...",
+    draft: "Draft",
+    publishedStatus: "Published",
+    htmlContent: "HTML content",
+    preview: "Preview",
+    bookDescriptionPlaceholder: "Describe the book...",
+    bookLanguagePlaceholder: "English",
+    pagesAbbrev: "pages",
+    coverDescriptionPlaceholder: "Describe the cover image...",
+    categoryNamePlaceholder: "Literature books",
+    categorySlugPlaceholder: "literature-books",
+    categoryDescriptionPlaceholder: "Describe the category...",
     brand: "AIVIRA ADMIN",
     products: "Products",
+    books: "Books",
     blog: "News & Blog",
     categories: "Categories",
     payments: "Payments",
@@ -640,6 +753,16 @@ const en = {
     bookstore: "Bookstore",
     logout: "Logout",
     security: "Admin security",
+    paymentReady: "Payment ready",
+    paymentGroup: "Payment group",
+    role: "Role",
+    permissionCount: "Permission count",
+    editRolePermissions: "Edit role permissions",
+    rolePermissionHelp: "Select a role to review and update its granted permissions.",
+    rolePermissionsFor: "Permissions for {{role}}",
+    noPermissions: "No permissions.",
+    userPermissionHelp: "Look up a user to manage direct and effective permissions.",
+    grantForUser: "Grant permission to user",
     checking: "Checking access",
     verifying: "Verifying your Aivira admin role.",
     forbiddenTitle: "Admin access denied",
@@ -1138,7 +1261,50 @@ const en = {
     loadFailed: "Could not open the AI advice session.",
     sendFailed: "Could not send the advice request.",
     moreFailed: "Could not load more recommendations.",
-    preferenceFailed: "Could not update personalization."
+    preferenceFailed: "Could not update personalization.",
+    retrieval: {
+      HYBRID: "Hybrid AI search",
+      SEMANTIC: "Semantic search",
+      LEXICAL_FALLBACK: "Keyword fallback"
+    }
+  },
+  ragAdmin: {
+    eyebrow: "AI operations",
+    title: "RAG search index",
+    description: "Monitor Qdrant, the embedding model, and book synchronization for semantic retrieval.",
+    rebuild: "Rebuild full index",
+    loadFailed: "Could not load RAG index status.",
+    jobFailed: "Could not refresh job progress.",
+    rebuildFailed: "Could not start the index rebuild.",
+    productFailed: "Could not reindex the book.",
+    service: "RAG service",
+    enabled: "Enabled",
+    disabled: "Disabled",
+    connected: "Connected",
+    unavailable: "Unavailable",
+    indexed: "Indexed books",
+    attention: "Pending / failed",
+    configuration: "Current configuration",
+    collection: "Qdrant collection",
+    provider: "Provider",
+    model: "Embedding model",
+    dimension: "Vector dimensions",
+    singleTitle: "Reindex one book",
+    singleDescription: "Use this after editing a book or to repair one specific record.",
+    productId: "Product ID",
+    run: "Run",
+    currentJob: "Latest job",
+    progress: "Progress",
+    success: "Succeeded",
+    failed: "Failed"
+  },
+  notifications: {
+    title: "Notifications",
+    unread: "{{count}} unread notifications",
+    empty: "You do not have any notifications yet.",
+    markAllRead: "Mark all as read",
+    loadFailed: "Could not load notifications. Click to retry.",
+    markReadFailed: "Could not update the notification."
   },
   notFound: {
     title: "Page not found"

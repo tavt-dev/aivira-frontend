@@ -1,6 +1,6 @@
 ﻿import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer 
-      className="tw-footer relative overflow-hidden bg-slate-950 px-4 pb-10 pt-20 text-blue-100/60 antialiased md:px-8 md:pt-28"
+      className="tw-footer relative overflow-hidden bg-slate-950 px-4 pb-6 pt-12 text-blue-100/60 antialiased md:px-8 md:pt-16"
       style={{ fontFamily: "'Roboto', sans-serif" }}
     >
       {/* Premium Animated Aurora Background */}
@@ -49,11 +49,11 @@ export default function Footer() {
         <div className="absolute left-1/2 right-0 top-0 h-[2px] w-1/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent blur-sm" />
       </div>
 
-      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-8">
+      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
         
-        {/* BRAND & NEWSLETTER (Spans 5 cols) */}
-        <div className="lg:col-span-5">
-          <Link to="/" className="group mb-6 inline-flex items-center gap-4">
+        {/* BRAND */}
+        <div className="lg:col-span-4">
+          <Link to="/" className="group mb-5 inline-flex items-center gap-4">
              <img 
                src="/logo.png" 
                alt="Aivira Bookstore" 
@@ -69,32 +69,18 @@ export default function Footer() {
                </span>
              </span>
           </Link>
-          <p className="mb-8 max-w-sm text-sm leading-relaxed text-blue-100/60 font-light">
+          <p className="max-w-sm text-sm font-light leading-relaxed text-blue-100/60">
             {t("footer.desc")}
           </p>
 
-          <div className="max-w-sm">
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-blue-50/90">Stay Updated</h4>
-            <div className="relative flex items-center rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md focus-within:border-blue-500/50 focus-within:bg-white/10 transition-colors">
-              <Mail className="ml-4 mr-2 h-4 w-4 text-blue-100/40" />
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="w-full bg-transparent py-2 text-sm text-white placeholder-blue-100/40 outline-none"
-              />
-              <button className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition-transform hover:scale-105 hover:bg-blue-500">
-                <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
         </div>
         
-        {/* LINKS GRID (Spans 7 cols) */}
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7 lg:gap-12">
+        {/* LINKS GRID */}
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8 lg:gap-10">
           {/* CATEGORIES */}
           <div>
-            <h4 className="mb-6 text-xs font-bold uppercase tracking-widest text-blue-50/90">{t("common.categories")}</h4>
-            <ul className="space-y-4 text-sm font-medium">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-blue-50/90">{t("common.categories")}</h4>
+            <ul className="space-y-3 text-sm font-medium">
               <li><Link to="/category/business" className="transition-colors hover:text-blue-300">{t("footer.business")}</Link></li>
               <li><Link to="/category/self-help" className="transition-colors hover:text-blue-300">{t("footer.selfHelp")}</Link></li>
               <li><Link to="/category/literature" className="transition-colors hover:text-blue-300">{t("footer.literature")}</Link></li>
@@ -104,40 +90,35 @@ export default function Footer() {
           
           {/* AIVIRA */}
           <div>
-            <h4 className="mb-6 text-xs font-bold uppercase tracking-widest text-blue-50/90">Aivira</h4>
-            <ul className="space-y-4 text-sm font-medium">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-blue-50/90">Aivira</h4>
+            <ul className="space-y-3 text-sm font-medium">
               <li><Link to="/about" className="transition-colors hover:text-blue-300">{t("footer.ourStory")}</Link></li>
               <li><Link to="/account" className="transition-colors hover:text-blue-300">{t("common.account")}</Link></li>
               <li><Link to="/orders" className="transition-colors hover:text-blue-300">{t("footer.orderTracking")}</Link></li>
-              <li><Link to="/faq" className="transition-colors hover:text-blue-300">FAQ</Link></li>
             </ul>
           </div>
           
           {/* CONTACT */}
           <div className="col-span-2 sm:col-span-1">
-            <h4 className="mb-6 text-xs font-bold uppercase tracking-widest text-blue-50/90">{t("footer.contact")}</h4>
-            <ul className="space-y-5 text-sm font-medium">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-blue-50/90">{t("footer.contact")}</h4>
+            <ul className="space-y-3 text-sm font-medium">
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500" />
                 <span className="transition-colors hover:text-blue-300">tavantien786@gmail.com</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500" />
-                <span>Hanoi, Vietnam</span>
+                <span>{t("footer.location")}</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* BOTTOM BAR */}
-      <div className="relative z-10 mx-auto mt-12 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-white/10 pb-4 pt-6 text-xs font-medium md:flex-row md:pb-0">
-         <p>{t("footer.rights", { year })}</p>
-         <div className="flex gap-6">
-            <button type="button" className="transition-colors hover:text-white">{t("footer.privacy")}</button>
-            <button type="button" className="transition-colors hover:text-white">{t("footer.terms")}</button>
-         </div>
+      <div className="relative z-10 mx-auto mt-8 max-w-7xl border-t border-white/10 pt-3 text-center text-xs font-medium">
+        <p>{t("footer.rights", { year })}</p>
       </div>
+
     </footer>
   );
 }

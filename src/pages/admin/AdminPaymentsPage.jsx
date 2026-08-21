@@ -14,16 +14,14 @@ import {
 import { formatDateTime, formatVND } from "../../utils/formatters.js";
 import { normalizeOrder, normalizePaymentGroup } from "../../utils/mappers.js";
 
-/* ── Constants ─────────────────────────────────── */
-const TERMINAL_STATUSES = new Set(["SUCCESS","CANCELLED","EXPIRED","REFUNDED"]);
+const TERMINAL_STATUSES = new Set(["SUCCESS", "CANCELLED", "EXPIRED", "REFUNDED"]);
 
-/* ── Shared UI Primitives ──────────────────────── */
-function PInput({ ...props }) {
-  return <input className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-shadow" {...props}/>;
+function PInput({ className = "", ...props }) {
+  return <input className={`w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-shadow ${className}`} {...props}/>;
 }
 function PrimaryBtn({ children, loading, disabled, ...props }) {
   return (
-    <motion.button whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }} disabled={loading||disabled}
+    <motion.button whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }} disabled={loading || disabled}
       className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 dark:shadow-none transition-colors disabled:opacity-50" {...props}>
       {loading && <RefreshCw size={13} className="animate-spin"/>}
       {children}
@@ -96,9 +94,9 @@ export default function AdminPaymentsPage() {
       if (!options.silent) setGroupDrawerOpen(true);
       if (searchParams.get("code") !== normalizedCode) setSearchParams({ code: normalizedCode });
       if (!options.silent) setMessage(t("admin.paymentLoaded"));
-    } catch (error) {
+    } catch {
       setGroup(null); setReconcileResult(null); setGroupDrawerOpen(false);
-      setMessage(error.message || t("admin.paymentUnavailable"));
+      setMessage(t("admin.paymentUnavailable"));
     } finally { setLoading(false); }
   }, [code, searchParams, setSearchParams, t]);
 
@@ -132,7 +130,7 @@ export default function AdminPaymentsPage() {
       await lookup(normalizedCode, { silent: true });
       setReconcileResult(result);
       setGroupDrawerOpen(true);
-    } catch (error) { setMessage(error.message || t("admin.errors.reconcile")); }
+    } catch { setMessage(t("admin.errors.reconcile")); }
     finally { setReconciling(false); }
   }
 

@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { ShoppingCart, Star, ArrowRight, Bookmark } from "lucide-react";
 import { formatVND } from "../utils/formatters.js";
@@ -58,6 +59,7 @@ function BookGlare({ mousePos, isHovered }) {
 
 // ── Main spotlight book ───────────────────────────────────────────────────────
 function SpotlightBook({ book }) {
+  const { t } = useTranslation();
   const cardRef = React.useRef(null);
   const [mousePos, setMousePos] = React.useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = React.useState(false);
@@ -178,7 +180,7 @@ function SpotlightBook({ book }) {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 400, damping: 15, delay: 0.4 }}
             >
-              <span className="text-[9px] font-bold uppercase tracking-wider">SAVE</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider">{t("home.save")}</span>
               <span className="text-lg font-black leading-none">{discountPercent}%</span>
             </motion.div>
           )}
@@ -196,7 +198,7 @@ function SpotlightBook({ book }) {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <span className="rounded-full border border-blue-500/40 bg-blue-500/15 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-blue-300">
-            ✦ Editor&apos;s Choice
+            ✦ {t("home.editorsChoice")}
           </span>
           <div className="flex items-center gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -247,11 +249,11 @@ function SpotlightBook({ book }) {
             className="text-base italic leading-relaxed text-blue-100/80"
             style={{ fontFamily: "'Roboto', sans-serif", fontSize: "1.1rem" }}
           >
-            A standout pick with a sharp point of view and a story that keeps its hold through the final page.
+            {t("home.curatorQuote")}
           </p>
           <div className="mt-4 flex items-center gap-2">
             <div className="h-px flex-1 bg-white/10" />
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">Aivira Curator</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400/80">{t("home.aiviraCurator")}</p>
           </div>
         </motion.div>
 
@@ -410,6 +412,7 @@ function RunnerUpBook({ book, index }) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function WeeklyPicksShowcase({ books, loading, emptyMessage }) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div className="mt-12 flex flex-col gap-12 lg:flex-row lg:gap-16">
@@ -471,7 +474,7 @@ export default function WeeklyPicksShowcase({ books, loading, emptyMessage }) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          ✦ More picks this week
+          ✦ {t("home.moreWeeklyPicks")}
         </motion.h4>
         <div className="flex flex-col gap-3">
           {runnerUps.map((book, index) => (
@@ -492,7 +495,7 @@ export default function WeeklyPicksShowcase({ books, loading, emptyMessage }) {
             to="/category/all"
             className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/25 transition-colors hover:text-blue-400"
           >
-            Xem tất cả
+            {t("common.viewAll")}
             <ArrowRight size={11} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.div>

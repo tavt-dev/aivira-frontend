@@ -123,7 +123,7 @@ export default function AdminCategoriesPage() {
       setTree(pageRows(treePayload));
     } catch (error) {
       setCategories([]); setTree([]);
-      setMessage(error.message || t("admin.errors.categories"));
+      setMessage(t("admin.errors.categories"));
     } finally { setLoading(false); }
   }, [t]);
 
@@ -140,7 +140,7 @@ export default function AdminCategoriesPage() {
       setMessage(editingId ? t("admin.categoryUpdated") : t("admin.categorySaved"));
       closeForm();
       await refreshCategories();
-    } catch (error) { setMessage(error.message || t("admin.errors.categorySave")); }
+    } catch { setMessage(t("admin.errors.categorySave")); }
   }
 
   async function remove(category) {
@@ -155,7 +155,7 @@ export default function AdminCategoriesPage() {
       setMessage(t("admin.categoryDeleted"));
       if (editingId === category.id) closeForm();
       await refreshCategories();
-    } catch (error) { setMessage(error.message || t("admin.errors.categoryDelete")); }
+    } catch { setMessage(t("admin.errors.categoryDelete")); }
   }
 
   function startCreate() {
@@ -269,10 +269,10 @@ function CategoryFormModal({ editingId, flatCategories, form, onClose, open, set
     >
       <form className="grid gap-5" onSubmit={submit}>
         <div className="grid gap-4 sm:grid-cols-2">
-          <PInput label={t("admin.categoryName","Tên danh mục")} required value={form.categoryName} onChange={e => setForm({ ...form, categoryName: e.target.value })} placeholder="Sách văn học"/>
-          <PInput label={t("admin.slug","Slug")} value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder="sach-van-hoc"/>
+          <PInput label={t("admin.categoryName","Tên danh mục")} required value={form.categoryName} onChange={e => setForm({ ...form, categoryName: e.target.value })} placeholder={t("admin.categoryNamePlaceholder")}/>
+          <PInput label={t("admin.slug","Slug")} value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder={t("admin.categorySlugPlaceholder")}/>
         </div>
-        <PTextarea label={t("admin.description","Mô tả")} required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Mô tả danh mục..."/>
+        <PTextarea label={t("admin.description","Mô tả")} required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder={t("admin.categoryDescriptionPlaceholder")}/>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <PInput label={t("admin.imageUrl","URL ảnh")} value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })}/>
           <PInput label={t("admin.imagePublicId","Public ID ảnh")} value={form.imagePublicId} onChange={e => setForm({ ...form, imagePublicId: e.target.value })}/>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   AlertCircle,
@@ -177,6 +177,8 @@ export default function OrdersPage({ onAuth }) {
   const tk = tokens(isDark);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const { orderId } = useParams();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [pageMeta, setPageMeta] = useState(emptyMeta());
   const [loading, setLoading] = useState(false);
@@ -216,6 +218,25 @@ export default function OrdersPage({ onAuth }) {
       })
       .finally(() => setLoading(false));
   }, [filters.page, filters.size, filters.status, loggedIn, retryTick]);
+
+  useEffect(() => {
+    if (!loggedIn || !orderId) return;
+    let active = true;
+    setMessage("");
+    setPaymentAction(null);
+    setDetailLoading(true);
+    getOrder(orderId)
+      .then((order) => {
+        if (active) setSelected(normalizeOrder(order));
+      })
+      .catch((err) => {
+        if (active) setMessage(err.message || t("orders.detailFailed"));
+      })
+      .finally(() => {
+        if (active) setDetailLoading(false);
+      });
+    return () => { active = false; };
+  }, [loggedIn, orderId, t]);
 
   function updateFilters(overrides) {
     const next = { ...filters, ...overrides };
@@ -650,6 +671,7 @@ export default function OrdersPage({ onAuth }) {
                     onClick={() => {
                       setSelected(null);
                       setPaymentAction(null);
+                      if (orderId) navigate("/orders", { replace: true });
                     }}
                     className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all"
                     style={{

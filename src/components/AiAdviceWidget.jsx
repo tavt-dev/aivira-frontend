@@ -465,6 +465,11 @@ function MessageBubble({ message, feedback, onFeedback, onLoadMore, onTrackClick
           {t("advisor.degraded")}
         </div>
       )}
+      {!isUser && message.retrievalMode && message.status !== "DEGRADED_RECOMMENDATION" && (
+        <div className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${message.retrievalMode === "LEXICAL_FALLBACK" ? "border-amber-200 bg-amber-50 text-amber-700" : "border-indigo-200 bg-indigo-50 text-indigo-700"}`}>
+          <Sparkles size={11} /> {t(`advisor.retrieval.${message.retrievalMode}`)}
+        </div>
+      )}
       {!isUser && message.recommendations?.items?.length > 0 && (
         <div className="mt-3 space-y-3">
           {message.recommendations.items.map((recommendation) => (

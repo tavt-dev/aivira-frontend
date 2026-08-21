@@ -1406,7 +1406,7 @@ function BestsellingRanking({ books, loading, t }) {
                     {/* Info */}
                     <div className="flex min-w-0 flex-1 flex-col">
                       <span className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-blue-600 dark:text-blue-400">
-                        {book.catLabel || "Best Seller"}
+                        {book.catLabel || t("home.bestsellerBadge")}
                       </span>
                       <h3
                         className="line-clamp-2 text-lg font-bold leading-snug text-slate-900 dark:text-slate-100 transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300 md:text-xl"
@@ -1426,11 +1426,11 @@ function BestsellingRanking({ books, loading, t }) {
                           className="text-xl font-extrabold text-blue-900 dark:text-blue-300"
                           style={{ fontFamily: "'Roboto', sans-serif" }}
                         >
-                          {bPrice ? `${Number(bPrice).toLocaleString("vi-VN")}đ` : "—"}
+                          {bPrice ? formatVND(bPrice) : "—"}
                         </span>
                         {bDiscount > 0 && bOldPrice > 0 && (
                           <span className="text-xs text-slate-400 line-through">
-                            {Number(bOldPrice).toLocaleString("vi-VN")}đ
+                            {formatVND(bOldPrice)}
                           </span>
                         )}
                       </div>
@@ -1769,7 +1769,7 @@ function AboutSection({ booksCount }) {
             {[
               { num: "12K+", label: t("home.readers") },
               { num: `${booksCount || 500}+`, label: t("home.titles") },
-              { num: "99%", label: "Hài Lòng" }
+              { num: "99%", label: t("home.satisfied") }
             ].map(({ num, label }) => (
               <div key={label} className="text-center">
                 <div
