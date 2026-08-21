@@ -76,7 +76,7 @@ export default function AdminBlogPage() {
       setPostsPayload(postRows);
       setCategories(categoryRows || []);
       setProducts(pageRows(productRows));
-    } catch (error) {
+    } catch {
       notify(toast, "error", t("adminBlog.loadFailed"));
     } finally {
       setLoading(false);
@@ -143,7 +143,7 @@ export default function AdminBlogPage() {
       }));
       notify(toast, "success", t("adminBlog.saved"));
       await load();
-    } catch (error) {
+    } catch {
       notify(toast, "error", t("adminBlog.saveFailed"));
     } finally {
       setSaving(false);

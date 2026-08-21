@@ -95,7 +95,7 @@ export default function AdminUsersPage() {
       const page = await getAdminUsers(toQuery(nextFilters));
       setUsers(pageRows(page));
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
-    } catch (error) {
+    } catch {
       setUsers([]); setPageMeta(createEmptyMeta(nextFilters));
       setMessage(t("admin.userLoadFailed"));
     } finally { setLoading(false); }

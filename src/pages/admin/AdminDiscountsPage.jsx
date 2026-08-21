@@ -110,7 +110,7 @@ export default function AdminDiscountsPage() {
       const rows = pageRows(page);
       setCoupons(rows);
       setCouponMeta(readPageMeta(page, next));
-    } catch (error) {
+    } catch {
       setCoupons([]);
       setCouponMeta(createEmptyMeta(next));
       setMessage(t("admin.couponLoadFailed"));
@@ -127,7 +127,7 @@ export default function AdminDiscountsPage() {
       const rows = pageRows(page);
       setPromotions(rows);
       setPromotionMeta(readPageMeta(page, next));
-    } catch (error) {
+    } catch {
       setPromotions([]);
       setPromotionMeta(createEmptyMeta(next));
       setMessage(t("admin.promotionLoadFailed"));
@@ -163,7 +163,7 @@ export default function AdminDiscountsPage() {
       }
       closeCouponForm();
       await refreshCoupons(couponPage);
-    } catch (error) {
+    } catch {
       setMessage(t("admin.couponSaveFailed"));
     }
   }
@@ -187,7 +187,7 @@ export default function AdminDiscountsPage() {
       }
       closePromotionForm();
       await refreshPromotions(promotionPage);
-    } catch (error) {
+    } catch {
       setMessage(t("admin.promotionSaveFailed"));
     }
   }
@@ -206,7 +206,7 @@ export default function AdminDiscountsPage() {
       await deleteCoupon(coupon.id);
       setMessage(t("admin.couponDeactivated"));
       await refreshCoupons(couponPage);
-    } catch (error) {
+    } catch {
       setMessage(t("admin.couponDeactivateFailed"));
     }
   }
@@ -225,7 +225,7 @@ export default function AdminDiscountsPage() {
       await deletePromotion(promotion.id);
       setMessage(t("admin.promotionDeactivated"));
       await refreshPromotions(promotionPage);
-    } catch (error) {
+    } catch {
       setMessage(t("admin.promotionDeactivateFailed"));
     }
   }

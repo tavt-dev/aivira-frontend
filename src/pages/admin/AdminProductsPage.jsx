@@ -219,7 +219,7 @@ export default function AdminProductsPage() {
       const page = await getAdminProducts(toProductQuery(nextFilters));
       setBooks(pageRows(page).map(normalizeBook));
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
-    } catch (error) {
+    } catch {
       setBooks([]); setPageMeta(createEmptyMeta(nextFilters));
       setMessage(t("admin.errors.products"));
     } finally { setLoading(false); }

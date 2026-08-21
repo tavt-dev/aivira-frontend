@@ -121,7 +121,7 @@ export default function AdminCategoriesPage() {
       const [listRows, treePayload] = await Promise.all([getCategories(), getCategoryTree()]);
       setCategories(pageRows(listRows));
       setTree(pageRows(treePayload));
-    } catch (error) {
+    } catch {
       setCategories([]); setTree([]);
       setMessage(t("admin.errors.categories"));
     } finally { setLoading(false); }

@@ -140,7 +140,7 @@ export default function AdminOrdersPage() {
       const page = await getAdminOrders(toQuery(nextFilters));
       setOrders(pageRows(page).map(normalizeOrder));
       setPageMeta(readPageMeta(page, { page: nextFilters.page, size: nextFilters.size }));
-    } catch (error) {
+    } catch {
       setOrders([]); setPageMeta(createEmptyMeta(nextFilters));
       setMessage(t("admin.orderLoadFailed"));
     } finally { setLoading(false); }
@@ -161,7 +161,7 @@ export default function AdminOrdersPage() {
       .then((order) => {
         if (active) setSelected(normalizeOrder(order));
       })
-      .catch((error) => {
+      .catch(() => {
         if (active) setMessage(t("admin.orderDetailFailed"));
       })
       .finally(() => {
