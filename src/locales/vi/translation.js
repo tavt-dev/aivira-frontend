@@ -244,7 +244,6 @@ const vi = {
     aiviraCurator: "Tuyển chọn bởi Aivira",
     moreWeeklyPicks: "Thêm gợi ý tuần này",
     satisfied: "Hài lòng",
-    heroKicker: "Nhà sách trực tuyến Aivira",
     title1: "MỖI CUỐN SÁCH",
     title2: "LÀ MỘT",
     titleWorld: "THẾ GIỚI",
@@ -258,18 +257,14 @@ const vi = {
     momo: "& MoMo",
     ticker:
       "Kinh doanh và Tài chính - Phát triển bản thân - Văn học và Tiểu thuyết - Kỹ năng và Sức khỏe - Công nghệ - Giáo dục - ",
-    explore: "Khám phá",
     curatedCollections: "Bộ sưu tập tuyển chọn",
     backendCatalog: "Danh mục backend",
-    weeklyPicksChip: "Gợi ý",
-    featuredBooks: "Sách nổi bật",
     weeklyPicks: "Gợi ý tuần này",
     newArrivals: "Sách mới về",
     newArrivalsSubtitle: "Những đầu sách vừa được Aivira tuyển chọn cho kệ sách tuần này.",
     newArrivalSpotlight: "Vừa lên kệ",
     justArrived: "Mới",
     viewNewBooks: "Xem sách mới",
-    releaseShelf: "New Release Shelf",
     bestsellingBooks: "Sách bán chạy",
     bestsellerBadge: "Bán chạy",
     categoryHighlights: "Danh mục nổi bật",
@@ -282,7 +277,6 @@ const vi = {
     noCategoryHighlights: "Chưa có danh mục nổi bật",
     inStock: "Còn {{count}}",
     outOfStock: "Hết hàng",
-    collection: "Bộ sưu tập",
     allBooks: "Tất cả sách",
     quote:
       "Một cuốn sách không chỉ để đọc - nó được sống cùng. Aivira giúp bạn tìm ra những cuốn sách có thể thay đổi mọi điều.",
@@ -299,7 +293,6 @@ const vi = {
       trackTitle: "Mua & theo dõi",
       trackDesc: "Thêm vào giỏ, thanh toán COD/VNPay/MoMo và theo dõi trạng thái đơn hàng."
     },
-    whyUs: "Vì sao chọn chúng tôi",
     aboutTitle: "NHÀ SÁCH AIVIRA",
     aboutCopy:
       "Aivira là nhà sách trực tuyến hiện đại, nơi khách hàng có thể khám phá, đặt mua và theo dõi đơn hàng một cách dễ dàng. Từ danh mục sách được tuyển chọn, giỏ hàng thông minh đến các phương thức thanh toán linh hoạt như COD, VNPay và MoMo, Aivira mang đến trải nghiệm mua sách nhanh chóng, rõ ràng và thuận tiện.",

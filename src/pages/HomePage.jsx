@@ -2,7 +2,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { ArrowRight, BookOpen, CheckCircle2, Clock3, PackageCheck, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Clock3, PackageCheck } from "lucide-react";
 
 import { getCategories, getProducts } from "../api/catalogApi.js";
 import { getStorefrontHome } from "../api/storefrontApi.js";
@@ -62,16 +62,6 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "backOut" }}
-              className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md"
-            >
-              <span className="h-2 w-2 animate-pulse rounded-full bg-blue-400" />
-              <span className="text-sm font-medium tracking-wide text-slate-300">{t("home.heroKicker")}</span>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -175,7 +165,6 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
         <div className="mx-auto max-w-7xl relative z-10">
           <SectionHead
-            chip={t("home.weeklyPicksChip")}
             title={t("home.weeklyPicks")}
             link="/category/all"
             dark={true}
@@ -752,7 +741,7 @@ function CategoryShowcase({ categories, loading }) {
   return (
     <section className="relative bg-[#faf8f5] dark:bg-[#081228] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-7xl">
-        <SectionHead chip={t("home.explore")} title={t("home.categoryHighlights")} link="/category/all" />
+        <SectionHead title={t("home.categoryHighlights")} link="/category/all" />
         {loading ? (
           <CategorySkeleton />
         ) : cats.length ? (
@@ -867,10 +856,6 @@ function NewArrivalsEditorial({ books, loading, emptyMessage }) {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-3xl"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/75 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-blue-700 shadow-sm backdrop-blur dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300 dark:shadow-none">
-            <Sparkles size={13} className="text-amber-500 dark:text-amber-400" />
-            {t("home.collection")}
-          </div>
           <h2
             className="text-4xl font-bold leading-tight text-slate-950 dark:text-white md:text-6xl"
             style={{ fontFamily: "var(--f-serif)", letterSpacing: "-0.01em" }}
@@ -910,12 +895,8 @@ function NewArrivalsEditorial({ books, loading, emptyMessage }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: 0.1 }}
-              className="mb-4 flex items-center justify-between gap-4 border-b border-slate-200/80 pb-4"
+              className="mb-4 flex items-center justify-end gap-4 border-b border-slate-200/80 pb-4"
             >
-              <div className="inline-flex items-center gap-2 text-[0.68rem] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                <BookOpen size={14} className="text-blue-600 dark:text-blue-400" />
-                {t("home.releaseShelf")}
-              </div>
               <span className="hidden text-xs font-semibold text-slate-400 dark:text-slate-500 sm:inline">
                 {items.length} {t("home.allBooks").toLowerCase()}
               </span>
@@ -1323,7 +1304,6 @@ function BestsellingRanking({ books, loading, t }) {
 
       <div className="relative mx-auto max-w-7xl">
         <SectionHead
-          chip={t("home.featuredBooks")}
           title={t("home.bestsellingBooks")}
           link="/category/all?sort=popular"
         />
@@ -1668,17 +1648,6 @@ function AboutSection({ booksCount }) {
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-20 lg:grid-cols-2">
         {/* Left — Text */}
         <div className="relative z-10">
-          <motion.div
-            initial={{ opacity: 0, x: -8 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            {t("home.whyUs")}
-          </motion.div>
-
           {/* Staggered title lines */}
           {t("home.aboutTitle").split("\n").length > 0 && (
             <div className="mb-8 overflow-hidden">
@@ -1889,7 +1858,7 @@ function LatestNews({ posts = [], loading = false }) {
       <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-indigo-50/60 dark:bg-indigo-900/10 blur-3xl" />
 
       <div className="mx-auto max-w-7xl">
-        <SectionHead chip={t("home.insights")} title={t("home.blog")} link="/blog" />
+        <SectionHead title={t("home.blog")} link="/blog" />
 
         {loading && <div className="mt-12 h-80 animate-pulse rounded-3xl bg-slate-200 dark:bg-white/5" />}
         {!loading && !featured && (
@@ -2057,22 +2026,23 @@ function SectionHead({ chip, title, link, dark = false }) {
   return (
     <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
-        {/* Chip */}
-        <div
-          className={`mb-3 inline-flex items-center gap-1.5 ${dark ? "text-blue-200/90" : "text-blue-600 dark:text-blue-400"}`}
-          style={{
-            fontSize: "0.65rem",
-            fontWeight: 800,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase"
-          }}
-        >
-          <span
-            className={`inline-block h-[6px] w-[6px] rounded-full ${dark ? "" : "bg-blue-600 dark:bg-blue-400"}`}
-            style={dark ? { background: "#60a5fa" } : undefined}
-          />
-          {chip}
-        </div>
+        {chip && (
+          <div
+            className={`mb-3 inline-flex items-center gap-1.5 ${dark ? "text-blue-200/90" : "text-blue-600 dark:text-blue-400"}`}
+            style={{
+              fontSize: "0.65rem",
+              fontWeight: 800,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase"
+            }}
+          >
+            <span
+              className={`inline-block h-[6px] w-[6px] rounded-full ${dark ? "" : "bg-blue-600 dark:bg-blue-400"}`}
+              style={dark ? { background: "#60a5fa" } : undefined}
+            />
+            {chip}
+          </div>
+        )}
         {/* Title */}
         <h2
           className={`text-4xl font-bold leading-tight md:text-5xl ${

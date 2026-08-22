@@ -244,7 +244,6 @@ const en = {
     aiviraCurator: "Aivira Curator",
     moreWeeklyPicks: "More picks this week",
     satisfied: "Satisfied",
-    heroKicker: "Aivira Single-Vendor Bookstore",
     title1: "EVERY BOOK",
     title2: "A",
     titleWorld: "WORLD",
@@ -258,11 +257,8 @@ const en = {
     momo: "& MoMo",
     ticker:
       "Business and Finance - Self-help and Growth - Literature and Fiction - Skills and Wellness - Technology - Education - ",
-    explore: "Explore",
     curatedCollections: "Curated Collections",
     backendCatalog: "Backend Catalog",
-    weeklyPicksChip: "Picks",
-    featuredBooks: "Featured Books",
     weeklyPicks: "This Week's Picks",
     newArrivals: "New Arrivals",
     newArrivalsSubtitle:
@@ -270,7 +266,6 @@ const en = {
     newArrivalSpotlight: "Just landed",
     justArrived: "New",
     viewNewBooks: "View New Books",
-    releaseShelf: "New Release Shelf",
     bestsellingBooks: "Bestselling Books",
     bestsellerBadge: "Bestseller",
     categoryHighlights: "Category Highlights",
@@ -283,7 +278,6 @@ const en = {
     noCategoryHighlights: "No category highlights yet",
     inStock: "{{count}} in stock",
     outOfStock: "Out of stock",
-    collection: "Collection",
     allBooks: "All Books",
     quote: "A book is not just read - it is lived. Aivira exists to help you find the ones that change everything.",
     philosophy: "The Aivira Philosophy",
@@ -299,7 +293,6 @@ const en = {
       trackTitle: "Buy & Track",
       trackDesc: "Add to cart, checkout with COD/VNPay/MoMo, then follow your order status."
     },
-    whyUs: "Why Us",
     aboutTitle: "AIVIRA BOOKSTORE",
     aboutCopy:
       "Aivira is the sole bookstore operator. Customers browse, add books to cart, checkout, pay, and track orders in one place.",
