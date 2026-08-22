@@ -39,7 +39,7 @@ describe("CategoryPage", () => {
     expect(requestedUrl.searchParams.get("isbn")).toBe("978");
     expect(requestedUrl.searchParams.get("available")).toBe("false");
     expect(requestedUrl.searchParams.get("sort")).toBe("name_asc");
-    expect(requestedUrl.searchParams.get("page")).toBe("1");
+    expect(requestedUrl.searchParams.get("page")).toBe("2");
     expect(requestedUrl.searchParams.get("size")).toBe("24");
   });
 });

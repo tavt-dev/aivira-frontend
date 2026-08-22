@@ -298,18 +298,27 @@ export function Table({ children, empty, loading, minWidth = "900px" }) {
 export function Pagination({ loading, meta, onPage, t }) {
   const totalPages = Number.isInteger(Number(meta?.totalPages)) ? Math.max(Number(meta.totalPages), 0) : 0;
   const currentPage = clampPage(meta?.currentPage, totalPages);
+  const hasPrevious = currentPage > 1;
+  const hasNext = currentPage < totalPages;
   const pages = paginationItems(currentPage, totalPages);
   if (totalPages <= 1) return null;
+
+  const changePage = (page) => {
+    const nextPage = clampPage(page, totalPages);
+    if (loading || nextPage === currentPage) return;
+    onPage(nextPage);
+  };
+
   return (
     <nav className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm dark:border-slate-800 sm:flex-row" aria-label={t("catalog.pagination", "Pagination")}>
       <span className="font-semibold text-slate-500 dark:text-slate-400">
         {t("catalog.pageIndicator", { page: currentPage, total: totalPages })} — {Number(meta.totalElements) || 0}
       </span>
       <div className="flex max-w-full items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
-        <PageButton aria-label={t("catalog.firstPage")} className="hidden sm:inline-flex" disabled={loading || !meta.hasPrevious} onClick={() => onPage(1)}>
+        <PageButton aria-label={t("catalog.firstPage")} className="hidden sm:inline-flex" disabled={loading || !hasPrevious} onClick={() => changePage(1)}>
           <ChevronsLeft size={15}/>
         </PageButton>
-        <PageButton aria-label={t("catalog.previousPage")} disabled={loading || !meta.hasPrevious} onClick={() => onPage(currentPage - 1)}>
+        <PageButton aria-label={t("catalog.previousPage")} disabled={loading || !hasPrevious} onClick={() => changePage(currentPage - 1)}>
           <ChevronLeft size={15}/>
         </PageButton>
         {pages.map((page) => page.type === "ellipsis" ? (
@@ -321,15 +330,15 @@ export function Pagination({ loading, meta, onPage, t }) {
             aria-label={t("catalog.pageNumber", { page: page.value, defaultValue: `Page ${page.value}` })}
             disabled={loading}
             key={page.value}
-            onClick={() => onPage(page.value)}
+            onClick={() => changePage(page.value)}
           >
             {page.value}
           </PageButton>
         ))}
-        <PageButton aria-label={t("catalog.nextPage")} disabled={loading || !meta.hasNext} onClick={() => onPage(currentPage + 1)}>
+        <PageButton aria-label={t("catalog.nextPage")} disabled={loading || !hasNext} onClick={() => changePage(currentPage + 1)}>
           <ChevronRight size={15}/>
         </PageButton>
-        <PageButton aria-label={t("catalog.lastPage")} className="hidden sm:inline-flex" disabled={loading || !meta.hasNext} onClick={() => onPage(totalPages)}>
+        <PageButton aria-label={t("catalog.lastPage")} className="hidden sm:inline-flex" disabled={loading || !hasNext} onClick={() => changePage(totalPages)}>
           <ChevronsRight size={15}/>
         </PageButton>
       </div>

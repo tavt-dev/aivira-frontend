@@ -150,7 +150,7 @@ export default function CategoryPage() {
       author: filters.author, publisher: filters.publisher, isbn: filters.isbn,
       minPrice: filters.minPrice, maxPrice: filters.maxPrice,
       available: filters.available === "" ? "" : filters.available === "true",
-      sort: filters.sort, page: Math.max(filters.page - 1, 0), size: filters.size,
+      sort: filters.sort, page: filters.page, size: filters.size,
     }, { signal: ctrl.signal })
       .then(page => {
         const rows = pageRows(page);

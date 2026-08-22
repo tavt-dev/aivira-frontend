@@ -227,7 +227,7 @@ const vi = {
     accessTokenMissing: "Backend không trả về access token.",
     actionFailed: "Thao tác thất bại. Vui lòng kiểm tra backend/API.",
     validation: {
-      loginUsername: "Vui lòng nhập tên đăng nhập hoặc email.",
+      loginUsername: "Vui lòng nhập tên đăng nhập.",
       loginPassword: "Vui lòng nhập mật khẩu.",
       username: "Tên đăng nhập phải có ít nhất 4 ký tự.",
       password: "Mật khẩu phải có ít nhất 6 ký tự.",

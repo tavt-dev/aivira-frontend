@@ -10,7 +10,7 @@ describe("AuthModal", () => {
     const onClose = vi.fn();
     renderWithProviders(<AuthModal open onClose={onClose} initialMode="login" />);
 
-    await userEvent.type(screen.getByPlaceholderText(/you@example.com/), "reader");
+    await userEvent.type(screen.getByPlaceholderText(/Username|Tên đăng nhập/), "reader");
     await userEvent.type(screen.getByPlaceholderText(/Enter your password|Nhập mật khẩu/), "pw");
     await userEvent.click(screen.getAllByRole("button", { name: /Login|Đăng nhập/ }).at(-1));
 
@@ -23,7 +23,7 @@ describe("AuthModal", () => {
   it("renders backend login error messages", async () => {
     renderWithProviders(<AuthModal open onClose={vi.fn()} initialMode="login" />);
 
-    await userEvent.type(screen.getByPlaceholderText(/you@example.com/), "bad");
+    await userEvent.type(screen.getByPlaceholderText(/Username|Tên đăng nhập/), "bad");
     await userEvent.type(screen.getByPlaceholderText(/Enter your password|Nhập mật khẩu/), "wrong");
     await userEvent.click(screen.getAllByRole("button", { name: /Login|Đăng nhập/ }).at(-1));
 

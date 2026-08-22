@@ -227,7 +227,7 @@ const en = {
     accessTokenMissing: "Backend did not return an access token.",
     actionFailed: "Action failed. Please check backend/API.",
     validation: {
-      loginUsername: "Please enter username or email.",
+      loginUsername: "Please enter your username.",
       loginPassword: "Please enter password.",
       username: "Username must be at least 4 characters.",
       password: "Password must be at least 6 characters.",

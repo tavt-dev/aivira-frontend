@@ -869,13 +869,11 @@ section:where([class]) {
 }
 
 #cur.c-hover {
-  transform: translate(-50%, -50%) scale(1.18);
+  opacity: 0;
 }
 
 #cur-ring.c-hover {
-  width: 48px;
-  height: 48px;
-  border-color: rgba(250, 204, 21, 0.75);
+  opacity: 0;
 }
 
 #cur.c-text {
@@ -1804,4 +1802,3 @@ button:hover .cart-checkout-shine {
 .about-float {
   animation: about-float 5s ease-in-out infinite;
 }
-

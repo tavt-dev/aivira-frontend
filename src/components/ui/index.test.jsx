@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
-import { Drawer } from "./index.jsx";
+import { describe, expect, it, vi } from "vitest";
+import { Drawer, Pagination } from "./index.jsx";
 import { renderWithProviders } from "../../test/render.jsx";
 
 describe("Drawer focus", () => {
@@ -16,6 +16,29 @@ describe("Drawer focus", () => {
 
     expect(input).toHaveValue("Decision Logs");
     expect(input).toHaveFocus();
+  });
+});
+
+describe("Pagination", () => {
+  it("uses the 1-based page metadata instead of stale navigation flags", async () => {
+    const user = userEvent.setup();
+    const onPage = vi.fn();
+    const t = (key, values) => (values?.page ? `Page ${values.page}` : key);
+
+    renderWithProviders(
+      <Pagination
+        loading={false}
+        meta={{ currentPage: 2, totalPages: 3, totalElements: 60, hasNext: false, hasPrevious: false }}
+        onPage={onPage}
+        t={t}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "catalog.nextPage" }));
+    expect(onPage).toHaveBeenCalledWith(3);
+
+    await user.click(screen.getByRole("button", { name: "Page 2" }));
+    expect(onPage).toHaveBeenCalledTimes(1);
   });
 });
 

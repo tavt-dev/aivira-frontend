@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff, Lock, Mail, User, X, CheckCircle2, XCircle } from "lucide-react";
+import { Eye, EyeOff, Lock, User, X, CheckCircle2, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { forgotPassword, login, register, resendVerification, resetPassword, verifyUser } from "../api/authApi.js";
 import { getProfile } from "../api/userApi.js";
@@ -612,13 +612,13 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
             {(mode === "login" || mode === "register") && (
               <>
                 <Field
-                  label={mode === "login" ? t("auth.email") : t("auth.username")}
+                  label={t("auth.username")}
                   value={form.username}
                   onChange={(value) => update("username", value)}
                   autoComplete="username"
                   minLength={mode === "register" ? 4 : undefined}
-                  icon={mode === "login" ? Mail : User}
-                  placeholder={mode === "login" ? "you@example.com" : t("auth.username")}
+                  icon={User}
+                  placeholder={t("auth.username")}
                   variant="bright"
                 />
                 <Field
