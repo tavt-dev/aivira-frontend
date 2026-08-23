@@ -53,6 +53,8 @@ export default function BlogPostPage() {
       </div>
     );
 
+  const contentHtml = restoreLegacyBlogLinks(post.contentHtml, post.relatedProducts);
+
   return (
     <article className="min-h-screen bg-[#faf8f5] pb-24 pt-24 dark:bg-[#040d1e]">
       <header className="mx-auto max-w-5xl px-4 py-12 text-center md:px-8">
@@ -85,7 +87,7 @@ export default function BlogPostPage() {
       <div className="mx-auto mt-12 max-w-3xl px-4 md:px-8">
         <div
           className="blog-content text-slate-700 dark:text-slate-200"
-          dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
       </div>
       {post.relatedProducts?.length > 0 && (
@@ -110,4 +112,20 @@ export default function BlogPostPage() {
       )}
     </article>
   );
+}
+
+export function restoreLegacyBlogLinks(html, relatedProducts = []) {
+  if (!html || typeof DOMParser === "undefined") return html || "";
+  const document = new DOMParser().parseFromString(html, "text/html");
+  document.querySelectorAll("a:not([href])").forEach((anchor) => {
+    const label = anchor.textContent.trim();
+    const book = relatedProducts.find((item) => item.productName === label);
+    if (book?.slug) {
+      anchor.setAttribute("href", `/product/${book.slug}`);
+      return;
+    }
+    if (/programming/i.test(label)) anchor.setAttribute("href", "/category/programming");
+    else if (/thư viện|toàn bộ/i.test(label)) anchor.setAttribute("href", "/category/all");
+  });
+  return document.body.innerHTML;
 }
