@@ -420,7 +420,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">{t("admin.productsTitle", "Quản lý sách")}</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("admin.productsReady", "Quản lý catalog sách của Aivira")}</p>
+
         </div>
         <PrimaryBtn icon={Plus} onClick={startCreate}>{t("admin.newBook", "Thêm sách mới")}</PrimaryBtn>
       </div>

@@ -7,6 +7,7 @@ import {
   BookOpen, ChevronRight, Home, Layers, Minus, Plus,
   ShoppingBag, Star, TrendingUp, X, ZoomIn, MessageSquare,
   Award, Package, BarChart3,
+  User, Hash, Building2, Calendar, Globe, FileText, Tag, Maximize2,
 } from "lucide-react";
 
 import { addCartItem } from "../api/cartApi.js";
@@ -536,16 +537,6 @@ function BookInfoPanel({ book, tk, isDark, hasDiscount, stockQuantity, selectedV
         />
       </motion.div>
 
-      {/* Divider */}
-      <div className="h-px" style={{ background:tk.border }}/>
-
-      {/* Description */}
-      {book.desc && (
-        <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.5,delay:0.44}}>
-          <DescriptionBlock desc={book.desc} tk={tk}/>
-        </motion.div>
-      )}
-
     </div>
   );
 }
@@ -633,14 +624,10 @@ function PriceBlock({ book, hasDiscount, tk, isDark, t }) {
       </div>
       {hasDiscount && (
         <motion.div initial={{scale:0,opacity:0}} animate={{scale:1,opacity:1}}
-          transition={{type:"spring",stiffness:400,damping:18,delay:0.1}}
-          className="flex flex-col items-center gap-0.5">
+          transition={{type:"spring",stiffness:400,damping:18,delay:0.1}}>
           <span className="rounded-full px-3 py-1.5 text-sm font-black"
             style={{ background:"rgba(234,88,12,0.15)", border:"1px solid rgba(234,88,12,0.35)", color:"#fb923c" }}>
             -{discPct}%
-          </span>
-          <span className="text-[10px] font-bold" style={{ color:tk.text3 }}>
-            {t("product.off", { discount: discPct })}
           </span>
         </motion.div>
       )}
@@ -671,50 +658,103 @@ function DescriptionBlock({ desc, tk }) {
 
 /* ── Metadata table ──────────────────────────── */
 function MetadataTable({ book, tk, isDark, t }) {
-  const rows = [
-    [t("product.metaAuthor"),          book.author],
-    [t("product.metaIsbn"),            book.isbn],
-    [t("product.metaPublisher"),       book.publisher],
-    [t("product.metaPublicationYear"), book.publicationYear],
-    [t("product.metaLanguage"),        book.bookLanguage],
-    [t("product.metaPageCount"),       book.pageCount],
-    [t("product.metaFormat"),          book.bookFormat],
-    [t("product.metaDimensions"),      book.dimensions],
-    [t("product.metaCategory"),        book.catLabel],
-  ].filter(([,v]) => v !== undefined && v !== null && v !== "");
-  if (!rows.length) return null;
-  const icons = { [t("product.metaAuthor")]: Award, [t("product.metaPageCount")]: Layers, [t("product.metaFormat")]: Package };
+  const fields = [
+    { label: t("product.metaAuthor"),          value: book.author,          Icon: User },
+    { label: t("product.metaPublisher"),       value: book.publisher,       Icon: Building2 },
+    { label: t("product.metaIsbn"),            value: book.isbn,            Icon: Hash },
+    { label: t("product.metaPublicationYear"), value: book.publicationYear, Icon: Calendar },
+    { label: t("product.metaLanguage"),        value: book.bookLanguage,    Icon: Globe },
+    { label: t("product.metaPageCount"),       value: book.pageCount,       Icon: FileText },
+    { label: t("product.metaFormat"),          value: book.bookFormat,      Icon: Package },
+    { label: t("product.metaDimensions"),      value: book.dimensions,      Icon: Maximize2 },
+    { label: t("product.metaCategory"),        value: book.catLabel,        Icon: Tag },
+  ].filter(f => f.value !== undefined && f.value !== null && f.value !== "");
+
+  if (!fields.length) return null;
+
+  const half = Math.ceil(fields.length / 2);
+  const col1 = fields.slice(0, half);
+  const col2 = fields.slice(half);
 
   return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{ border:`1px solid ${tk.border}`, backdropFilter:"blur(20px)" }}>
+    <div
+      className="overflow-hidden rounded-2xl"
+      style={{
+        background: isDark ? "rgba(12,18,52,0.6)" : "rgba(255,255,255,0.72)",
+        border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(15,23,42,0.09)"}`,
+        backdropFilter: "blur(24px)",
+        boxShadow: isDark
+          ? "0 4px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)"
+          : "0 4px 24px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.9)",
+      }}
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 px-6 py-5"
-        style={{ background:isDark?"rgba(18,24,64,0.6)":"rgba(15,23,42,0.04)", borderBottom:`1px solid ${tk.border}` }}>
-        <BarChart3 size={18} style={{ color:tk.accent }}/>
-        <h2 className="text-base font-black uppercase tracking-wider" style={{ color:tk.text1 }}>
+      <div
+        className="flex items-center gap-2.5 px-6 py-4"
+        style={{
+          borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(15,23,42,0.07)"}`,
+          background: isDark ? "rgba(79,110,247,0.06)" : "rgba(79,110,247,0.03)",
+        }}
+      >
+        <div
+          className="flex h-7 w-7 items-center justify-center rounded-lg"
+          style={{ background: "linear-gradient(135deg,#2a3ecc,#4f6ef7)", boxShadow: "0 4px 12px rgba(79,110,247,0.35)" }}
+        >
+          <BarChart3 size={13} color="#fff" />
+        </div>
+        <h2 className="text-[0.72rem] font-black uppercase tracking-[0.18em]" style={{ color: tk.text1 }}>
           {t("product.metadata")}
         </h2>
       </div>
-      {/* Rows */}
+
+      {/* Two-column body */}
       <div className="grid md:grid-cols-2">
-        {rows.map(([label, value], i) => {
-          const Icon = icons[label];
-          return (
-            <div key={label}
-              className="flex items-start gap-4 px-6 py-5 transition-colors"
-              style={{
-                borderBottom: i < rows.length - 1 ? `1px solid ${tk.border}` : "none",
-                borderRight: i % 2 === 0 && i < rows.length - 1 ? `1px solid ${tk.border}` : "none",
-              }}>
-              {Icon && <Icon size={16} style={{ color:tk.accent, marginTop:4, flexShrink:0 }}/>}
-              <div>
-                <dt className="text-[0.7rem] font-black uppercase tracking-[0.14em]" style={{ color:tk.text3 }}>{label}</dt>
-                <dd className="mt-1 text-base font-semibold" style={{ color:tk.text1 }}>{value}</dd>
-              </div>
-            </div>
-          );
-        })}
+        {[col1, col2].map((col, ci) => (
+          <div
+            key={ci}
+            style={{
+              borderRight: ci === 0 ? `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(15,23,42,0.07)"}` : "none",
+            }}
+          >
+            {col.map((f, ri) => {
+              const isLast = ri === col.length - 1 && ci === 1;
+              return (
+                <motion.div
+                  key={f.label}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.44 + (ci * half + ri) * 0.04 }}
+                  className="group flex items-center gap-4 px-6 py-4 transition-colors duration-200"
+                  style={{
+                    borderBottom: !isLast ? `1px solid ${isDark ? "rgba(255,255,255,0.05)" : "rgba(15,23,42,0.06)"}` : "none",
+                  }}
+                  whileHover={{ backgroundColor: isDark ? "rgba(79,110,247,0.05)" : "rgba(79,110,247,0.03)" }}
+                >
+                  {/* Icon container */}
+                  <div
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg"
+                    style={{
+                      background: isDark ? "rgba(79,110,247,0.12)" : "rgba(79,110,247,0.08)",
+                      border: `1px solid ${isDark ? "rgba(79,110,247,0.2)" : "rgba(79,110,247,0.15)"}`,
+                    }}
+                  >
+                    <f.Icon size={14} style={{ color: tk.accent }} />
+                  </div>
+
+                  {/* Text */}
+                  <div className="min-w-0 flex-1">
+                    <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em]" style={{ color: tk.text3 }}>
+                      {f.label}
+                    </dt>
+                    <dd className="mt-0.5 truncate text-sm font-semibold" style={{ color: tk.text1 }}>
+                      {f.value}
+                    </dd>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -913,15 +953,11 @@ function ReviewSection({ slug, tk, isDark }) {
       <div className="p-6 md:p-10">
         {/* Header */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl"
-              style={{ background:`${tk.accent}22`, color:tk.accent }}>
-              <MessageSquare size={18}/>
-            </div>
-            <div>
-              <p className="text-[0.6rem] font-black uppercase tracking-[0.2em]" style={{ color:tk.accent }}>
-                {t("product.publicReviewsCopy")}
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl"
+                style={{ background:`${tk.accent}22`, color:tk.accent }}>
+                <MessageSquare size={18}/>
+              </div>
               <h2 className="text-2xl font-black" style={{ color:tk.text1, fontFamily:"var(--f-serif)" }}>
                 {t("product.reviews")}
                 {meta.totalElements > 0 && (
@@ -931,7 +967,6 @@ function ReviewSection({ slug, tk, isDark }) {
                 )}
               </h2>
             </div>
-          </div>
           <div className="flex flex-wrap gap-2">
             <select value={rating} onChange={e => { setRating(e.target.value); setPage(1); }} style={selStyle}>
               <option value="">{t("product.allRatings")}</option>

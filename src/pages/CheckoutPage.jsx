@@ -206,7 +206,7 @@ export default function CheckoutPage({ onAuth }) {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-20 pt-28 md:px-8">
-      <PageHeader title={t("checkout.title")} eyebrow={t("checkout.eyebrow")} />
+      <PageHeader title={t("checkout.title")} />
 
       {!loggedIn && (
         <Notice className="mb-6">
@@ -374,7 +374,7 @@ export default function CheckoutPage({ onAuth }) {
               <MetaRow label={t("checkout.promotionDiscount")} value={formatVND(-(preview?.promotionDiscountAmount || 0))} />
               <MetaRow label={t("checkout.couponDiscount")} value={formatVND(-(preview?.couponDiscountAmount || 0))} />
               <MetaRow label={t("checkout.shippingFee")} value={formatVND(preview?.shippingFee || 0)} />
-              {!preview && <p className="text-xs font-semibold text-amber-600">{t("checkout.temporaryTotal")}</p>}
+
             </div>
           )}
 

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, Lock, User, X, CheckCircle2, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -933,9 +933,9 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
             )}
           </div>
 
-          {/* No account / Has account + Terms */}
+          {/* No account / Has account */}
           {(mode === "login" || mode === "register") && (
-            <div style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", display: "grid", gap: 8 }}>
+            <div style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(255,255,255,0.45)" }}>
               <p style={{ margin: 0 }}>
                 {mode === "login" ? t("auth.noAccount") : t("auth.hasAccount")}{" "}
                 <button
@@ -947,27 +947,6 @@ export default function AuthModal({ open, onClose, initialMode = "login", nextPa
                 >
                   {mode === "login" ? t("auth.createNow") : t("common.login")}
                 </button>
-              </p>
-              <p style={{ margin: 0, lineHeight: 1.7 }}>
-                {t("auth.termsPrefix")}{" "}
-                <button
-                  style={{ fontWeight: 700, color: "#93c5fd", background: "none", border: "none", cursor: "pointer" }}
-                  type="button"
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "#93c5fd"; }}
-                >
-                  {t("footer.privacy")}
-                </button>{" "}
-                {t("auth.and")}{" "}
-                <button
-                  style={{ fontWeight: 700, color: "#93c5fd", background: "none", border: "none", cursor: "pointer" }}
-                  type="button"
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "#93c5fd"; }}
-                >
-                  {t("footer.terms")}
-                </button>
-                .
               </p>
             </div>
           )}

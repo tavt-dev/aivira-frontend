@@ -383,9 +383,8 @@ export default function CartPage({ onAuth }) {
                           </p>
                         </div>
 
-                        {/* Price + Qty */}
+                        {/* Qty */}
                         <div className="flex flex-col gap-3">
-                          <p className="text-sm font-bold" style={{ color:tk.text2 }}>{formatVND(item.price)}</p>
                           <QuantityStepper
                             value={item.quantity} max={maxQty}
                             disabled={!avail}
@@ -449,7 +448,6 @@ export default function CartPage({ onAuth }) {
                 {/* Summary rows */}
                 <div className="grid gap-4">
                   <SummaryRow icon={Tag} label={t("cart.selectedItems")} value={selectedIds.length} tk={tk}/>
-                  <SummaryRow icon={ShoppingBag} label={t("cart.availableItems")} value={availableItems.length} tk={tk}/>
                 </div>
 
                 {/* Divider */}

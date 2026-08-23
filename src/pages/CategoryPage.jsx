@@ -376,18 +376,18 @@ function AnimatedNumber({ value }) {
 function HeroBreadcrumb({ slug, categoryLabel, t }) {
   return (
     <motion.nav initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} transition={{duration:0.5}}
-      className="flex items-center gap-1.5 text-xs" style={{ color:"#4a5578" }}>
-      <Link to="/" className="flex items-center gap-1 transition-colors hover:text-blue-400">
-        <Home size={11}/> <span style={{ color:"#6374a8" }}>{t("common.home")}</span>
+      className="flex items-center gap-1.5 text-xs" style={{ color:"#8fa4cc" }}>
+      <Link to="/" className="flex items-center gap-1 transition-colors hover:text-blue-300">
+        <Home size={11}/> <span style={{ color:"#8fa4cc" }}>{t("common.home")}</span>
       </Link>
-      <ChevronRight size={10} style={{ color:"#2d3561" }}/>
-      <Link to="/category/all" className={`transition-colors hover:text-blue-400`}
-        style={{ color: slug==="all" ? "#93a8ff" : "#6374a8", fontWeight: slug==="all"?"700":"400" }}>
+      <ChevronRight size={10} style={{ color:"#5a6e99" }}/>
+      <Link to="/category/all" className={`transition-colors hover:text-blue-300`}
+        style={{ color: slug==="all" ? "#b8c9ff" : "#8fa4cc", fontWeight: slug==="all"?"700":"400" }}>
         {t("catalog.titleAll")}
       </Link>
       {slug!=="all" && <>
-        <ChevronRight size={10} style={{ color:"#2d3561" }}/>
-        <span className="font-semibold" style={{ color:"#93a8ff" }}>{categoryLabel}</span>
+        <ChevronRight size={10} style={{ color:"#5a6e99" }}/>
+        <span className="font-semibold" style={{ color:"#b8c9ff" }}>{categoryLabel}</span>
       </>}
     </motion.nav>
   );
@@ -527,7 +527,7 @@ function CatalogSidebar({ tk, isDark, categories, slug, categoryLink, form, setF
   const activeCount = getActiveFilterChips(form,t).length;
   return (
     <div className="grid gap-4">
-      <DarkPanel tk={tk} isDark={isDark} icon={<BookOpen size={14}/>} eyebrow={t("catalog.catalog")} title={t("common.categories")}>
+      <DarkPanel tk={tk} isDark={isDark} icon={<BookOpen size={14}/>} title={t("common.categories")}>
         <div className="grid gap-0.5 pt-1">
           {categories.filter(Boolean).map((cat,i) => {
             const accent = CAT_ACCENTS[i%CAT_ACCENTS.length];
@@ -541,7 +541,7 @@ function CatalogSidebar({ tk, isDark, categories, slug, categoryLink, form, setF
       </DarkPanel>
 
       <DarkPanel tk={tk} isDark={isDark} icon={<SlidersHorizontal size={14}/>}
-        eyebrow={activeCount?t("catalog.activeFilters",{count:activeCount}):t("catalog.filters")} title={t("catalog.filters")}>
+        title={t("catalog.filters")}>
         <form className="grid gap-3 pt-1" onSubmit={onApply}>
           <DarkInput tk={tk} label={t("catalog.keyword")}   value={form.keyword}    onChange={v=>setForm({...form,keyword:v})}   placeholder={t("catalog.keywordPlaceholder")}/>
           <DarkInput tk={tk} label={t("catalog.author")}    value={form.author}     onChange={v=>setForm({...form,author:v})}    placeholder={t("catalog.authorPlaceholder")}/>

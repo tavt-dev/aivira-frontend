@@ -121,9 +121,7 @@ export default function AdminLayout() {
           if (!items.length) return null;
           return (
             <div key={group} className="admin-nav-group">
-              <p className="admin-nav-group-label">
-                {t(GROUP_LABELS[group])}
-              </p>
+
               {items.map(({ to, label, icon: Icon }, i) => (
                 <NavLink
                   key={to}
@@ -245,19 +243,6 @@ export default function AdminLayout() {
             <Menu size={20} />
           </button>
 
-          {/* Search bar */}
-          <div className="admin-search">
-            <Search size={14} className="admin-search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className="admin-search-input"
-            />
-            <span className="admin-search-kbd">
-              <kbd>Ctrl</kbd>
-              <kbd>K</kbd>
-            </span>
-          </div>
 
           {/* Right actions */}
           <div className="admin-topbar-right">

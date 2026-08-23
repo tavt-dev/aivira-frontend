@@ -286,6 +286,7 @@ export function normalizeCartItem(item) {
   const image = item.thumbnailUrl || item.image || item.cover || FALLBACK_IMAGE;
   const quantity = Number(item.quantity || 1);
   const price = Number(item.finalPrice || item.price || item.basePrice || 0);
+  const originalPrice = Number(item.originalPrice || item.listPrice || item.compareAtPrice || 0);
   return {
     id: item.id || item.cartItemId || item.productId,
     cartItemId: item.cartItemId || item.id,
@@ -297,6 +298,7 @@ export function normalizeCartItem(item) {
     color: item.color,
     size: item.size,
     price,
+    originalPrice: originalPrice > price ? originalPrice : 0,
     basePrice: Number(item.basePrice || price || 0),
     additionalPrice: Number(item.additionalPrice || 0),
     image,
