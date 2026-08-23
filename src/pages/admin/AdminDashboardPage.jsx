@@ -179,25 +179,35 @@ export default function AdminDashboardPage() {
       </motion.div>
 
       {/* ── Summary KPI cards ── */}
-      <SummarySection summary={data.summary} error={errors.summary} loading={loading} t={t}/>
+      <SummarySection summary={data.summary} error={errors.summary} loading={loading} filters={filters} t={t}/>
 
       {/* ── Sales + Order status ── */}
       <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
         <SalesSection sales={data.sales} error={errors.sales} loading={loading} t={t}/>
-        <OrderStatusSection orders={data.orders} error={errors.orders} loading={loading} t={t}/>
+        <OrderStatusSection orders={data.orders} error={errors.orders} loading={loading} filters={filters} t={t}/>
       </div>
 
       {/* ── Top books + Low stock ── */}
       <div className="grid gap-6 xl:grid-cols-2">
         <TopBooksSection topBooks={data.topBooks} error={errors.topBooks} loading={loading} t={t}/>
-        <LowStockSection lowStock={data.lowStock} error={errors.lowStock} loading={loading} t={t}/>
+        <div id="low-stock"><LowStockSection lowStock={data.lowStock} error={errors.lowStock} loading={loading} t={t}/></div>
       </div>
     </div>
   );
 }
 
 /* ── Summary Section ────────────────────────── */
-function SummarySection({ summary, error, loading, t }) {
+function SummarySection({ summary, error, loading, filters, t }) {
+  const destinations = {
+    revenue: buildAdminOrdersLink(filters),
+    orders: buildAdminOrdersLink(filters),
+    success: buildAdminOrdersLink(filters, { paymentStatus:"SUCCESS" }),
+    failed: buildAdminOrdersLink(filters, { paymentStatus:"FAILED" }),
+    users: "/admin/users",
+    pendingOrders: buildAdminOrdersLink(filters, { status:"PENDING_CONFIRMATION" }),
+    pendingPayments: buildAdminOrdersLink(filters, { paymentStatus:"PENDING" }),
+    lowStock: "#low-stock",
+  };
   const metrics = [
     ["revenue",         t("admin.metricRevenue","Doanh thu"),           formatVND(summary?.revenue||0)],
     ["orders",          t("admin.metricOrderCount","Đơn hàng"),         number(summary?.orderCount)],
@@ -217,11 +227,14 @@ function SummarySection({ summary, error, loading, t }) {
           const cfg = METRIC_CFG[key]||METRIC_CFG.revenue;
           const { icon:Icon, color, bg, border } = cfg;
           return (
-            <motion.div key={key}
+            <Link key={key} to={destinations[key]}
+              className="block rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              aria-label={`${label}: ${value}`}>
+            <motion.div
               initial={{opacity:0,y:20,scale:0.96}} animate={{opacity:1,y:0,scale:1}}
               transition={{duration:0.45,delay:i*0.05,ease:[0.22,1,0.36,1]}}
               whileHover={{y:-3,boxShadow:`0 16px 40px ${bg.replace("0.14","0.28").replace("0.12","0.25").replace("0.10","0.2")}`}}
-              className="relative overflow-hidden rounded-2xl p-5 shadow-sm transition-all"
+              className="group relative h-full cursor-pointer overflow-hidden rounded-2xl p-5 shadow-sm transition-all"
               style={{ background:tk.surface, border:`1px solid ${border}` }}>
               {/* Top glow line */}
               <div className="absolute left-0 right-0 top-0 h-[1px]"
@@ -241,6 +254,7 @@ function SummarySection({ summary, error, loading, t }) {
                       <TrendingUp size={9}/> LIVE
                     </span>
                   )}
+                  {key!=="revenue" && <ArrowUpRight size={14} className="opacity-40 transition-opacity group-hover:opacity-100" style={{color}}/>}
                 </div>
                 <p className="text-[0.65rem] font-black uppercase tracking-[0.14em]" style={{ color:tk.text3 }}>{label}</p>
                 <motion.strong
@@ -253,6 +267,7 @@ function SummarySection({ summary, error, loading, t }) {
                 </motion.strong>
               </div>
             </motion.div>
+            </Link>
           );
         })}
       </div>
@@ -311,7 +326,7 @@ function SalesSection({ sales, error, loading, t }) {
 }
 
 /* ── Order Status Section ───────────────────── */
-function OrderStatusSection({ orders, error, loading, t }) {
+function OrderStatusSection({ orders, error, loading, filters, t }) {
   const rows = orders?.statusCounts||[];
   const maxCount = Math.max(...rows.map(r => Number(r.count||0)), 1);
 
@@ -330,8 +345,10 @@ function OrderStatusSection({ orders, error, loading, t }) {
                 <motion.div key={row.status}
                   initial={{opacity:0,x:16}} animate={{opacity:1,x:0}}
                   transition={{duration:0.35,delay:i*0.04}}
-                  className="overflow-hidden rounded-2xl p-4"
+                  className="overflow-hidden rounded-2xl"
                   style={{ background:tk.surface2, border:`1px solid ${tk.border}` }}>
+                  <Link to={buildAdminOrdersLink(filters, { status:row.status })} className="block p-4"
+                    aria-label={`${row.status}: ${number(row.count)}`}>
                   <div className="mb-2.5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full" style={{ background:color }}/>
@@ -348,6 +365,7 @@ function OrderStatusSection({ orders, error, loading, t }) {
                       className="h-full rounded-full"
                       style={{ background:color }}/>
                   </div>
+                  </Link>
                 </motion.div>
               );
             })}
@@ -542,6 +560,14 @@ function defaultDateRange() {
   return { fromDate: toDateInputValue(from), toDate: toDateInputValue(now) };
 }
 function toRangeParams(f) { return { fromDate: startOfDayIso(f.fromDate), toDate: endOfDayIso(f.toDate) }; }
+function buildAdminOrdersLink(filters, extra = {}) {
+  const params = new URLSearchParams({
+    fromDate: `${filters.fromDate}T00:00`,
+    toDate: `${filters.toDate}T23:59`,
+    ...extra,
+  });
+  return `/admin/orders?${params.toString()}`;
+}
 function toDateInputValue(d) { return d.toISOString().slice(0,10); }
 function startOfDayIso(v) { return new Date(`${v}T00:00:00`).toISOString(); }
 function endOfDayIso(v) { return new Date(`${v}T23:59:59.999`).toISOString(); }

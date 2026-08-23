@@ -21,6 +21,7 @@ const ORDER_STATUSES = [
   "PENDING_CONFIRMATION","PENDING_PAYMENT","PAID","CONFIRMED",
   "PACKING","SHIPPING","COMPLETED","CANCELLED","PAYMENT_FAILED","EXPIRED","REFUNDED",
 ];
+const PAYMENT_STATUSES = ["PENDING", "SUCCESS", "FAILED", "CANCELLED", "EXPIRED", "REFUNDED"];
 const PAGE_SIZES = [10, 20, 50];
 const REFUNDABLE_STATUSES = new Set(["PAID","CONFIRMED","PACKING"]);
 const TERMINAL_STATUSES   = new Set(["COMPLETED","CANCELLED","PAYMENT_FAILED","EXPIRED","REFUNDED"]);
@@ -46,7 +47,7 @@ const PAYMENT_STATUS_STYLES = {
   REFUNDED: "bg-orange-50 text-orange-700 border-orange-200/60 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
 };
 
-const emptyFilters = { status:"", keyword:"", fromDate:"", toDate:"", page:1, size:20 };
+const emptyFilters = { status:"", paymentStatus:"", keyword:"", fromDate:"", toDate:"", page:1, size:20 };
 
 /* ── Shared UI Primitives ──────────────────────── */
 function PInput({ className = "", ...props }) {
@@ -267,10 +268,15 @@ export default function AdminOrdersPage() {
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">{t("admin.orderFilters","Bộ lọc")}</h3>
         </div>
         <div className="p-5">
-          <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[160px_1fr_180px_180px_90px_auto_auto]" onSubmit={applyFilters}>
+          <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[150px_150px_1fr_180px_180px_90px_auto_auto]" onSubmit={applyFilters}>
             <PSelect value={filters.status} onChange={e => setFilters({ ...filters, status: e.target.value })}>
               <option value="">{t("admin.allOrderStatuses","Tất cả trạng thái")}</option>
               {ORDER_STATUSES.map(s => <option key={s} value={s}>{statusLabel(s,t)}</option>)}
+            </PSelect>
+            <PSelect value={filters.paymentStatus} onChange={e => setFilters({ ...filters, paymentStatus: e.target.value })}
+              aria-label={t("orders.paymentStatus", "Trạng thái thanh toán")}>
+              <option value="">{t("admin.allPaymentStatuses", "Tất cả thanh toán")}</option>
+              {PAYMENT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </PSelect>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"/>
@@ -567,7 +573,8 @@ function canRefund(order) {
 }
 function toQuery(filters) {
   return {
-    status: filters.status || undefined, keyword: filters.keyword || undefined,
+    status: filters.status || undefined, paymentStatus: filters.paymentStatus || undefined,
+    keyword: filters.keyword || undefined,
     fromDate: toInstant(filters.fromDate), toDate: toInstant(filters.toDate),
     page: Number(filters.page || 1), size: Number(filters.size || 20),
   };
@@ -593,6 +600,7 @@ function statusLabel(status, t) {
 function filtersFromSearch(searchParams) {
   return {
     status:   ORDER_STATUSES.includes(searchParams.get("status")) ? searchParams.get("status") : "",
+    paymentStatus: PAYMENT_STATUSES.includes(searchParams.get("paymentStatus")) ? searchParams.get("paymentStatus") : "",
     keyword:  searchParams.get("keyword") || "",
     fromDate: searchParams.get("fromDate") || "",
     toDate:   searchParams.get("toDate") || "",
