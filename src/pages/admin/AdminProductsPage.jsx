@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   BookOpen, Edit, Package, Plus, Search,
@@ -180,10 +181,12 @@ function Toast({ message, onClose }) {
 export default function AdminProductsPage() {
   const { t, i18n } = useTranslation();
   const confirm = useConfirm();
+  const [searchParams] = useSearchParams();
+  const initialFilters = useMemo(() => productFiltersFromSearch(searchParams), [searchParams]);
 
   // ── State (100% preserved from original) ────
-  const [filters, setFilters] = useState(emptyFilters);
-  const [appliedFilters, setAppliedFilters] = useState(emptyFilters);
+  const [filters, setFilters] = useState(initialFilters);
+  const [appliedFilters, setAppliedFilters] = useState(initialFilters);
   const [books, setBooks] = useState([]);
   const [pageMeta, setPageMeta] = useState(createEmptyMeta(emptyFilters));
   const [categories, setCategories] = useState([]);
@@ -227,6 +230,11 @@ export default function AdminProductsPage() {
 
   useEffect(() => { refreshCategories(); }, [refreshCategories]);
   useEffect(() => { refreshAdminProducts(appliedFilters); }, [appliedFilters, refreshAdminProducts]);
+  useEffect(() => {
+    const next = productFiltersFromSearch(searchParams);
+    setFilters(next);
+    setAppliedFilters(next);
+  }, [searchParams]);
 
   async function refreshSelectedProduct(productId = selectedProduct?.id) {
     if (!productId) return;
@@ -812,6 +820,14 @@ function toProductQuery(filters) {
   return {
     status: filters.status || undefined, categoryId: filters.categoryId || undefined,
     keyword: filters.keyword || undefined, page: Number(filters.page || 1), size: Number(filters.size || 20),
+  };
+}
+
+function productFiltersFromSearch(searchParams) {
+  const categoryId = searchParams.get("categoryId") || "";
+  return {
+    ...emptyFilters,
+    categoryId: /^\d+$/.test(categoryId) && Number(categoryId) > 0 ? categoryId : "",
   };
 }
 

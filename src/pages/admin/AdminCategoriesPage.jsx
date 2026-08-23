@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   LayoutGrid, Plus, Edit, Trash2, X, RefreshCw, ChevronRight,
@@ -213,10 +214,14 @@ export default function AdminCategoriesPage() {
                   className="grid gap-3 border-b border-slate-100 dark:border-slate-800 p-4 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors md:grid-cols-[1fr_180px_100px_120px_auto] md:items-center">
                   <div style={{ paddingLeft: `${level * 20}px` }} className="flex items-center gap-2">
                     {level > 0 && <ChevronRight size={14} className="text-slate-300 dark:text-slate-600 flex-shrink-0"/>}
-                    <div>
-                      <p className="font-semibold text-slate-900 dark:text-slate-100">{category.label}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{category.description || "—"}</p>
-                    </div>
+                    <Link to={`/admin/products?categoryId=${encodeURIComponent(category.id)}`}
+                      className="group min-w-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                      aria-label={t("admin.viewCategoryBooks", "Xem sách thuộc danh mục {{name}}", { name:category.label })}>
+                      <p className="font-semibold text-slate-900 transition-colors group-hover:text-indigo-600 dark:text-slate-100 dark:group-hover:text-indigo-400">
+                        {category.label}
+                      </p>
+                      <p className="mt-0.5 text-xs text-slate-400 group-hover:text-indigo-500">{category.description || "—"}</p>
+                    </Link>
                   </div>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{category.slug}</span>
                   <span className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{t("admin.orderValue","#{{value}}", { value: category.displayOrder ?? 0 })}</span>
