@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import {
-  LayoutGrid, Plus, Edit, Trash2, X, RefreshCw, ChevronRight,
+  LayoutGrid, Plus, Edit, Trash2, RefreshCw, ChevronRight,
 } from "lucide-react";
 
 import {
-  createAdminCategory, deleteAdminCategory, updateAdminCategory,
+  createAdminCategory, deleteAdminCategory, getAdminCategories, getAdminCategoryTree, updateAdminCategory,
 } from "../../api/adminApi.js";
-import { Modal, useConfirm } from "../../components/ui/index.jsx";
-import { getCategories, getCategoryTree } from "../../api/catalogApi.js";
+import { Modal, useConfirm, useToast } from "../../components/ui/index.jsx";
 import { normalizeCategory, pageRows } from "../../utils/mappers.js";
 
 /* ── Constants ─────────────────────────────────── */
@@ -68,20 +67,6 @@ function SecBtn({ children, danger, icon: Icon, ...props }) {
     </motion.button>
   );
 }
-function Toast({ message, onClose }) {
-  if (!message) return null;
-  const isError = /err|fail|lỗi|không|invalid|required/i.test(message);
-  return (
-    <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-8 }}
-      className={`flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm font-semibold mb-4 ${
-        isError ? "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400"
-                : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
-      }`}>
-      <span>{message}</span>
-      <button type="button" onClick={onClose}><X size={14}/></button>
-    </motion.div>
-  );
-}
 function Card({ title, icon: Icon, children, action }) {
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
@@ -103,15 +88,16 @@ function Card({ title, icon: Icon, children, action }) {
 export default function AdminCategoriesPage() {
   const { t } = useTranslation();
   const confirm = useConfirm();
+  const toast = useToast();
 
   // ── State (100% preserved) ──────────────────
   const [categories, setCategories] = useState([]);
   const [tree, setTree]             = useState([]);
-  const [message, setMessage]       = useState("");
   const [loading, setLoading]       = useState(true);
   const [form, setForm]             = useState(emptyForm);
   const [editingId, setEditingId]   = useState(null);
   const [formOpen, setFormOpen]     = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const flatCategories = useMemo(() => categories.map(normalizeCategory).filter(Boolean), [categories]);
   const treeRows       = useMemo(() => flattenTree(tree), [tree]);
@@ -119,29 +105,46 @@ export default function AdminCategoriesPage() {
   const refreshCategories = useCallback(async () => {
     setLoading(true);
     try {
-      const [listRows, treePayload] = await Promise.all([getCategories(), getCategoryTree()]);
+      const [listRows, treePayload] = await Promise.all([getAdminCategories(), getAdminCategoryTree()]);
       setCategories(pageRows(listRows));
       setTree(pageRows(treePayload));
     } catch {
       setCategories([]); setTree([]);
-      setMessage(t("admin.errors.categories"));
+      toast({ message:t("admin.errors.categories"), variant:"error" });
     } finally { setLoading(false); }
-  }, [t]);
+  }, [t, toast]);
 
   useEffect(() => { refreshCategories(); }, [refreshCategories]);
 
   async function submit(event) {
-    event.preventDefault(); setMessage("");
+    event.preventDefault();
     const validation = validateCategoryForm(form, t);
-    if (validation) { setMessage(validation); return; }
+    if (validation) { toast({ message:validation, variant:"error" }); return; }
+    setSubmitting(true);
     try {
-      const payload = { ...form, parentId: form.parentId ? Number(form.parentId) : null, displayOrder: Number(form.displayOrder || 0) };
+      const payload = {
+        categoryName: form.categoryName.trim(),
+        slug: form.slug.trim() || null,
+        description: form.description.trim(),
+        imageUrl: form.imageUrl.trim() || null,
+        imagePublicId: form.imagePublicId.trim() || null,
+        parentId: form.parentId ? Number(form.parentId) : null,
+        displayOrder: Number(form.displayOrder || 0),
+        active: Boolean(form.active),
+        visible: Boolean(form.visible),
+      };
       if (editingId) await updateAdminCategory(editingId, payload);
       else await createAdminCategory(payload);
-      setMessage(editingId ? t("admin.categoryUpdated") : t("admin.categorySaved"));
+      const successMessage = editingId ? t("admin.categoryUpdated") : t("admin.categorySaved");
       closeForm();
-      await refreshCategories();
-    } catch { setMessage(t("admin.errors.categorySave")); }
+      setSubmitting(false);
+      toast({ message:successMessage, variant:"success" });
+      void refreshCategories();
+    } catch (error) {
+      toast({ message:error?.message || t("admin.errors.categorySave"), variant:"error", duration:5000 });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function remove(category) {
@@ -150,19 +153,19 @@ export default function AdminCategoriesPage() {
       confirmLabel: t("common.delete"), cancelLabel: t("common.cancel"), danger: true,
     });
     if (!confirmed) return;
-    setMessage("");
     try {
       await deleteAdminCategory(category.id);
-      setMessage(t("admin.categoryDeleted"));
+      toast({ message:t("admin.categoryDeleted"), variant:"success" });
       if (editingId === category.id) closeForm();
       await refreshCategories();
-    } catch { setMessage(t("admin.errors.categoryDelete")); }
+    } catch (error) {
+      toast({ message:error?.message || t("admin.errors.categoryDelete"), variant:"error", duration:5000 });
+    }
   }
 
   function startCreate() {
     setEditingId(null);
     setForm(emptyForm);
-    setMessage("");
     setFormOpen(true);
   }
 
@@ -174,7 +177,6 @@ export default function AdminCategoriesPage() {
       displayOrder: category.displayOrder || 0, parentId: category.parentId || "",
       active: category.active !== false, visible: category.visible !== false,
     });
-    setMessage("");
     setFormOpen(true);
   }
 
@@ -194,10 +196,6 @@ export default function AdminCategoriesPage() {
         </div>
         <PrimaryBtn icon={Plus} onClick={startCreate}>{t("admin.newCategory","Thêm danh mục")}</PrimaryBtn>
       </div>
-
-      <AnimatePresence>
-        {message && <Toast message={message} onClose={() => setMessage("")}/>}
-      </AnimatePresence>
 
       {/* Category tree */}
       <Card title={t("admin.categoryTree","Cây danh mục")} icon={LayoutGrid}>
@@ -257,13 +255,14 @@ export default function AdminCategoriesPage() {
         open={formOpen}
         setForm={setForm}
         submit={submit}
+        submitting={submitting}
         t={t}
       />
     </motion.div>
   );
 }
 
-function CategoryFormModal({ editingId, flatCategories, form, onClose, open, setForm, submit, t }) {
+function CategoryFormModal({ editingId, flatCategories, form, onClose, open, setForm, submit, submitting, t }) {
   return (
     <Modal
       description={t("admin.categoryFormHelp","Điền thông tin danh mục bên dưới")}
@@ -278,9 +277,8 @@ function CategoryFormModal({ editingId, flatCategories, form, onClose, open, set
           <PInput label={t("admin.slug","Slug")} value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} placeholder={t("admin.categorySlugPlaceholder")}/>
         </div>
         <PTextarea label={t("admin.description","Mô tả")} required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder={t("admin.categoryDescriptionPlaceholder")}/>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <PInput label={t("admin.imageUrl","URL ảnh")} value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })}/>
-          <PInput label={t("admin.imagePublicId","Public ID ảnh")} value={form.imagePublicId} onChange={e => setForm({ ...form, imagePublicId: e.target.value })}/>
           <PInput label={t("admin.displayOrder","Thứ tự hiển thị")} value={form.displayOrder} onChange={e => setForm({ ...form, displayOrder: e.target.value })} type="number" min="0"/>
           <PSelect label={t("admin.rootCategory","Danh mục cha")} value={form.parentId} onChange={e => setForm({ ...form, parentId: e.target.value })}>
             <option value="">{t("admin.rootCategory","Danh mục gốc")}</option>
@@ -298,8 +296,10 @@ function CategoryFormModal({ editingId, flatCategories, form, onClose, open, set
           </label>
         </div>
         <div className="flex flex-wrap gap-3">
-          <PrimaryBtn type="submit">{editingId ? t("admin.updateCategory","Cập nhật") : t("admin.saveCategory","Lưu danh mục")}</PrimaryBtn>
-          <SecBtn type="button" onClick={onClose}>{t("common.cancel","Hủy")}</SecBtn>
+          <PrimaryBtn type="submit" loading={submitting} disabled={submitting}>
+            {submitting ? t("common.saving", "Đang lưu...") : editingId ? t("admin.updateCategory","Cập nhật") : t("admin.saveCategory","Lưu danh mục")}
+          </PrimaryBtn>
+          <SecBtn type="button" disabled={submitting} onClick={onClose}>{t("common.cancel","Hủy")}</SecBtn>
         </div>
       </form>
     </Modal>
@@ -315,8 +315,12 @@ function flattenTree(rows, level = 0) {
   });
 }
 function validateCategoryForm(form, t) {
-  if (!String(form.categoryName || "").trim()) return t("admin.validationCategoryName");
-  if (!String(form.description || "").trim()) return t("admin.validationCategoryDescription");
+  const name = String(form.categoryName || "").trim();
+  const description = String(form.description || "").trim();
+  if (name.length < 2 || name.length > 150) return t("admin.validationCategoryName");
+  if (!description || description.length > 1000) return t("admin.validationCategoryDescription");
+  if (String(form.slug || "").trim().length > 150) return t("admin.validationCategorySlug", "Slug không được vượt quá 150 ký tự.");
+  if (String(form.imageUrl || "").trim().length > 255) return t("admin.validationCategoryImageUrl", "URL ảnh không được vượt quá 255 ký tự.");
   if (form.displayOrder !== "" && Number(form.displayOrder) < 0) return t("admin.validationNonNegative");
   return "";
 }

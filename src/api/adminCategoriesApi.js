@@ -1,5 +1,13 @@
 import { request } from "./client.js";
 
+export function getAdminCategories() {
+  return request("/admin/categories");
+}
+
+export function getAdminCategoryTree() {
+  return request("/admin/categories/tree");
+}
+
 export function createAdminCategory(body) {
   return request("/admin/categories", { method: "POST", body });
 }
