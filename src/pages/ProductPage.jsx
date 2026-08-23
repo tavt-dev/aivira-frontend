@@ -21,9 +21,10 @@ import {
 } from "../utils/mappers.js";
 import { getAccessToken } from "../utils/storage.js";
 import { getTheme } from "../utils/theme.js";
+import { Pagination } from "../components/ui/index.jsx";
 
 /* ── Constants ─────────────────────────────── */
-const REVIEW_SIZE = 5;
+const REVIEW_SIZE_OPTIONS = [5, 10, 20];
 
 /* ── Particles ─────────────────────────────── */
 const PARTICLES = [
@@ -909,21 +910,22 @@ function ReviewSection({ slug, tk, isDark }) {
   const [rating, setRating]   = useState("");
   const [sort, setSort]       = useState("newest");
   const [page, setPage]       = useState(1);
+  const [size, setSize]       = useState(REVIEW_SIZE_OPTIONS[0]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const ctrl = new AbortController();
     setLoading(true); setMessage("");
-    getProductReviews(slug, { rating, sort, page, size: REVIEW_SIZE }, { signal: ctrl.signal })
+    getProductReviews(slug, { rating, sort, page, size }, { signal: ctrl.signal })
       .then(payload => {
         setReviews(pageRows(payload).map(normalizeReview));
-        setMeta(readPageMeta(payload, { page, size: REVIEW_SIZE }));
+        setMeta(readPageMeta(payload, { page, size }));
       })
       .catch(err => { if (err.name === "AbortError") return; setReviews([]); setMessage(err.message || t("product.reviewLoadFailed")); })
       .finally(() => { if (!ctrl.signal.aborted) setLoading(false); });
     return () => ctrl.abort();
-  }, [page, rating, slug, sort, t]);
+  }, [page, rating, size, slug, sort, t]);
 
   const selStyle = {
     background:tk.surface2, border:`1px solid ${tk.border}`,
@@ -978,6 +980,16 @@ function ReviewSection({ slug, tk, isDark }) {
               <option value="rating_desc">{t("product.reviewRatingDesc")}</option>
               <option value="rating_asc">{t("product.reviewRatingAsc")}</option>
             </select>
+            <select
+              aria-label={t("catalog.pageSize")}
+              value={size}
+              onChange={e => { setSize(Number(e.target.value)); setPage(1); }}
+              style={selStyle}
+            >
+              {REVIEW_SIZE_OPTIONS.map(value => (
+                <option key={value} value={value}>{t("catalog.perPage", { count:value })}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -1021,28 +1033,9 @@ function ReviewSection({ slug, tk, isDark }) {
         )}
 
         {/* Pagination */}
-        {meta.totalPages > 1 && (
-          <div className="mt-8 flex flex-wrap justify-center gap-2">
-            <button
-              disabled={!meta.hasPrevious || loading}
-              onClick={() => setPage(p => Math.max(1,p-1))}
-              className="rounded-full px-5 py-2.5 text-sm font-bold transition-all disabled:opacity-40"
-              style={{ background:tk.surface2, border:`1px solid ${tk.border}`, color:tk.text1 }}>
-              {t("catalog.previousPage")}
-            </button>
-            <span className="flex items-center rounded-full px-5 py-2.5 text-sm font-bold"
-              style={{ background:isDark?"rgba(79,110,247,0.15)":"rgba(37,99,235,0.10)", color:tk.accent }}>
-              {t("catalog.pageIndicator", { page: meta.currentPage, total: meta.totalPages })}
-            </span>
-            <button
-              disabled={!meta.hasNext || loading}
-              onClick={() => setPage(p => p+1)}
-              className="rounded-full px-5 py-2.5 text-sm font-bold transition-all disabled:opacity-40"
-              style={{ background:tk.surface2, border:`1px solid ${tk.border}`, color:tk.text1 }}>
-              {t("catalog.nextPage")}
-            </button>
-          </div>
-        )}
+        <div className="mt-8">
+          <Pagination loading={loading} meta={meta} onPage={setPage} t={t} />
+        </div>
       </div>
     </motion.section>
   );

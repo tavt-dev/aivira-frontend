@@ -44,6 +44,7 @@ const EMPTY_POST = {
   relatedProductIds: []
 };
 const EMPTY_CATEGORY = { name: "", slug: "", description: "", displayOrder: 0, active: true };
+const PAGE_SIZES = [12, 24, 48];
 
 export default function AdminBlogPage() {
   const { t, i18n } = useTranslation();
@@ -55,6 +56,7 @@ export default function AdminBlogPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(PAGE_SIZES[0]);
   const [status, setStatus] = useState("");
   const [keyword, setKeyword] = useState("");
   const [postOpen, setPostOpen] = useState(false);
@@ -69,7 +71,7 @@ export default function AdminBlogPage() {
     setLoading(true);
     try {
       const [postRows, categoryRows, productRows] = await Promise.all([
-        getAdminBlogPosts({ page, size: 12, status, keyword }),
+        getAdminBlogPosts({ page, size, status, keyword }),
         getAdminBlogCategories(),
         getAdminProducts({ page: 1, size: 100 })
       ]);
@@ -81,14 +83,14 @@ export default function AdminBlogPage() {
     } finally {
       setLoading(false);
     }
-  }, [keyword, page, status, t, toast]);
+  }, [keyword, page, size, status, t, toast]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   const posts = pageRows(postsPayload);
-  const meta = pageMeta(postsPayload, { page, size: 12 });
+  const meta = pageMeta(postsPayload, { page, size });
   const selectedProducts = useMemo(() => new Set(postForm.relatedProductIds.map(Number)), [postForm.relatedProductIds]);
 
   function startPost() {
@@ -270,6 +272,17 @@ export default function AdminBlogPage() {
               <option value="">{t("common.all")}</option>
               <option value="DRAFT">{t("admin.draft")}</option>
               <option value="PUBLISHED">{t("admin.publishedStatus")}</option>
+            </select>
+            <select
+              aria-label={t("catalog.pageSize")}
+              value={size}
+              onChange={(event) => {
+                setSize(Number(event.target.value));
+                setPage(1);
+              }}
+              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950"
+            >
+              {PAGE_SIZES.map(value => <option key={value} value={value}>{t("catalog.perPage", { count:value })}</option>)}
             </select>
             <Button variant="secondary" onClick={load}>
               <RefreshCw size={15} />

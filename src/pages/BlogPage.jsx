@@ -18,6 +18,7 @@ export default function BlogPage() {
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const categorySlug = searchParams.get("categorySlug") || "";
   const page = Number(searchParams.get("page") || 1);
+  const size = [9, 18, 36].includes(Number(searchParams.get("size"))) ? Number(searchParams.get("size")) : 9;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -25,7 +26,7 @@ export default function BlogPage() {
     setError("");
     Promise.all([
       getBlogPosts(
-        { keyword: searchParams.get("keyword"), categorySlug, page, size: 9 },
+        { keyword: searchParams.get("keyword"), categorySlug, page, size },
         { signal: controller.signal }
       ),
       getBlogCategories({ signal: controller.signal })
@@ -41,7 +42,7 @@ export default function BlogPage() {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [categorySlug, page, searchParams, t]);
+  }, [categorySlug, page, searchParams, size, t]);
 
   function updateParams(next) {
     const values = Object.fromEntries(searchParams.entries());
@@ -58,7 +59,7 @@ export default function BlogPage() {
   }
 
   const posts = pageRows(payload);
-  const meta = pageMeta(payload, { page, size: 9 });
+  const meta = pageMeta(payload, { page, size });
 
   return (
     <div className="min-h-screen bg-[#faf8f5] pb-24 pt-24 dark:bg-[#040d1e]">
@@ -92,7 +93,7 @@ export default function BlogPage() {
           </button>
         </form>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => updateParams({ categorySlug: "", page: "" })}
@@ -110,6 +111,14 @@ export default function BlogPage() {
               {category.name}
             </button>
           ))}
+          <select
+            aria-label={t("catalog.pageSize")}
+            className="ml-auto rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold dark:border-white/10 dark:bg-white/5"
+            value={size}
+            onChange={(event) => updateParams({ size: Number(event.target.value), page: "" })}
+          >
+            {[9, 18, 36].map(value => <option key={value} value={value}>{t("catalog.perPage", { count:value })}</option>)}
+          </select>
         </div>
 
         <div className="mt-10">

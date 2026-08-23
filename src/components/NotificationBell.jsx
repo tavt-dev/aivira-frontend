@@ -10,6 +10,7 @@ import {
   streamNotifications
 } from "../api/notificationApi.js";
 import { getAccessToken } from "../utils/storage.js";
+import { pageMeta, pageRows } from "../utils/mappers.js";
 
 const PAGE_SIZE = 10;
 const RECONNECT_DELAY_MS = 3000;
@@ -24,11 +25,13 @@ export default function NotificationBell({ admin = false, inverted = false }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [meta, setMeta] = useState({ currentPage: 1, totalPages: 0, totalElements: 0 });
 
   const sync = useCallback(async ({ quiet = false } = {}) => {
     if (!getAccessToken()) {
       setItems([]);
       setUnreadCount(0);
+      setMeta({ currentPage: 1, totalPages: 0, totalElements: 0 });
       return;
     }
     if (!quiet) setLoading(true);
@@ -37,9 +40,10 @@ export default function NotificationBell({ admin = false, inverted = false }) {
         getNotifications({ page: 1, size: PAGE_SIZE }),
         getUnreadNotificationCount()
       ]);
-      const notifications = page?.data || [];
+      const notifications = pageRows(page);
       seenIdsRef.current = new Set(notifications.map((notification) => notification.id));
       setItems(notifications);
+      setMeta(pageMeta(page, { page: 1, size: PAGE_SIZE }));
       setUnreadCount(Number(count?.unreadCount || 0));
       setError("");
     } catch {
@@ -48,6 +52,29 @@ export default function NotificationBell({ admin = false, inverted = false }) {
       if (!quiet) setLoading(false);
     }
   }, [t]);
+
+  async function loadMore() {
+    if (loading || meta.currentPage >= meta.totalPages) return;
+    setLoading(true);
+    try {
+      const nextPage = meta.currentPage + 1;
+      const payload = await getNotifications({ page: nextPage, size: PAGE_SIZE });
+      const rows = pageRows(payload);
+      setItems((current) => {
+        const merged = [...current];
+        const ids = new Set(current.map(item => item.id));
+        rows.forEach(item => { if (!ids.has(item.id)) merged.push(item); });
+        seenIdsRef.current = new Set(merged.map(item => item.id));
+        return merged;
+      });
+      setMeta(pageMeta(payload, { page: nextPage, size: PAGE_SIZE }));
+      setError("");
+    } catch {
+      setError(t("notifications.loadFailed"));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     sync({ quiet: true });
@@ -70,7 +97,7 @@ export default function NotificationBell({ admin = false, inverted = false }) {
           onNotification: (notification) => {
             if (seenIdsRef.current.has(notification.id)) return;
             seenIdsRef.current.add(notification.id);
-            setItems((current) => [notification, ...current.filter((item) => item.id !== notification.id)].slice(0, PAGE_SIZE));
+            setItems((current) => [notification, ...current.filter((item) => item.id !== notification.id)]);
             setUnreadCount((count) => count + (notification.read ? 0 : 1));
           }
         });
@@ -207,6 +234,16 @@ export default function NotificationBell({ admin = false, inverted = false }) {
                 onClick={() => openNotification(notification)}
               />
             ))}
+            {!error && meta.currentPage < meta.totalPages && (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={loadMore}
+                className="w-full border-t border-slate-100 px-4 py-3 text-sm font-bold text-blue-600 hover:bg-blue-50 disabled:opacity-50"
+              >
+                {loading ? t("common.loading", "Loading...") : t("common.loadMore", "Xem thêm")}
+              </button>
+            )}
           </div>
         </section>
       )}
