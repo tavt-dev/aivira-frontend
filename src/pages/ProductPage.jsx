@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  BookOpen, ChevronRight, Home, Layers, Minus, Plus,
+  BookOpen, ChevronRight, Home, Minus, Plus,
   ShoppingBag, Star, TrendingUp, X, ZoomIn, MessageSquare,
-  Award, Package, BarChart3,
+  Package, BarChart3,
   User, Hash, Building2, Calendar, Globe, FileText, Tag, Maximize2,
 } from "lucide-react";
 
@@ -514,7 +514,7 @@ function BookInfoPanel({ book, tk, isDark, hasDiscount, stockQuantity, selectedV
       {/* Price */}
       <motion.div initial={{opacity:0,scale:0.92}} animate={{opacity:1,scale:1}}
         transition={{duration:0.55,delay:0.32,ease:[0.22,1,0.36,1]}}>
-        <PriceBlock book={book} hasDiscount={hasDiscount} tk={tk} isDark={isDark} t={t}/>
+        <PriceBlock book={book} hasDiscount={hasDiscount} tk={tk} isDark={isDark}/>
       </motion.div>
 
       {/* Variations */}
@@ -596,7 +596,7 @@ function RatingRow({ book, stockQuantity, tk, isDark, t }) {
 }
 
 /* ── Price block ─────────────────────────────── */
-function PriceBlock({ book, hasDiscount, tk, isDark, t }) {
+function PriceBlock({ book, hasDiscount, tk, isDark }) {
   const discPct = discount(book);
   return (
     <div className="flex flex-wrap items-end gap-3">
@@ -637,26 +637,6 @@ function PriceBlock({ book, hasDiscount, tk, isDark, t }) {
 }
 
 /* ── Description block ───────────────────────── */
-function DescriptionBlock({ desc, tk }) {
-  const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
-  const SHORT_LEN = 280;
-  const isLong = desc.length > SHORT_LEN;
-  const shown  = expanded || !isLong ? desc : desc.slice(0, SHORT_LEN) + "…";
-  return (
-    <div>
-      <p className="text-sm leading-7" style={{ color:tk.text2 }}>{shown}</p>
-      {isLong && (
-        <button type="button" onClick={() => setExpanded(e => !e)}
-          className="mt-2 text-xs font-bold transition-colors hover:opacity-80"
-          style={{ color:tk.accent }}>
-          {expanded ? t("common.collapse") : t("common.showMore")}
-        </button>
-      )}
-    </div>
-  );
-}
-
 /* ── Metadata table ──────────────────────────── */
 function MetadataTable({ book, tk, isDark, t }) {
   const fields = [

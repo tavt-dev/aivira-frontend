@@ -524,7 +524,6 @@ function SortSelect({ tk, isDark, value, size, onChange, t }) {
    SIDEBAR
 ═══════════════════════════════════════════════════════ */
 function CatalogSidebar({ tk, isDark, categories, slug, categoryLink, form, setForm, onApply, onClear, hasActiveFilters, t, compact=false }) {
-  const activeCount = getActiveFilterChips(form,t).length;
   return (
     <div className="grid gap-4">
       <DarkPanel tk={tk} isDark={isDark} icon={<BookOpen size={14}/>} title={t("common.categories")}>

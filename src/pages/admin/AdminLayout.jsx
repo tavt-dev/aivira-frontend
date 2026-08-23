@@ -19,8 +19,7 @@ import {
   Users,
   Menu,
   X,
-  Newspaper,
-  Search
+  Newspaper
 } from "lucide-react";
 import { getTheme, toggleTheme } from "../../utils/theme.js";
 import { logout as logoutRequest } from "../../api/authApi.js";
@@ -41,12 +40,6 @@ const NAV_ITEMS = [
   { to: "/admin/users",     label: "admin.users",     icon: Users,            group: "people" },
   { to: "/admin/permissions",label:"admin.permissions",icon: Shield,          group: "people" },
 ];
-
-const GROUP_LABELS = {
-  main: "admin.navContent",
-  sales: "admin.navSales",
-  people: "admin.navPeople",
-};
 
 export default function AdminLayout() {
   const { t } = useTranslation();
